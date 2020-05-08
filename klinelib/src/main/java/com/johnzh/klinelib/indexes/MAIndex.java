@@ -13,7 +13,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class NoIndex implements Index {
+public class MAIndex implements Index {
 
     @Override
     public void calcIndexAsync(List<KlineData> klineDataList) {

@@ -1,6 +1,7 @@
 package com.johnzh.klinelib;
 
 import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import java.util.List;
 
@@ -9,10 +10,11 @@ import java.util.List;
  * <p>
  * Description: index for kline
  */
-public interface Index<T> {
-    List<T> calcIndex(List<KlineData> klineDataList);
+public interface Index {
 
-    List<T> calcIndexForVisibleData(List<KlineData> klineDataList, int index, int len);
+    void calcIndexAsync(List<KlineData> klineDataList);
 
-    void draw(Canvas canvas, List<? extends KlineData> klineDataList, List<T> indexDataList);
+    void calcIndex(List<KlineData> klineDataList, int startIndex, int endIndex);
+
+    void draw(List<? extends KlineData> klineDataList, Canvas canvas, Paint paint);
 }
