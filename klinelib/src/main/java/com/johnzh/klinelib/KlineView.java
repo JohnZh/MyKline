@@ -2,12 +2,16 @@ package com.johnzh.klinelib;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.auxiliarylines.DefaultAuxiliaryLines;
+import com.johnzh.klinelib.indexes.Index;
 import com.johnzh.klinelib.indexes.NoIndex;
 import com.johnzh.klinelib.size.DefaultViewSize;
 import com.johnzh.klinelib.size.ViewSize;
@@ -30,20 +34,25 @@ public class KlineView extends View {
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
     public static final Paint sPaint = new Paint();
 
-    private List<KlineData> mKlineDataList;
+    private List<? extends KlineData> mKlineDataList;
 
     private Index mCurIndex;
     private int mCurIndexPos;
-    private AuxiliaryLines mAuxiliaryLines;
-    private ViewSize mViewSize;
+
     private KlineConfig mConfig;
-
-    private KlineCalc mKlineCalc;
-
+    private ViewSize mViewSize;
+    private AuxiliaryLines mAuxiliaryLines;
     private int mCandles;
+
+    private DrawArea mDrawArea;
+    private SharedObjects mSharedObjects;
+
     private int mStartIndex;
     private int mEndIndex;
+
     private float mViewScale;
+    private float mDistanceBetweenData;
+    private float mMaxDragDistance;
 
     public KlineView(Context context) {
         super(context);
@@ -56,14 +65,12 @@ public class KlineView extends View {
     }
 
     private void init() {
+        mDrawArea = new DefaultDrawArea();
+        mSharedObjects = new SharedObjects();
         mConfig = new KlineConfig();
-        mCurIndex = new NoIndex();
-        mViewScale = 1;
-        mAuxiliaryLines = new HorizontalAuxiliaryLines();
+        setConfig(mConfig);
 
-        int dataHeight = (int) toPx(TypedValue.COMPLEX_UNIT_DIP, DefaultViewSize.DATA_HEIGHT_IN_DP);
-        int dateHeight = (int) toPx(TypedValue.COMPLEX_UNIT_DIP, DefaultViewSize.DATE_HEIGHT_IN_DP);
-        mViewSize = new DefaultViewSize(dataHeight, dateHeight);
+        mViewScale = 1;
     }
 
     public float toPx(int unit, float value) {
@@ -73,35 +80,65 @@ public class KlineView extends View {
     public void setConfig(@NonNull KlineConfig config) {
         if (config != null) {
             mConfig = config;
-            // TODO: 2020/5/6 redraw ??
+            if (mConfig.getIndexes().isEmpty()) {
+                mCurIndexPos = -1;
+                mCurIndex = new NoIndex();
+            }
+            mViewSize = mConfig.getViewSize();
+            if (mViewSize == null) {
+                int dataHeight = (int) toPx(TypedValue.COMPLEX_UNIT_DIP, DefaultViewSize.DATA_HEIGHT_IN_DP);
+                int dateHeight = (int) toPx(TypedValue.COMPLEX_UNIT_DIP, DefaultViewSize.DATE_HEIGHT_IN_DP);
+                mViewSize = new DefaultViewSize(dataHeight, dateHeight);
+            }
+            mAuxiliaryLines = mConfig.getAuxiliaryLines();
+            if (mAuxiliaryLines == null) {
+                mAuxiliaryLines = getDefaultAuxiliaryLines();
+            }
         }
+        // TODO: 2020/5/6 redraw ??
+    }
+
+    private AuxiliaryLines getDefaultAuxiliaryLines() {
+        float fontSize = toPx(TypedValue.COMPLEX_UNIT_SP, 10);
+        float lineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 0.5f);
+        float textMargin = toPx(TypedValue.COMPLEX_UNIT_DIP, 2);
+        int color = Color.parseColor("#999999");
+        return new DefaultAuxiliaryLines(5, fontSize, lineWidth, textMargin, color);
+    }
+
+    public void setSharedObjects(SharedObjects sharedObjects) {
+        mSharedObjects = sharedObjects;
     }
 
     public void setKlineDataList(@NonNull List<KlineData> klineDataList) {
         mKlineDataList = klineDataList;
-        if (!mConfig.getIndexes().isEmpty()) {
-            selectIndex(mCurIndexPos);
-        } else {
-            calcIndex();
-        }
+        redraw();
     }
 
-    public List<KlineData> getKlineDataList() {
+    public void appendKlineData(@NonNull List<KlineData> data) {
+
+    }
+
+    public List<? extends KlineData> getKlineDataList() {
         return mKlineDataList;
+    }
+
+    public DrawArea getDrawArea() {
+        return mDrawArea;
+    }
+
+    public SharedObjects getSharedObjects() {
+        return mSharedObjects;
     }
 
     public void selectIndex(int indexPos) {
         if (mCurIndexPos == indexPos) return;
         int size = mConfig.getIndexes().size();
         if (indexPos >= 0 && indexPos < size) {
-            mCurIndexPos = indexPos;
             mCurIndex = mConfig.getIndexes().get(indexPos);
-            calcIndex();
+            mCurIndexPos = indexPos;
+            redraw();
         }
-    }
-
-    private void calcIndex() {
-
     }
 
     @Override
@@ -109,29 +146,32 @@ public class KlineView extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
         int height = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
-        width = mViewSize.getWidth() > 0 ? mViewSize.getWidth() : width;
+        width = mViewSize.getViewWidth() > 0 ? mViewSize.getViewWidth() : width;
         height = mViewSize.getHeight() > 0 ? mViewSize.getHeight() : height;
         setMeasuredDimension(width, height);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        calcVisibleDataAmt();
-        calcIndexes();
-        calcAuxiliaryLines();
+        mDrawArea.init(this, mViewSize, mAuxiliaryLines);
 
-        // setup kline calculator
-        mKlineCalc.init(getWidth(), mViewSize.getDataHeight(), mViewSize.getDateHeight(),
-                getPaddingLeft(), getPaddingTop(),
-                getPaddingRight(), getPaddingBottom());
-        mKlineCalc.calcMaxCandleWidth(mCandles);
-        mKlineCalc.calcMaxDragDistance(mKlineDataList.size(), mCandles);
-        mKlineCalc.setAuxiliaryLines(mAuxiliaryLines);
-        mKlineCalc.setStartIndex(mStartIndex, mEndIndex);
+        calcVisibleCandles();
+        calcIndex();
+        calcAuxiliaryLines();
+        calcMaxDragDistance();
 
         drawAuxiliaryLines(canvas);
         drawMainData(canvas);
         drawDate(canvas);
+    }
+
+    private void calcMaxDragDistance() {
+        mDistanceBetweenData = mDrawArea.getDistanceBetweenData(mCandles);
+        mMaxDragDistance = Math.max((mKlineDataList.size() - mCandles) * mDistanceBetweenData, 0);
+    }
+
+    protected void redraw() {
+        invalidate();
     }
 
     private void drawDate(Canvas canvas) {
@@ -143,8 +183,8 @@ public class KlineView extends View {
     }
 
     private void drawAuxiliaryLines(Canvas canvas) {
-        mAuxiliaryLines.drawHorizontalLines(mKlineCalc, canvas, sPaint);
-        mAuxiliaryLines.drawVerticalLines(mKlineCalc, canvas, sPaint);
+        mAuxiliaryLines.onDrawHorizontalLines(this, canvas, sPaint);
+        mAuxiliaryLines.onDrawVerticalLines(this, canvas, sPaint);
     }
 
     private void calcAuxiliaryLines() {
@@ -160,11 +200,11 @@ public class KlineView extends View {
 
     }
 
-    private void calcIndexes() {
+    private void calcIndex() {
         mCurIndex.calcIndex(mKlineDataList, mStartIndex, mEndIndex);
     }
 
-    private void calcVisibleDataAmt() {
+    private void calcVisibleCandles() {
         mCandles = (int) (mConfig.getInitialCandles() / mViewScale);
         mStartIndex = mKlineDataList.size() - mCandles < 0
                 ? 0 : (mKlineDataList.size() - mCandles - getMovedCandles());

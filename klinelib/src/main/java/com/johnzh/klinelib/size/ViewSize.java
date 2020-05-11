@@ -7,37 +7,37 @@ package com.johnzh.klinelib.size;
  */
 public abstract class ViewSize {
 
-    protected int width;
-    protected int dataHeight;
-    protected int dateHeight;
+    protected int viewWidth;
+    protected int dataViewHeight;
+    protected int dateViewHeight;
 
     public ViewSize() {
     }
 
-    public ViewSize(int width, int dataHeight, int dateHeight) {
-        this.width = width;
-        this.dataHeight = dataHeight;
-        this.dateHeight = dateHeight;
+    public ViewSize(int viewWidth, int dataViewHeight, int dateViewHeight) {
+        this.viewWidth = viewWidth;
+        this.dataViewHeight = dataViewHeight;
+        this.dateViewHeight = dateViewHeight;
     }
 
-    public ViewSize(int dataHeight, int dateHeight) {
-        this.dataHeight = dataHeight;
-        this.dateHeight = dateHeight;
+    public ViewSize(int dataViewHeight, int dateViewHeight) {
+        this.dataViewHeight = dataViewHeight;
+        this.dateViewHeight = dateViewHeight;
     }
 
-    public int getWidth() {
-        return width;
+    public int getViewWidth() {
+        return viewWidth;
     }
 
     public int getHeight() {
-        return dataHeight + dateHeight;
+        return dataViewHeight + dateViewHeight;
     }
 
-    public int getDataHeight() {
-        return dataHeight;
+    public int getDataViewHeight() {
+        return dataViewHeight;
     }
 
-    public int getDateHeight() {
-        return dateHeight;
+    public int getDateViewHeight() {
+        return dateViewHeight;
     }
 }

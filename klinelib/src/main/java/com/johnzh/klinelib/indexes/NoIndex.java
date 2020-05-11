@@ -3,8 +3,8 @@ package com.johnzh.klinelib.indexes;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.johnzh.klinelib.Index;
 import com.johnzh.klinelib.KlineData;
+import com.johnzh.klinelib.KlineView;
 
 import java.util.List;
 
@@ -16,17 +16,18 @@ import java.util.List;
 public class NoIndex implements Index {
 
     @Override
-    public void calcIndexAsync(List<KlineData> klineDataList) {
+    public void calcIndexAsync(List<? extends KlineData> klineDataList) {
 
     }
 
     @Override
-    public void calcIndex(List<KlineData> klineDataList, int startIndex, int endIndex) {
+    public void calcIndex(List<? extends KlineData> klineDataList, int startIndex, int endIndex) {
 
     }
 
     @Override
-    public void draw(List<? extends KlineData> klineDataList, Canvas canvas, Paint paint) {
+    public void onDraw(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
 
     }
+
 }

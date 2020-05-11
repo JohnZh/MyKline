@@ -8,7 +8,7 @@ package com.johnzh.klinelib.size;
 public class FixedViewSize extends ViewSize {
 
     public FixedViewSize(int fixedHeight, float dateRatio) {
-        dateHeight = (int) (fixedHeight * dateRatio);
-        dataHeight = fixedHeight - dateHeight;
+        dateViewHeight = (int) (fixedHeight * dateRatio);
+        dataViewHeight = fixedHeight - dateViewHeight;
     }
 }

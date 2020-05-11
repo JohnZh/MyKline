@@ -31,6 +31,10 @@ public class FloatCalc {
         return format(dividend / divisor, getMaxScale(dividend, divisor));
     }
 
+    public float add(float summand, float addend) {
+        return format(summand + addend, getMaxScale(summand, addend));
+    }
+
     private int getMaxScale(float v1, float v2) {
         return Math.max(getScale(v1), getScale(v2));
     }
