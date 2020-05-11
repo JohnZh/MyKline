@@ -82,7 +82,7 @@ public class KlineView extends View {
             mConfig = config;
             if (mConfig.getIndexes().isEmpty()) {
                 mCurIndexPos = -1;
-                mCurIndex = new NoIndex();
+                mCurIndex = getDefaultIndex();
             }
             mViewSize = mConfig.getViewSize();
             if (mViewSize == null) {
@@ -96,6 +96,14 @@ public class KlineView extends View {
             }
         }
         // TODO: 2020/5/6 redraw ??
+    }
+
+    private Index getDefaultIndex() {
+        int positiveColor = Color.parseColor("#f62048");
+        int negativeColor = Color.parseColor("#39ae13");
+        float candleWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 6);
+        float candleLineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 0.5f);
+        return new NoIndex(positiveColor, negativeColor, candleWidth, candleLineWidth);
     }
 
     private AuxiliaryLines getDefaultAuxiliaryLines() {
@@ -205,11 +213,13 @@ public class KlineView extends View {
     }
 
     private void calcVisibleCandles() {
-        mCandles = (int) (mConfig.getInitialCandles() / mViewScale);
-        mStartIndex = mKlineDataList.size() - mCandles < 0
-                ? 0 : (mKlineDataList.size() - mCandles - getMovedCandles());
-        int length = Math.min(mKlineDataList.size(), mCandles);
-        mEndIndex = mStartIndex + length;
+        if (mKlineDataList != null) {
+            mCandles = (int) (mConfig.getInitialCandles() / mViewScale);
+            mStartIndex = mKlineDataList.size() - mCandles < 0
+                    ? 0 : (mKlineDataList.size() - mCandles - getMovedCandles());
+            int length = Math.min(mKlineDataList.size(), mCandles);
+            mEndIndex = mStartIndex + length;
+        }
     }
 
     private int getMovedCandles() {

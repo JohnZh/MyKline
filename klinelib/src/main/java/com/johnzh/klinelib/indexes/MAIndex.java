@@ -27,6 +27,6 @@ public class MAIndex implements Index {
 
     @Override
     public void onDraw(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
-
+        
     }
 }
