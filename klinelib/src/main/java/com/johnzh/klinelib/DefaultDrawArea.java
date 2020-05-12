@@ -36,7 +36,7 @@ public class DefaultDrawArea implements DrawArea {
 
     @Override
     public float getDistanceBetweenData(int visibleDataSize) {
-        distanceBetweenData = (viewWidth - paddingLeft - paddingRight) / visibleDataSize;
+        distanceBetweenData = (viewWidth - paddingLeft - paddingRight) * 1.0f / visibleDataSize;
         return distanceBetweenData;
     }
 
@@ -63,7 +63,7 @@ public class DefaultDrawArea implements DrawArea {
         if (price < min || price > max) {
             return -1;
         }
-        float offset = (max - price) / (max - min) * dateViewHeight;
+        float offset = (max - price) / (max - min) * dataViewHeight;
         return paddingTop + offset;
     }
 

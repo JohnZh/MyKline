@@ -161,6 +161,8 @@ public class KlineView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (mKlineDataList == null) return;
+
         mDrawArea.init(this, mViewSize, mAuxiliaryLines);
 
         calcVisibleCandles();
@@ -205,13 +207,11 @@ public class KlineView extends View {
     }
 
     private void calcVisibleCandles() {
-        if (mKlineDataList != null) {
-            mCandles = (int) (mConfig.getInitialCandles() / mViewScale);
-            mStartIndex = mKlineDataList.size() - mCandles < 0
-                    ? 0 : (mKlineDataList.size() - mCandles - getMovedCandles());
-            int length = Math.min(mKlineDataList.size(), mCandles);
-            mEndIndex = mStartIndex + length;
-        }
+        mCandles = (int) (mConfig.getInitialCandles() / mViewScale);
+        mStartIndex = mKlineDataList.size() - mCandles < 0
+                ? 0 : (mKlineDataList.size() - mCandles - getMovedCandles());
+        int length = Math.min(mKlineDataList.size(), mCandles);
+        mEndIndex = mStartIndex + length;
     }
 
     private int getMovedCandles() {
