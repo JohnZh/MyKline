@@ -44,8 +44,20 @@ public interface DrawArea {
 
     int getVisibleIndex(float touchX);
 
+    /**
+     * get the x axis from visible index of data on screen
+     *
+     * @param visibleIndex
+     * @return
+     */
     float getDataX(int visibleIndex);
 
+    /**
+     * get the y axis from price of data on screen
+     *
+     * @param price
+     * @return
+     */
     float getDataY(float price);
 
     int getTop();

@@ -15,27 +15,27 @@ import java.util.List;
  * <p>
  * Description: no index implement, just k line candles
  */
-public class NoIndex implements Index {
+public class PureKIndex implements Index<KlineData> {
 
     private int positiveColor;
     private int negativeColor;
     private float candleWidth;
     private float candleLineWidth;
 
-    public NoIndex(int positiveColor, int negativeColor, float candleWidth, float candleLineWidth) {
-        this.positiveColor = positiveColor;
-        this.negativeColor = negativeColor;
+    public PureKIndex(int[] colors, float candleWidth, float candleLineWidth) {
+        this.positiveColor = colors[0];
+        this.negativeColor = colors[1];
         this.candleWidth = candleWidth;
         this.candleLineWidth = candleLineWidth;
     }
 
     @Override
-    public void calcIndexAsync(List<? extends KlineData> klineDataList) {
+    public void calcIndexAsync(List<KlineData> klineDataList) {
 
     }
 
     @Override
-    public void calcIndex(List<? extends KlineData> klineDataList, int startIndex, int endIndex) {
+    public void calcIndex(List<KlineData> klineDataList, int startIndex, int endIndex) {
 
     }
 

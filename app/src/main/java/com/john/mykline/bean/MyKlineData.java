@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
  * <p>
  * Description:
  */
-public class KData implements KlineData {
+public class MyKlineData implements KlineData<MyIndexData> {
 
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT
             = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -91,5 +91,17 @@ public class KData implements KlineData {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    private MyIndexData indexData;
+
+    @Override
+    public MyIndexData getIndexData() {
+        return indexData;
+    }
+
+    @Override
+    public void setIndexData(MyIndexData indexData) {
+        this.indexData = indexData;
     }
 }

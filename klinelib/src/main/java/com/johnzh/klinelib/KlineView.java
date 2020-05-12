@@ -12,7 +12,7 @@ import android.view.View;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.DefaultAuxiliaryLines;
 import com.johnzh.klinelib.indexes.Index;
-import com.johnzh.klinelib.indexes.NoIndex;
+import com.johnzh.klinelib.indexes.PureKIndex;
 import com.johnzh.klinelib.size.DefaultViewSize;
 import com.johnzh.klinelib.size.ViewSize;
 
@@ -103,7 +103,7 @@ public class KlineView extends View {
         int negativeColor = Color.parseColor("#39ae13");
         float candleWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 6);
         float candleLineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 0.5f);
-        return new NoIndex(positiveColor, negativeColor, candleWidth, candleLineWidth);
+        return new PureKIndex(new int[]{positiveColor, negativeColor}, candleWidth, candleLineWidth);
     }
 
     private AuxiliaryLines getDefaultAuxiliaryLines() {
@@ -118,12 +118,12 @@ public class KlineView extends View {
         mSharedObjects = sharedObjects;
     }
 
-    public void setKlineDataList(@NonNull List<KlineData> klineDataList) {
+    public void setKlineDataList(@NonNull List<? extends KlineData> klineDataList) {
         mKlineDataList = klineDataList;
         redraw();
     }
 
-    public void appendKlineData(@NonNull List<KlineData> data) {
+    public void appendKlineData(@NonNull List<? extends KlineData> data) {
 
     }
 
@@ -168,9 +168,9 @@ public class KlineView extends View {
         calcAuxiliaryLines();
         calcMaxDragDistance();
 
-        drawAuxiliaryLines(canvas);
-        drawMainData(canvas);
-        drawDate(canvas);
+        onDrawAuxiliaryLines(canvas);
+        onDrawMainData(canvas);
+        onDrawDate(canvas);
     }
 
     private void calcMaxDragDistance() {
@@ -182,15 +182,15 @@ public class KlineView extends View {
         invalidate();
     }
 
-    private void drawDate(Canvas canvas) {
+    private void onDrawDate(Canvas canvas) {
 
     }
 
-    private void drawMainData(Canvas canvas) {
-
+    private void onDrawMainData(Canvas canvas) {
+        mCurIndex.onDraw(this, mStartIndex, mEndIndex, canvas, sPaint);
     }
 
-    private void drawAuxiliaryLines(Canvas canvas) {
+    private void onDrawAuxiliaryLines(Canvas canvas) {
         mAuxiliaryLines.onDrawHorizontalLines(this, canvas, sPaint);
         mAuxiliaryLines.onDrawVerticalLines(this, canvas, sPaint);
     }
@@ -198,14 +198,6 @@ public class KlineView extends View {
     private void calcAuxiliaryLines() {
         mAuxiliaryLines.calcHorizontalLines(mKlineDataList, mCurIndex, mStartIndex, mEndIndex);
         mAuxiliaryLines.calcVerticalLines(mKlineDataList, mStartIndex, mEndIndex);
-    }
-
-    private void calcMaxTransactionX() {
-
-    }
-
-    private void calcMaxCandleWidth() {
-
     }
 
     private void calcIndex() {

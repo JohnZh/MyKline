@@ -9,6 +9,7 @@ import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
+import com.johnzh.klinelib.PriceRange;
 import com.johnzh.klinelib.SharedObjects;
 import com.johnzh.klinelib.indexes.Index;
 
@@ -19,7 +20,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class DefaultAuxiliaryLines implements AuxiliaryLines {
+public class DefaultAuxiliaryLines implements AuxiliaryLines<KlineData> {
 
     private float[] horizontalLines;
     private float fontSize;
@@ -47,7 +48,7 @@ public class DefaultAuxiliaryLines implements AuxiliaryLines {
     }
 
     @Override
-    public void calcHorizontalLines(List<? extends KlineData> klineDataList, Index curIndex, int startIndex, int endIndex) {
+    public void calcHorizontalLines(List<KlineData> klineDataList, Index<KlineData> curIndex, int startIndex, int endIndex) {
         float max = Float.MIN_VALUE;
         float min = Float.MAX_VALUE;
 
@@ -55,6 +56,11 @@ public class DefaultAuxiliaryLines implements AuxiliaryLines {
             KlineData data = klineDataList.get(i);
             max = Math.max(max, data.getHighestPrice());
             min = Math.min(min, data.getLowestPrice());
+        }
+
+        if (curIndex instanceof PriceRange) {
+            max = Math.max(((PriceRange) curIndex).getMaxPrice(), max);
+            min = Math.min(((PriceRange) curIndex).getMinPrice(), min);
         }
 
         if (max == Float.MIN_VALUE || min == Float.MAX_VALUE) return;
@@ -70,7 +76,8 @@ public class DefaultAuxiliaryLines implements AuxiliaryLines {
     }
 
     @Override
-    public void calcVerticalLines(List<? extends KlineData> klineDataList, int startIndex, int endIndex) {
+    public void calcVerticalLines(List<KlineData> klineDataList, int startIndex, int endIndex) {
+
     }
 
     @Override
@@ -110,12 +117,12 @@ public class DefaultAuxiliaryLines implements AuxiliaryLines {
     }
 
     @Override
-    public float getMax() {
+    public float getMaxPrice() {
         return horizontalLines[0];
     }
 
     @Override
-    public float getMin() {
+    public float getMinPrice() {
         return horizontalLines[horizontalLines.length - 1];
     }
 }

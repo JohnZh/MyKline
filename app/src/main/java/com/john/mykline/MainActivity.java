@@ -2,7 +2,8 @@ package com.john.mykline;
 
 import android.os.Bundle;
 
-import com.john.mykline.bean.KData;
+import com.john.mykline.bean.MyKlineData;
+import com.johnzh.klinelib.KlineView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,18 +15,22 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private KlineView mKlineView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mKlineView = findViewById(R.id.klineView);
+
         HttpAgent.getApi().getDailyKline("M2009")
                 .enqueue(new Callback<List<List<String>>>() {
                     @Override
                     public void onResponse(Call<List<List<String>>> call, Response<List<List<String>>> response) {
-                        List<KData> kDataList = new ArrayList<>();
-                        convertData(response.body(), kDataList);
-                        updateKlineView(kDataList);
+                        List<MyKlineData> myKlineDataList = new ArrayList<>();
+                        convertData(response.body(), myKlineDataList);
+                        updateKlineView(myKlineDataList);
                     }
 
                     @Override
@@ -35,14 +40,14 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void convertData(List<List<String>> body, List<KData> kDataList) {
+    private void convertData(List<List<String>> body, List<MyKlineData> kDataList) {
         for (List<String> stringList : body) {
             kDataList.add(getKData(stringList));
         }
     }
 
-    private KData getKData(List<String> stringList) {
-        KData kData = new KData();
+    private MyKlineData getKData(List<String> stringList) {
+        MyKlineData kData = new MyKlineData();
         if (stringList.size() >= 6) {
             int i = 0;
             kData.setDate(stringList.get(i++));
@@ -55,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         return kData;
     }
 
-    private void updateKlineView(List<KData> body) {
-
+    private void updateKlineView(List<MyKlineData> body) {
+        mKlineView.setKlineDataList(body);
     }
 }

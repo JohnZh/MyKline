@@ -5,7 +5,7 @@ package com.johnzh.klinelib;
  * <p>
  * Description:
  */
-public interface KlineData {
+public interface KlineData<T extends IndexData> {
 
     float getOpenPrice();
 
@@ -18,4 +18,8 @@ public interface KlineData {
     float getVolume();
 
     long getDate();
+
+    T getIndexData();
+
+    void setIndexData(T indexData);
 }

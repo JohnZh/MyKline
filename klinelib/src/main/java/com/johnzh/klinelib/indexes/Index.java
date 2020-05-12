@@ -13,11 +13,11 @@ import java.util.List;
  * <p>
  * Description: index for kline
  */
-public interface Index {
+public interface Index<T extends KlineData> {
 
-    void calcIndexAsync(List<? extends KlineData> klineDataList);
+    void calcIndexAsync(List<T> klineDataList);
 
-    void calcIndex(List<? extends KlineData> klineDataList, int startIndex, int endIndex);
+    void calcIndex(List<T> klineDataList, int startIndex, int endIndex);
 
     void onDraw(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint);
 }
