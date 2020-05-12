@@ -21,5 +21,7 @@ public interface KlineData<T extends IndexData> {
 
     T getIndexData();
 
+    T createIndexData();
+
     void setIndexData(T indexData);
 }

@@ -13,6 +13,8 @@ import com.johnzh.klinelib.PriceRange;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 /**
  * Modified by john on 2020/5/6
  * <p>
@@ -28,7 +30,8 @@ public class MAIndex implements Index<KlineData>, PriceRange {
     private float maxPrice;
     private float minPrice;
 
-    public MAIndex(PureKIndex pureKIndex,float lineWidth, int[] ma, int[] maColors) {
+    public MAIndex(@NonNull PureKIndex pureKIndex, @NonNull float lineWidth,
+                   @NonNull int[] ma, @NonNull int[] maColors) {
         this.pureKIndex = pureKIndex;
         this.lineWidth = lineWidth;
         this.ma = ma;
@@ -78,15 +81,17 @@ public class MAIndex implements Index<KlineData>, PriceRange {
         for (int i = startIndex; i < endIndex; i++) {
             IndexData indexData = klineDataList.get(i).getIndexData();
             if (indexData == null) {
-                indexData = new IndexData();
+                indexData = klineDataList.get(i).createIndexData();
             }
 
             for (int maKey : this.ma) {
                 if (i - maKey < -1) continue; // data is not enough
 
                 Float maValue = indexData.getMa().get(maKey);
-                updateMaxMinPrice(maValue);
-                if (maValue != null) continue;
+                if (maValue != null) {
+                    updateMaxMinPrice(maValue);
+                    continue;
+                }
 
                 Float newMaValue = calcMaValue(klineDataList, i, maKey);
                 updateMaxMinPrice(newMaValue);
@@ -133,7 +138,7 @@ public class MAIndex implements Index<KlineData>, PriceRange {
             float startX = -1;
             float startY = -1;
             for (int j = startIndex; j < endIndex; j++) {
-                Float maValue = klineDataList.get(i).getIndexData().getMa().get(maKey);
+                Float maValue = klineDataList.get(j).getIndexData().getMa().get(maKey);
                 if (maValue == null) continue;
                 float dataX = drawArea.getDataX(drawArea.getVisibleIndex(j, startIndex));
                 float dataY = drawArea.getDataY(maValue.floatValue());

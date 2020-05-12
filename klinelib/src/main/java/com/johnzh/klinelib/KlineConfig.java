@@ -21,9 +21,7 @@ public class KlineConfig {
     private ViewSize viewSize;
     private AuxiliaryLines auxiliaryLines;
 
-    public KlineConfig() {
-        this.initialCandles = DEFAULT_CANDLES;
-        this.indexes = new ArrayList<>();
+    private KlineConfig() {
     }
 
     public int getInitialCandles() {
@@ -49,7 +47,9 @@ public class KlineConfig {
         private ViewSize viewSize;
         private AuxiliaryLines auxiliaryLines;
 
-        private Builder() {
+        public Builder() {
+            initialCandles = DEFAULT_CANDLES;
+            indexes = new ArrayList<>();
         }
 
         public static Builder builder() {
@@ -66,7 +66,7 @@ public class KlineConfig {
             return this;
         }
 
-        public Builder indexes(Index index) {
+        public Builder index(Index index) {
             this.indexes.add(index);
             return this;
         }

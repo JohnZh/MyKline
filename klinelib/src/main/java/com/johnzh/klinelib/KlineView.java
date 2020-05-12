@@ -67,7 +67,7 @@ public class KlineView extends View {
     private void init() {
         mDrawArea = new DefaultDrawArea();
         mSharedObjects = new SharedObjects();
-        mConfig = new KlineConfig();
+        mConfig = new KlineConfig.Builder().build();
         setConfig(mConfig);
 
         mViewScale = 1;
@@ -83,6 +83,8 @@ public class KlineView extends View {
             if (mConfig.getIndexes().isEmpty()) {
                 mCurIndexPos = -1;
                 mCurIndex = getDefaultIndex();
+            } else {
+                selectIndex(0);
             }
             mViewSize = mConfig.getViewSize();
             if (mViewSize == null) {
@@ -102,7 +104,7 @@ public class KlineView extends View {
         int positiveColor = Color.parseColor("#f62048");
         int negativeColor = Color.parseColor("#39ae13");
         float candleWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 6);
-        float candleLineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 0.5f);
+        float candleLineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
         return new PureKIndex(new int[]{positiveColor, negativeColor}, candleWidth, candleLineWidth);
     }
 

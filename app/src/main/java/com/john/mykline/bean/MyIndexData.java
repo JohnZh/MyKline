@@ -8,4 +8,7 @@ import com.johnzh.klinelib.IndexData;
  * Description:
  */
 public class MyIndexData extends IndexData {
+
+    public MyIndexData() {
+    }
 }

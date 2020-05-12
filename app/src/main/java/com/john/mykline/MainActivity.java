@@ -1,9 +1,15 @@
 package com.john.mykline;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 
 import com.john.mykline.bean.MyKlineData;
+import com.johnzh.klinelib.KlineConfig;
 import com.johnzh.klinelib.KlineView;
+import com.johnzh.klinelib.indexes.Index;
+import com.johnzh.klinelib.indexes.MAIndex;
+import com.johnzh.klinelib.indexes.PureKIndex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
 
         mKlineView = findViewById(R.id.klineView);
 
+        mKlineView.setConfig(
+                new KlineConfig.Builder()
+                        .index(createMAIndex())
+                        .build());
+
         HttpAgent.getApi().getDailyKline("M2009")
                 .enqueue(new Callback<List<List<String>>>() {
                     @Override
@@ -38,6 +49,23 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private Index createMAIndex() {
+        int[] posNegColor = {
+                Color.parseColor("#f62048"),
+                Color.parseColor("#39ae13")
+        };
+
+        float candleWidth = mKlineView.toPx(TypedValue.COMPLEX_UNIT_DIP, 6);
+        float lineWidth = mKlineView.toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
+        PureKIndex pureKIndex = new PureKIndex(posNegColor, candleWidth, lineWidth);
+
+        int[] maColors = {
+                Color.parseColor("#ffb405"),
+                Color.parseColor("#890cff")
+        };
+        return new MAIndex(pureKIndex, lineWidth, new int[]{ 5, 10}, maColors);
     }
 
     private void convertData(List<List<String>> body, List<MyKlineData> kDataList) {
