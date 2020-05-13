@@ -81,7 +81,7 @@ public class MAIndex implements Index<KlineData>, PriceRange {
         for (int i = startIndex; i < endIndex; i++) {
             IndexData indexData = klineDataList.get(i).getIndexData();
             if (indexData == null) {
-                indexData = klineDataList.get(i).createIndexData();
+                indexData = klineDataList.get(i).newIndexData();
             }
 
             for (int maKey : this.ma) {

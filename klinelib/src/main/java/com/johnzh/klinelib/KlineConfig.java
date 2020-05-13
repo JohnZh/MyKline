@@ -1,6 +1,7 @@
 package com.johnzh.klinelib;
 
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.date.DrawDate;
 import com.johnzh.klinelib.indexes.Index;
 import com.johnzh.klinelib.size.ViewSize;
 
@@ -20,6 +21,7 @@ public class KlineConfig {
     private List<Index> indexes;
     private ViewSize viewSize;
     private AuxiliaryLines auxiliaryLines;
+    private DrawDate drawDate;
 
     private KlineConfig() {
     }
@@ -40,12 +42,37 @@ public class KlineConfig {
         return auxiliaryLines;
     }
 
+    public DrawDate getDrawDate() {
+        return drawDate;
+    }
+
+    public void setInitialCandles(int initialCandles) {
+        this.initialCandles = initialCandles;
+    }
+
+    public void setIndexes(List<Index> indexes) {
+        this.indexes = indexes;
+    }
+
+    public void setViewSize(ViewSize viewSize) {
+        this.viewSize = viewSize;
+    }
+
+    public void setAuxiliaryLines(AuxiliaryLines auxiliaryLines) {
+        this.auxiliaryLines = auxiliaryLines;
+    }
+
+    public void setDrawDate(DrawDate drawDate) {
+        this.drawDate = drawDate;
+    }
+
     public static final class Builder {
 
         private int initialCandles;
         private List<Index> indexes;
         private ViewSize viewSize;
         private AuxiliaryLines auxiliaryLines;
+        private DrawDate drawDate;
 
         public Builder() {
             initialCandles = DEFAULT_CANDLES;
@@ -81,12 +108,18 @@ public class KlineConfig {
             return this;
         }
 
+        public Builder drawDate(DrawDate drawDate) {
+            this.drawDate = drawDate;
+            return this;
+        }
+
         public KlineConfig build() {
             KlineConfig klineConfig = new KlineConfig();
             klineConfig.initialCandles = initialCandles;
             klineConfig.indexes = indexes;
             klineConfig.viewSize = this.viewSize;
             klineConfig.auxiliaryLines = this.auxiliaryLines;
+            klineConfig.drawDate = this.drawDate;
             return klineConfig;
         }
     }

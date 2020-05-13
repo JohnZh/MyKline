@@ -5,12 +5,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.DefaultAuxiliaryLines;
+import com.johnzh.klinelib.date.DefaultDrawDate;
+import com.johnzh.klinelib.date.DrawDate;
 import com.johnzh.klinelib.indexes.Index;
 import com.johnzh.klinelib.indexes.PureKIndex;
 import com.johnzh.klinelib.size.DefaultViewSize;
@@ -32,6 +35,7 @@ import androidx.annotation.Nullable;
 public class KlineView extends View {
 
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+    public static final String TAG = KlineView.class.getSimpleName();
     public static final Paint sPaint = new Paint();
 
     private List<? extends KlineData> mKlineDataList;
@@ -42,6 +46,7 @@ public class KlineView extends View {
     private KlineConfig mConfig;
     private ViewSize mViewSize;
     private AuxiliaryLines mAuxiliaryLines;
+    private DrawDate mDrawDate;
     private int mCandles;
 
     private DrawArea mDrawArea;
@@ -73,9 +78,7 @@ public class KlineView extends View {
         mViewScale = 1;
     }
 
-    public float toPx(int unit, float value) {
-        return TypedValue.applyDimension(unit, value, getResources().getDisplayMetrics());
-    }
+// =================== Start: get / set =========================================================
 
     public void setConfig(@NonNull KlineConfig config) {
         if (config != null) {
@@ -96,9 +99,85 @@ public class KlineView extends View {
             if (mAuxiliaryLines == null) {
                 mAuxiliaryLines = getDefaultAuxiliaryLines();
             }
+            mDrawDate = mConfig.getDrawDate();
+            if (mDrawDate == null) {
+                mDrawDate = getDefaultDrawDate();
+            }
+            redraw();
         }
-        // TODO: 2020/5/6 redraw ??
     }
+
+    public KlineConfig getConfig() {
+        return mConfig;
+    }
+
+    public int getCandles() {
+        return mCandles;
+    }
+
+    public Index getCurIndex() {
+        return mCurIndex;
+    }
+
+    public void selectIndex(int indexOfIndexes) {
+        if (mCurIndexPos == indexOfIndexes) return;
+        int size = mConfig.getIndexes().size();
+        if (indexOfIndexes >= 0 && indexOfIndexes < size) {
+            mCurIndex = mConfig.getIndexes().get(indexOfIndexes);
+            mCurIndexPos = indexOfIndexes;
+            redraw();
+        }
+    }
+
+    public int getCurIndexPos() {
+        return mCurIndexPos;
+    }
+
+    /**
+     * Real start index of data on screen
+     *
+     * @return Real start index of the visible data, not visible index
+     */
+    public int getStartDataIndex() {
+        return mStartIndex;
+    }
+
+    /**
+     * End index after the last data on screen
+     * The real index of last data is {@link KlineView#getEndDataIndex()} - 1
+     *
+     * @return End index after the last visible data, not visible index
+     */
+    public int getEndDataIndex() {
+        return mEndIndex;
+    }
+
+    public void setSharedObjects(SharedObjects sharedObjects) {
+        mSharedObjects = sharedObjects;
+    }
+
+    public SharedObjects getSharedObjects() {
+        return mSharedObjects;
+    }
+
+    public void setKlineDataList(@NonNull List<? extends KlineData> klineDataList) {
+        mKlineDataList = klineDataList;
+        redraw();
+    }
+
+    public List<? extends KlineData> getKlineDataList() {
+        return mKlineDataList;
+    }
+
+    public void appendKlineData(@NonNull List<? extends KlineData> data) {
+
+    }
+
+    public DrawArea getDrawArea() {
+        return mDrawArea;
+    }
+
+// =================== End: get / set ============================================================
 
     private Index getDefaultIndex() {
         int positiveColor = Color.parseColor("#f62048");
@@ -116,40 +195,18 @@ public class KlineView extends View {
         return new DefaultAuxiliaryLines(5, fontSize, lineWidth, textMargin, color);
     }
 
-    public void setSharedObjects(SharedObjects sharedObjects) {
-        mSharedObjects = sharedObjects;
+    private DrawDate getDefaultDrawDate() {
+        float fontSize = toPx(TypedValue.COMPLEX_UNIT_SP, 10);
+        float textMargin = toPx(TypedValue.COMPLEX_UNIT_DIP, 2);
+        int color = Color.parseColor("#999999");
+        return new DefaultDrawDate(fontSize, textMargin, color);
     }
 
-    public void setKlineDataList(@NonNull List<? extends KlineData> klineDataList) {
-        mKlineDataList = klineDataList;
-        redraw();
+    public float toPx(int unit, float value) {
+        return TypedValue.applyDimension(unit, value, getResources().getDisplayMetrics());
     }
 
-    public void appendKlineData(@NonNull List<? extends KlineData> data) {
-
-    }
-
-    public List<? extends KlineData> getKlineDataList() {
-        return mKlineDataList;
-    }
-
-    public DrawArea getDrawArea() {
-        return mDrawArea;
-    }
-
-    public SharedObjects getSharedObjects() {
-        return mSharedObjects;
-    }
-
-    public void selectIndex(int indexPos) {
-        if (mCurIndexPos == indexPos) return;
-        int size = mConfig.getIndexes().size();
-        if (indexPos >= 0 && indexPos < size) {
-            mCurIndex = mConfig.getIndexes().get(indexPos);
-            mCurIndexPos = indexPos;
-            redraw();
-        }
-    }
+// =================== End: default components ===================================================
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -163,7 +220,10 @@ public class KlineView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mKlineDataList == null) return;
+        if (mKlineDataList == null || mKlineDataList.isEmpty()) {
+            Log.i(TAG, "onDraw: mKlineDataList is null or empty");
+            return;
+        }
 
         mDrawArea.init(this, mViewSize, mAuxiliaryLines);
 
@@ -187,7 +247,7 @@ public class KlineView extends View {
     }
 
     private void onDrawDate(Canvas canvas) {
-
+        mDrawDate.onDraw(this, mStartIndex, mEndIndex, canvas, sPaint);
     }
 
     private void onDrawMainData(Canvas canvas) {

@@ -4,6 +4,7 @@ import com.johnzh.klinelib.KlineData;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Modified by john on 2020/5/7
@@ -84,13 +85,13 @@ public class MyKlineData implements KlineData<MyIndexData> {
     }
 
     @Override
-    public long getDate() {
+    public Date getDate() {
         try {
-            return SIMPLE_DATE_FORMAT.parse(this.date).getTime();
+            return SIMPLE_DATE_FORMAT.parse(this.date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return 0;
+        return null;
     }
 
     private MyIndexData indexData;
@@ -101,7 +102,7 @@ public class MyKlineData implements KlineData<MyIndexData> {
     }
 
     @Override
-    public MyIndexData createIndexData() {
+    public MyIndexData newIndexData() {
         return new MyIndexData();
     }
 

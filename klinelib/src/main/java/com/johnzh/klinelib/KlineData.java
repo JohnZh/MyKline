@@ -1,5 +1,7 @@
 package com.johnzh.klinelib;
 
+import java.util.Date;
+
 /**
  * Modified by john on 2020/5/6
  * <p>
@@ -17,11 +19,11 @@ public interface KlineData<T extends IndexData> {
 
     float getVolume();
 
-    long getDate();
+    Date getDate();
 
     T getIndexData();
 
-    T createIndexData();
+    T newIndexData();
 
     void setIndexData(T indexData);
 }
