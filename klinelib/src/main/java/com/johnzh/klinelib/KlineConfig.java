@@ -1,6 +1,5 @@
 package com.johnzh.klinelib;
 
-import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.date.DrawDate;
 import com.johnzh.klinelib.indexes.Index;
 import com.johnzh.klinelib.size.ViewSize;
@@ -20,7 +19,6 @@ public class KlineConfig {
     private int initialCandles;
     private List<Index> indexes;
     private ViewSize viewSize;
-    private AuxiliaryLines auxiliaryLines;
     private DrawDate drawDate;
 
     private KlineConfig() {
@@ -36,10 +34,6 @@ public class KlineConfig {
 
     public ViewSize getViewSize() {
         return viewSize;
-    }
-
-    public AuxiliaryLines getAuxiliaryLines() {
-        return auxiliaryLines;
     }
 
     public DrawDate getDrawDate() {
@@ -58,10 +52,6 @@ public class KlineConfig {
         this.viewSize = viewSize;
     }
 
-    public void setAuxiliaryLines(AuxiliaryLines auxiliaryLines) {
-        this.auxiliaryLines = auxiliaryLines;
-    }
-
     public void setDrawDate(DrawDate drawDate) {
         this.drawDate = drawDate;
     }
@@ -71,7 +61,6 @@ public class KlineConfig {
         private int initialCandles;
         private List<Index> indexes;
         private ViewSize viewSize;
-        private AuxiliaryLines auxiliaryLines;
         private DrawDate drawDate;
 
         public Builder() {
@@ -103,11 +92,6 @@ public class KlineConfig {
             return this;
         }
 
-        public Builder auxiliaryLines(AuxiliaryLines auxiliaryLines) {
-            this.auxiliaryLines = auxiliaryLines;
-            return this;
-        }
-
         public Builder drawDate(DrawDate drawDate) {
             this.drawDate = drawDate;
             return this;
@@ -118,7 +102,6 @@ public class KlineConfig {
             klineConfig.initialCandles = initialCandles;
             klineConfig.indexes = indexes;
             klineConfig.viewSize = this.viewSize;
-            klineConfig.auxiliaryLines = this.auxiliaryLines;
             klineConfig.drawDate = this.drawDate;
             return klineConfig;
         }

@@ -11,10 +11,12 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.auxiliarylines.DefaultAuxiliaryLines;
+import com.johnzh.klinelib.auxiliarylines.CandlesAuxiliaryLines;
 import com.johnzh.klinelib.date.DefaultDrawDate;
 import com.johnzh.klinelib.date.DrawDate;
 import com.johnzh.klinelib.indexes.Index;
+import com.johnzh.klinelib.indexes.IndexFactory;
+import com.johnzh.klinelib.indexes.MAIndex;
 import com.johnzh.klinelib.indexes.PureKIndex;
 import com.johnzh.klinelib.size.DefaultViewSize;
 import com.johnzh.klinelib.size.ViewSize;
@@ -43,12 +45,11 @@ public class KlineView extends View {
     private Index mCurIndex;
     private int mCurIndexPos;
 
+    private IndexFactory mIndexFactory;
     private KlineConfig mConfig;
     private ViewSize mViewSize;
-    private AuxiliaryLines mAuxiliaryLines;
     private DrawDate mDrawDate;
     private int mCandles;
-
     private DrawArea mDrawArea;
     private SharedObjects mSharedObjects;
 
@@ -70,6 +71,7 @@ public class KlineView extends View {
     }
 
     private void init() {
+        mIndexFactory = new DefaultIndexFactory();
         mDrawArea = new DefaultDrawArea();
         mSharedObjects = new SharedObjects();
         mConfig = new KlineConfig.Builder().build();
@@ -80,25 +82,32 @@ public class KlineView extends View {
 
 // =================== Start: get / set =========================================================
 
+
+    public IndexFactory getIndexFactory() {
+        return mIndexFactory;
+    }
+
+    public void setIndexFactory(IndexFactory indexFactory) {
+        mIndexFactory = indexFactory;
+    }
+
     public void setConfig(@NonNull KlineConfig config) {
         if (config != null) {
             mConfig = config;
             if (mConfig.getIndexes().isEmpty()) {
                 mCurIndexPos = -1;
-                mCurIndex = getDefaultIndex();
+                mCurIndex = mIndexFactory.createDefaultIndex(PureKIndex.class);
             } else {
                 selectIndex(0);
             }
+
             mViewSize = mConfig.getViewSize();
             if (mViewSize == null) {
                 int dataHeight = (int) toPx(TypedValue.COMPLEX_UNIT_DIP, DefaultViewSize.DATA_HEIGHT_IN_DP);
                 int dateHeight = (int) toPx(TypedValue.COMPLEX_UNIT_DIP, DefaultViewSize.DATE_HEIGHT_IN_DP);
                 mViewSize = new DefaultViewSize(dataHeight, dateHeight);
             }
-            mAuxiliaryLines = mConfig.getAuxiliaryLines();
-            if (mAuxiliaryLines == null) {
-                mAuxiliaryLines = getDefaultAuxiliaryLines();
-            }
+
             mDrawDate = mConfig.getDrawDate();
             if (mDrawDate == null) {
                 mDrawDate = getDefaultDrawDate();
@@ -179,20 +188,42 @@ public class KlineView extends View {
 
 // =================== End: get / set ============================================================
 
-    private Index getDefaultIndex() {
-        int positiveColor = Color.parseColor("#f62048");
-        int negativeColor = Color.parseColor("#39ae13");
-        float candleWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 6);
-        float candleLineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
-        return new PureKIndex(new int[]{positiveColor, negativeColor}, candleWidth, candleLineWidth);
+    class DefaultIndexFactory implements IndexFactory {
+
+        @Override
+        public Index createDefaultIndex(Class clazz) {
+            if (clazz.isAssignableFrom(PureKIndex.class)) {
+                float candleWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 6);
+                float candleLineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
+                AuxiliaryLines auxiliaryLines = getCandlesAuxiliaryLines();
+                return new PureKIndex(auxiliaryLines,
+                        new int[]{
+                                Color.parseColor("#f62048"),
+                                Color.parseColor("#39ae13")},
+                        candleWidth, candleLineWidth);
+            }
+
+            if (clazz.isAssignableFrom(MAIndex.class)) {
+                int[] maColors = {
+                        Color.parseColor("#ffb405"),
+                        Color.parseColor("#890cff")
+                };
+                AuxiliaryLines auxiliaryLines = getCandlesAuxiliaryLines();
+                PureKIndex purKIndex = (PureKIndex) createDefaultIndex(PureKIndex.class);
+                float lineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
+                return new MAIndex(auxiliaryLines, purKIndex, lineWidth, new int[]{ 5, 10}, maColors);
+            }
+
+            return null;
+        }
     }
 
-    private AuxiliaryLines getDefaultAuxiliaryLines() {
+    public AuxiliaryLines getCandlesAuxiliaryLines() {
         float fontSize = toPx(TypedValue.COMPLEX_UNIT_SP, 10);
         float lineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 0.5f);
         float textMargin = toPx(TypedValue.COMPLEX_UNIT_DIP, 2);
         int color = Color.parseColor("#999999");
-        return new DefaultAuxiliaryLines(5, fontSize, lineWidth, textMargin, color);
+        return new CandlesAuxiliaryLines(5, fontSize, lineWidth, textMargin, color);
     }
 
     private DrawDate getDefaultDrawDate() {
@@ -225,16 +256,16 @@ public class KlineView extends View {
             return;
         }
 
-        mDrawArea.init(this, mViewSize, mAuxiliaryLines);
+        mDrawArea.init(this, mViewSize, mCurIndex.getAuxiliaryLines());
 
         calcVisibleCandles();
         calcIndex();
         calcAuxiliaryLines();
         calcMaxDragDistance();
 
-        onDrawAuxiliaryLines(canvas);
-        onDrawMainData(canvas);
-        onDrawDate(canvas);
+        drawAuxiliaryLines(canvas);
+        drawMainData(canvas);
+        drawDate(canvas);
     }
 
     private void calcMaxDragDistance() {
@@ -246,22 +277,20 @@ public class KlineView extends View {
         invalidate();
     }
 
-    private void onDrawDate(Canvas canvas) {
+    private void drawDate(Canvas canvas) {
         mDrawDate.onDraw(this, mStartIndex, mEndIndex, canvas, sPaint);
     }
 
-    private void onDrawMainData(Canvas canvas) {
-        mCurIndex.onDraw(this, mStartIndex, mEndIndex, canvas, sPaint);
+    private void drawMainData(Canvas canvas) {
+        mCurIndex.drawIndex(this, mStartIndex, mEndIndex, canvas, sPaint);
     }
 
-    private void onDrawAuxiliaryLines(Canvas canvas) {
-        mAuxiliaryLines.onDrawHorizontalLines(this, canvas, sPaint);
-        mAuxiliaryLines.onDrawVerticalLines(this, canvas, sPaint);
+    private void drawAuxiliaryLines(Canvas canvas) {
+        mCurIndex.drawAuxiliaryLines(this, canvas, sPaint);
     }
 
     private void calcAuxiliaryLines() {
-        mAuxiliaryLines.calcHorizontalLines(mKlineDataList, mCurIndex, mStartIndex, mEndIndex);
-        mAuxiliaryLines.calcVerticalLines(mKlineDataList, mStartIndex, mEndIndex);
+        mCurIndex.calcAuxiliaryLines(mKlineDataList, mStartIndex, mEndIndex);
     }
 
     private void calcIndex() {

@@ -9,18 +9,17 @@ import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.IndexData;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.PriceRange;
+import com.johnzh.klinelib.ValueRange;
+import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 /**
  * Modified by john on 2020/5/6
  * <p>
  * Description:
  */
-public class MAIndex implements Index<KlineData>, PriceRange {
+public class MAIndex extends AbsIndex<KlineData> implements ValueRange {
 
     private PureKIndex pureKIndex;
     private float lineWidth;
@@ -30,24 +29,27 @@ public class MAIndex implements Index<KlineData>, PriceRange {
     private float maxPrice;
     private float minPrice;
 
-    public MAIndex(@NonNull PureKIndex pureKIndex, @NonNull float lineWidth,
-                   @NonNull int[] ma, @NonNull int[] maColors) {
+    public MAIndex(AuxiliaryLines<KlineData> auxiliaryLines,
+                   PureKIndex pureKIndex,
+                   float lineWidth,
+                   int[] ma, int[] colors) {
+        super(auxiliaryLines);
         this.pureKIndex = pureKIndex;
         this.lineWidth = lineWidth;
         this.ma = ma;
-        this.colors = maColors;
-        if (ma.length != maColors.length) {
+        this.colors = colors;
+        if (ma.length != colors.length) {
             throw new IllegalArgumentException("ma.length is not equal to maColors.length");
         }
     }
 
     @Override
-    public float getMaxPrice() {
+    public float getMaximum() {
         return maxPrice;
     }
 
     @Override
-    public float getMinPrice() {
+    public float getMinimum() {
         return minPrice;
     }
 
@@ -122,8 +124,8 @@ public class MAIndex implements Index<KlineData>, PriceRange {
     }
 
     @Override
-    public void onDraw(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
-        pureKIndex.onDraw(klineView, startIndex, endIndex, canvas, paint);
+    public void drawIndex(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
+        pureKIndex.drawIndex(klineView, startIndex, endIndex, canvas, paint);
 
         List<? extends KlineData> klineDataList = klineView.getKlineDataList();
         DrawArea drawArea = klineView.getDrawArea();

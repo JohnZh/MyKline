@@ -5,6 +5,7 @@ import android.graphics.Paint;
 
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
+import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 
 import java.util.List;
 
@@ -19,5 +20,11 @@ public interface Index<T extends KlineData> {
 
     void calcIndex(List<T> klineDataList, int startIndex, int endIndex);
 
-    void onDraw(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint);
+    void calcAuxiliaryLines(List<T> klineDataList, int startIndex, int endIndex);
+
+    void drawAuxiliaryLines(KlineView klineView, Canvas canvas, Paint paint);
+
+    void drawIndex(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint);
+
+    AuxiliaryLines<T> getAuxiliaryLines();
 }

@@ -7,6 +7,7 @@ import android.graphics.RectF;
 import com.johnzh.klinelib.DrawArea;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
+import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 
 import java.util.List;
 
@@ -15,16 +16,22 @@ import java.util.List;
  * <p>
  * Description: no index implement, just k line candles
  */
-public class PureKIndex implements Index<KlineData> {
+public class PureKIndex extends AbsIndex<KlineData> {
 
-    private int positiveColor;
-    private int negativeColor;
+    private int[] colors;
     private float candleWidth;
     private float candleLineWidth;
 
-    public PureKIndex(int[] colors, float candleWidth, float candleLineWidth) {
-        this.positiveColor = colors[0];
-        this.negativeColor = colors[1];
+    /**
+     * @param auxiliaryLines
+     * @param colors colors[0] is positiveColor, colors[1] is negativeColor
+     * @param candleWidth
+     * @param candleLineWidth
+     */
+    public PureKIndex(AuxiliaryLines<KlineData> auxiliaryLines,
+                      int[] colors, float candleWidth, float candleLineWidth) {
+        super(auxiliaryLines);
+        this.colors = colors;
         this.candleWidth = candleWidth;
         this.candleLineWidth = candleLineWidth;
     }
@@ -40,7 +47,7 @@ public class PureKIndex implements Index<KlineData> {
     }
 
     @Override
-    public void onDraw(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
+    public void drawIndex(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
         DrawArea drawArea = klineView.getDrawArea();
         List<? extends KlineData> klineDataList = klineView.getKlineDataList();
         for (int i = startIndex; i < endIndex; i++) {
@@ -53,9 +60,9 @@ public class PureKIndex implements Index<KlineData> {
             float thirdY = drawArea.getDataY(klineData.getOpenPrice());
             float fourthY = drawArea.getDataY(klineData.getLowestPrice());
 
-            int color = positiveColor;
+            int color = colors[0];
             if (klineData.getClosePrice() < klineData.getOpenPrice()) {
-                color = negativeColor;
+                color = colors[1];
                 float tmp = thirdY;
                 thirdY = secondY;
                 secondY = tmp;

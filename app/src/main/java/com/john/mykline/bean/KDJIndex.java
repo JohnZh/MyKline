@@ -30,7 +30,7 @@ public class KDJIndex implements Index<MyKlineData> {
     }
 
     @Override
-    public void onDraw(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
+    public void drawIndex(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
 
     }
 }

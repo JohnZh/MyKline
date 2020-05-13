@@ -58,8 +58,8 @@ public class DefaultDrawArea implements DrawArea {
 
     @Override
     public float getDataY(float price) {
-        float max = auxiliaryLines.getMaxPrice();
-        float min = auxiliaryLines.getMinPrice();
+        float max = auxiliaryLines.getMaximum();
+        float min = auxiliaryLines.getMinimum();
         if (price < min || price > max) {
             return -1;
         }

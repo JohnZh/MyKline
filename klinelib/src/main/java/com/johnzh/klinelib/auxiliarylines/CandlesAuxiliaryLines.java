@@ -9,7 +9,7 @@ import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.PriceRange;
+import com.johnzh.klinelib.ValueRange;
 import com.johnzh.klinelib.SharedObjects;
 import com.johnzh.klinelib.indexes.Index;
 
@@ -20,7 +20,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class DefaultAuxiliaryLines implements AuxiliaryLines<KlineData> {
+public class CandlesAuxiliaryLines implements AuxiliaryLines<KlineData> {
 
     private float[] horizontalLines;
     private float fontSize;
@@ -28,7 +28,7 @@ public class DefaultAuxiliaryLines implements AuxiliaryLines<KlineData> {
     private float textMargin;
     private int color;
 
-    public DefaultAuxiliaryLines(int lines, float fontSize, float lineWidth, float textMargin, int color) {
+    public CandlesAuxiliaryLines(int lines, float fontSize, float lineWidth, float textMargin, int color) {
         this.horizontalLines = new float[lines];
         this.fontSize = fontSize;
         this.lineWidth = lineWidth;
@@ -58,9 +58,9 @@ public class DefaultAuxiliaryLines implements AuxiliaryLines<KlineData> {
             min = Math.min(min, data.getLowestPrice());
         }
 
-        if (curIndex instanceof PriceRange) {
-            max = Math.max(((PriceRange) curIndex).getMaxPrice(), max);
-            min = Math.min(((PriceRange) curIndex).getMinPrice(), min);
+        if (curIndex instanceof ValueRange) {
+            max = Math.max(((ValueRange) curIndex).getMaximum(), max);
+            min = Math.min(((ValueRange) curIndex).getMinimum(), min);
         }
 
         if (max == Float.MIN_VALUE || min == Float.MAX_VALUE) return;
@@ -81,7 +81,7 @@ public class DefaultAuxiliaryLines implements AuxiliaryLines<KlineData> {
     }
 
     @Override
-    public void onDrawHorizontalLines(KlineView klineView, Canvas canvas, Paint paint) {
+    public void drawHorizontalLines(KlineView klineView, Canvas canvas, Paint paint) {
         DrawArea drawArea = klineView.getDrawArea();
         SharedObjects sharedObjects = klineView.getSharedObjects();
         float width = drawArea.getWidth();
@@ -112,17 +112,17 @@ public class DefaultAuxiliaryLines implements AuxiliaryLines<KlineData> {
     }
 
     @Override
-    public void onDrawVerticalLines(KlineView klineView, Canvas canvas, Paint paint) {
+    public void drawVerticalLines(KlineView klineView, Canvas canvas, Paint paint) {
 
     }
 
     @Override
-    public float getMaxPrice() {
+    public float getMaximum() {
         return horizontalLines[0];
     }
 
     @Override
-    public float getMinPrice() {
+    public float getMinimum() {
         return horizontalLines[horizontalLines.length - 1];
     }
 }
