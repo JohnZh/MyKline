@@ -102,14 +102,7 @@ public class MyKlineData implements KlineData<MyIndexData> {
 
     @Override
     public MyIndexData createIndexData() {
-        try {
-            return MyIndexData.class.newInstance();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return new MyIndexData();
     }
 
 
