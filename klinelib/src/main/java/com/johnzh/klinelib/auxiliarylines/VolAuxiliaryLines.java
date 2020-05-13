@@ -2,40 +2,31 @@ package com.johnzh.klinelib.auxiliarylines;
 
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineData;
-import com.johnzh.klinelib.ValueRange;
 import com.johnzh.klinelib.indexes.Index;
 
 import java.util.List;
 
 /**
- * Modified by john on 2020/5/8
+ * Modified by john on 2020/5/13
  * <p>
  * Description:
  */
-public class CandlesAuxiliaryLines extends SimpleAuxiliaryLines {
-
-
-    public CandlesAuxiliaryLines(int lines, float fontSize, float lineWidth, float textMargin, int color) {
+public class VolAuxiliaryLines extends SimpleAuxiliaryLines {
+    public VolAuxiliaryLines(int lines, float fontSize, float lineWidth, float textMargin, int color) {
         super(lines, fontSize, lineWidth, textMargin, color);
     }
 
     @Override
     public void calcHorizontalLines(List<KlineData> klineDataList, Index<KlineData> curIndex, int startIndex, int endIndex) {
         float max = Float.MIN_VALUE;
-        float min = Float.MAX_VALUE;
-
-        if (curIndex instanceof ValueRange) {
-            max = Math.max(((ValueRange) curIndex).getMaximum(), max);
-            min = Math.min(((ValueRange) curIndex).getMinimum(), min);
-        }
+        float min = 0;
 
         for (int i = startIndex; i < endIndex; i++) {
             KlineData data = klineDataList.get(i);
-            max = Math.max(max, data.getHighestPrice());
-            min = Math.min(min, data.getLowestPrice());
+            max = Math.max(max, data.getVolume());
         }
 
-        if (max == Float.MIN_VALUE || min == Float.MAX_VALUE) return;
+        if (max == Float.MIN_VALUE) return;
 
         float interval = FloatCalc.get().subtraction(max, min);
         interval = FloatCalc.get().divide(interval, horizontalLines.length - 1);

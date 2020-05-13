@@ -1,11 +1,14 @@
 package com.john.mykline;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 
 import com.john.mykline.bean.MyKlineData;
+import com.john.mykline.databinding.ActivityMainBinding;
 import com.johnzh.klinelib.KlineConfig;
-import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.indexes.MAIndex;
+import com.johnzh.klinelib.indexes.PureKIndex;
+import com.johnzh.klinelib.indexes.VolIndex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,19 +20,32 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private KlineView mKlineView;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(LayoutInflater.from(this));
+        setContentView(binding.getRoot());
 
-        mKlineView = findViewById(R.id.klineView);
-
-        mKlineView.setConfig(
+        binding.klineView.setConfig(
                 new KlineConfig.Builder()
-                        .index(mKlineView.getFactory().createDefaultIndex(MAIndex.class))
+                        .index(binding.klineView.getFactory().createDefaultIndex(PureKIndex.class))
+                        .index(binding.klineView.getFactory().createDefaultIndex(MAIndex.class))
+                        .index(binding.klineView.getFactory().createDefaultIndex(VolIndex.class))
                         .build());
+        binding.pureK.setOnClickListener(v -> {
+            binding.klineView.selectIndex(0);
+        });
+        binding.ma.setOnClickListener(v -> {
+            binding.klineView.selectIndex(1);
+        });
+        binding.vol.setOnClickListener(v -> {
+            binding.klineView.selectIndex(2);
+        });
+        binding.combination.setOnClickListener(v -> {
+
+        });
 
         HttpAgent.getApi().getDailyKline("M2009")
                 .enqueue(new Callback<List<List<String>>>() {
@@ -68,6 +84,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateKlineView(List<MyKlineData> body) {
-        mKlineView.setKlineDataList(body);
+        binding.klineView.setKlineDataList(body);
     }
 }
