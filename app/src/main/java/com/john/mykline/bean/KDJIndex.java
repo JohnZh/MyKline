@@ -4,7 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.indexes.Index;
+import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.indexes.AbsIndex;
 
 import java.util.List;
 
@@ -13,7 +14,11 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class KDJIndex implements Index<MyKlineData> {
+public class KDJIndex extends AbsIndex<MyKlineData> {
+
+    public KDJIndex(AuxiliaryLines<MyKlineData> auxiliaryLines) {
+        super(auxiliaryLines);
+    }
 
     public static class KDJ {
 

@@ -15,6 +15,7 @@ import java.util.List;
  * Description:
  */
 public class SimpleAuxiliaryLines implements AuxiliaryLines<KlineData> {
+
     @Override
     public void calcHorizontalLines(List<KlineData> klineDataList, Index<KlineData> curIndex, int startIndex, int endIndex) {
 

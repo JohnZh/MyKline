@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         mKlineView.setConfig(
                 new KlineConfig.Builder()
-                        .index(mKlineView.getIndexFactory().createDefaultIndex(MAIndex.class))
+                        .index(mKlineView.getFactory().createDefaultIndex(MAIndex.class))
                         .build());
 
         HttpAgent.getApi().getDailyKline("M2009")

@@ -15,7 +15,6 @@ import com.johnzh.klinelib.auxiliarylines.CandlesAuxiliaryLines;
 import com.johnzh.klinelib.date.DefaultDrawDate;
 import com.johnzh.klinelib.date.DrawDate;
 import com.johnzh.klinelib.indexes.Index;
-import com.johnzh.klinelib.indexes.IndexFactory;
 import com.johnzh.klinelib.indexes.MAIndex;
 import com.johnzh.klinelib.indexes.PureKIndex;
 import com.johnzh.klinelib.size.DefaultViewSize;
@@ -45,7 +44,7 @@ public class KlineView extends View {
     private Index mCurIndex;
     private int mCurIndexPos;
 
-    private IndexFactory mIndexFactory;
+    private Factory mFactory;
     private KlineConfig mConfig;
     private ViewSize mViewSize;
     private DrawDate mDrawDate;
@@ -71,7 +70,7 @@ public class KlineView extends View {
     }
 
     private void init() {
-        mIndexFactory = new DefaultIndexFactory();
+        mFactory = new DefaultFactory();
         mDrawArea = new DefaultDrawArea();
         mSharedObjects = new SharedObjects();
         mConfig = new KlineConfig.Builder().build();
@@ -82,13 +81,12 @@ public class KlineView extends View {
 
 // =================== Start: get / set =========================================================
 
-
-    public IndexFactory getIndexFactory() {
-        return mIndexFactory;
+    public Factory getFactory() {
+        return mFactory;
     }
 
-    public void setIndexFactory(IndexFactory indexFactory) {
-        mIndexFactory = indexFactory;
+    public void setFactory(Factory factory) {
+        mFactory = factory;
     }
 
     public void setConfig(@NonNull KlineConfig config) {
@@ -96,7 +94,7 @@ public class KlineView extends View {
             mConfig = config;
             if (mConfig.getIndexes().isEmpty()) {
                 mCurIndexPos = -1;
-                mCurIndex = mIndexFactory.createDefaultIndex(PureKIndex.class);
+                mCurIndex = mFactory.createDefaultIndex(PureKIndex.class);
             } else {
                 selectIndex(0);
             }
@@ -188,14 +186,15 @@ public class KlineView extends View {
 
 // =================== End: get / set ============================================================
 
-    class DefaultIndexFactory implements IndexFactory {
+    class DefaultFactory implements Factory {
 
         @Override
         public Index createDefaultIndex(Class clazz) {
             if (clazz.isAssignableFrom(PureKIndex.class)) {
                 float candleWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 6);
                 float candleLineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
-                AuxiliaryLines auxiliaryLines = getCandlesAuxiliaryLines();
+                AuxiliaryLines auxiliaryLines
+                        = createDefaultAuxiliaryLines(CandlesAuxiliaryLines.class);
                 return new PureKIndex(auxiliaryLines,
                         new int[]{
                                 Color.parseColor("#f62048"),
@@ -208,7 +207,8 @@ public class KlineView extends View {
                         Color.parseColor("#ffb405"),
                         Color.parseColor("#890cff")
                 };
-                AuxiliaryLines auxiliaryLines = getCandlesAuxiliaryLines();
+                AuxiliaryLines auxiliaryLines
+                        = createDefaultAuxiliaryLines(CandlesAuxiliaryLines.class);
                 PureKIndex purKIndex = (PureKIndex) createDefaultIndex(PureKIndex.class);
                 float lineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
                 return new MAIndex(auxiliaryLines, purKIndex, lineWidth, new int[]{ 5, 10}, maColors);
@@ -216,14 +216,19 @@ public class KlineView extends View {
 
             return null;
         }
-    }
 
-    public AuxiliaryLines getCandlesAuxiliaryLines() {
-        float fontSize = toPx(TypedValue.COMPLEX_UNIT_SP, 10);
-        float lineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 0.5f);
-        float textMargin = toPx(TypedValue.COMPLEX_UNIT_DIP, 2);
-        int color = Color.parseColor("#999999");
-        return new CandlesAuxiliaryLines(5, fontSize, lineWidth, textMargin, color);
+        @Override
+        public AuxiliaryLines createDefaultAuxiliaryLines(Class clazz) {
+            if (clazz.isAssignableFrom(CandlesAuxiliaryLines.class)) {
+                float fontSize = toPx(TypedValue.COMPLEX_UNIT_SP, 10);
+                float lineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 0.5f);
+                float textMargin = toPx(TypedValue.COMPLEX_UNIT_DIP, 2);
+                int color = Color.parseColor("#999999");
+                return new CandlesAuxiliaryLines(5, fontSize, lineWidth, textMargin, color);
+            }
+            
+            return null;
+        }
     }
 
     private DrawDate getDefaultDrawDate() {
