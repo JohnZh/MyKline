@@ -11,5 +11,5 @@ import com.johnzh.klinelib.KlineView;
  * Description:
  */
 public interface DrawDate {
-    void onDraw(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint);
+    void drawDate(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint);
 }

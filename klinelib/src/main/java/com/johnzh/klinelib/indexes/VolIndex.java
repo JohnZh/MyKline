@@ -18,12 +18,12 @@ import java.util.List;
  */
 public class VolIndex extends AbsIndex<KlineData> {
     private int[] colors;
-    private float candleWidth;
+    private float dataPaddingHorizontal;
 
-    public VolIndex(AuxiliaryLines<KlineData> auxiliaryLines, int[] colors, float candleWidth) {
+    public VolIndex(AuxiliaryLines<KlineData> auxiliaryLines, int[] colors, float dataPaddingHorizontal) {
         super(auxiliaryLines);
         this.colors = colors;
-        this.candleWidth = candleWidth;
+        this.dataPaddingHorizontal = dataPaddingHorizontal;
     }
 
     @Override
@@ -37,11 +37,12 @@ public class VolIndex extends AbsIndex<KlineData> {
     @Override
     public void drawIndex(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
         DrawArea drawArea = klineView.getDrawArea();
+        float candleWidth = klineView.getOneDataWidth() - 2 * dataPaddingHorizontal;
         List<? extends KlineData> klineDataList = klineView.getKlineDataList();
         for (int i = startIndex; i < endIndex; i++) {
             KlineData klineData = klineDataList.get(i);
-            float dataX = drawArea.getDataX(drawArea.getVisibleIndex(i, startIndex));
-            float dataY = drawArea.getDataY(klineData.getVolume());
+            float dataX = drawArea.getDrawX(drawArea.getVisibleIndex(i, startIndex));
+            float dataY = drawArea.getDrawY(klineData.getVolume());
             int color = colors[0];
             if (klineData.getClosePrice() < klineData.getOpenPrice()) {
                 color = colors[1];
@@ -52,7 +53,7 @@ public class VolIndex extends AbsIndex<KlineData> {
             rectf.left = dataX - candleWidth / 2;
             rectf.top = dataY;
             rectf.right = dataX + candleWidth / 2;
-            rectf.bottom = drawArea.getDataY(0);
+            rectf.bottom = drawArea.getDrawY(0);
             canvas.drawRect(rectf, paint);
         }
     }

@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
+import com.johnzh.klinelib.assist.DetailView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.CandlesAuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.SimpleAuxiliaryLines;
@@ -47,11 +48,19 @@ public class KlineView extends View {
     private enum TouchAction {
         NONE,
         DETAIL,
+        CLICK,
         DRAG,
     }
 
     static class KlineViewHandler extends Handler {
-        static final int WHAT_LONG_PRESS = 1;
+        static final int MSG_SHOW_DETAIL = 1;
+        static final int MSG_KEEP_SHOW_DETAIL = 2;
+
+        /**
+         * Cancel detail action if the period of the touch from down to up/cancel is <= PERIOD_OF_CANCEL_DETAIL.
+         * In another word, cancel detail action when touch is a click event
+         */
+        static final int PERIOD_OF_CANCEL_DETAIL = 100;
 
         private WeakReference<KlineView> mReference;
 
@@ -61,12 +70,15 @@ public class KlineView extends View {
 
         @Override
         public void handleMessage(@NonNull Message msg) {
-            if (msg.what == WHAT_LONG_PRESS) {
+            if (msg.what == MSG_SHOW_DETAIL) {
                 KlineView klineView = mReference.get();
                 if (klineView != null) {
                     MotionEvent e = (MotionEvent) msg.obj;
                     klineView.triggerDetailEvent(e);
                 }
+            }
+            if (msg.what == MSG_KEEP_SHOW_DETAIL) {
+                // do nothing, just keep detail action
             }
         }
     }
@@ -94,11 +106,12 @@ public class KlineView extends View {
     private int mStartIndex;
     private int mEndIndex;
 
-    private float mDistanceBetweenData;
+    private float mOneDataWidth;
     private DragInfo mDragInfo;
     private Scale mScale;
     private TouchAction mAction;
     private Handler mHandler;
+    private DetailView mDetailView;
 
     public KlineView(Context context) {
         super(context);
@@ -163,16 +176,22 @@ public class KlineView extends View {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            mHandler.obtainMessage(KlineViewHandler.WHAT_LONG_PRESS, e)
+            mHandler.obtainMessage(KlineViewHandler.MSG_SHOW_DETAIL, e)
                     .sendToTarget();
         }
     };
 
-// =================== Start: get / set =========================================================
-
     void triggerDetailEvent(MotionEvent e) {
-
+        mAction = TouchAction.DETAIL;
+        updateDetailView(e);
     }
+
+    private void updateDetailView(MotionEvent e) {
+        if (mDetailView != null) {
+            mDetailView.onUpdate(this, e.getX(), e.getY());
+        }
+    }
+// =================== Start: get / set =========================================================
 
     public Factory getFactory() {
         return mFactory;
@@ -238,17 +257,17 @@ public class KlineView extends View {
      *
      * @return Real start index of the visible data, not visible index
      */
-    public int getStartDataIndex() {
+    public int getStartIndex() {
         return mStartIndex;
     }
 
     /**
      * End index after the last data on screen
-     * The real index of last data is {@link KlineView#getEndDataIndex()} - 1
+     * The real index of last data is {@link KlineView#getEndIndex()} - 1
      *
      * @return End index after the last visible data, not visible index
      */
-    public int getEndDataIndex() {
+    public int getEndIndex() {
         return mEndIndex;
     }
 
@@ -277,7 +296,40 @@ public class KlineView extends View {
         return mDrawArea;
     }
 
-// =================== End: get / set ============================================================
+    public ViewSize getViewSize() {
+        return mViewSize;
+    }
+
+    public DrawDate getDrawDate() {
+        return mDrawDate;
+    }
+
+    public float getOneDataWidth() {
+        return mOneDataWidth;
+    }
+
+    public TouchAction getAction() {
+        return mAction;
+    }
+
+    public DetailView getDetailView() {
+        return mDetailView;
+    }
+
+    public void setViewSize(ViewSize viewSize) {
+        mViewSize = viewSize;
+    }
+
+    public void setDrawDate(DrawDate drawDate) {
+        mDrawDate = drawDate;
+    }
+
+    public void setDetailView(DetailView detailView) {
+        mDetailView = detailView;
+        mDetailView.attach(this);
+    }
+
+    // =================== End: get / set ============================================================
 
     class DefaultFactory implements Factory {
 
@@ -288,13 +340,13 @@ public class KlineView extends View {
                     Color.parseColor("#39ae13")
             };
 
-            float candleWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 6);
+            float dataPaddingHorizontal = toPx(TypedValue.COMPLEX_UNIT_DIP, 0.5f);
 
             if (clazz.isAssignableFrom(PureKIndex.class)) {
                 float candleLineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
                 AuxiliaryLines auxiliaryLines
                         = createDefaultAuxiliaryLines(CandlesAuxiliaryLines.class);
-                return new PureKIndex(auxiliaryLines, posNegColor, candleWidth, candleLineWidth);
+                return new PureKIndex(auxiliaryLines, posNegColor, dataPaddingHorizontal, candleLineWidth);
             }
 
             if (clazz.isAssignableFrom(MAIndex.class)) {
@@ -311,7 +363,7 @@ public class KlineView extends View {
 
             if (clazz.isAssignableFrom(VolIndex.class)) {
                 AuxiliaryLines volAuxiliaryLines = createDefaultAuxiliaryLines(VolAuxiliaryLines.class);
-                return new VolIndex(volAuxiliaryLines, posNegColor, candleWidth);
+                return new VolIndex(volAuxiliaryLines, posNegColor, dataPaddingHorizontal);
             }
 
             return null;
@@ -383,9 +435,9 @@ public class KlineView extends View {
     }
 
     private void calcMaxDragDistance() {
-        mDistanceBetweenData = mDrawArea.getDistanceBetweenData(mCandles);
+        mOneDataWidth = mDrawArea.getDataWidth(mCandles);
         mDragInfo.setMaxDragDistanceX(
-                Math.max((mKlineDataList.size() - mCandles) * mDistanceBetweenData, 0));
+                Math.max((mKlineDataList.size() - mCandles) * mOneDataWidth, 0));
     }
 
     protected void redraw() {
@@ -393,7 +445,7 @@ public class KlineView extends View {
     }
 
     private void drawDate(Canvas canvas) {
-        mDrawDate.onDraw(this, mStartIndex, mEndIndex, canvas, sPaint);
+        mDrawDate.drawDate(this, mStartIndex, mEndIndex, canvas, sPaint);
     }
 
     private void drawMainData(Canvas canvas) {
@@ -421,7 +473,7 @@ public class KlineView extends View {
     }
 
     private int getDataMoved() {
-        return (int) (mDragInfo.getDragDistanceX() / mDistanceBetweenData);
+        return (int) (mDragInfo.getDragDistanceX() / mOneDataWidth);
     }
 
     @Override
@@ -432,27 +484,23 @@ public class KlineView extends View {
         switch (event.getActionMasked() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 if (mAction == TouchAction.DETAIL) {
-//                    Message message = mHandler.obtainMessage(WHAT_ONE_CLICK, event);
-//                    mHandler.sendMessageDelayed(message, DELAY_ONE_CLICK);
+                    Message msg = mHandler.obtainMessage(KlineViewHandler.MSG_KEEP_SHOW_DETAIL, event);
+                    mHandler.sendMessageDelayed(msg, KlineViewHandler.PERIOD_OF_CANCEL_DETAIL);
+                    return true;
                 }
 
                 mDragInfo.setActionDownX(event.getX());
                 return true;
             case MotionEvent.ACTION_MOVE:
-//                if (Math.abs(mDownX - event.getX()) < CLICK_PIXELS
-//                        || Math.abs(mDownY - event.getY()) < CLICK_PIXELS) {
-//                    return false;
-//                }
-
-                //mHandler.removeMessages(WHAT_ONE_CLICK);
-
-                if (mAction == TouchAction.DETAIL) {
-                    //return triggerCrossLinesRedraw(event);
+                if (mAction == TouchAction.DETAIL
+                        && !mHandler.hasMessages(KlineViewHandler.MSG_KEEP_SHOW_DETAIL)) {
+                    updateDetailView(event);
+                    return true;
                 }
 
                 if (mAction == TouchAction.NONE || mAction == TouchAction.DRAG) {
                     double distance = Math.abs(event.getX() - mDragInfo.getActionDownX());
-                    if (distance > mDistanceBetweenData) {
+                    if (distance > mOneDataWidth) {
                         mAction = TouchAction.DRAG;
                         mDragInfo.calcDragDistanceX(event.getX());
                         float maxDragDistanceX = mDragInfo.getMaxDragDistanceX();
@@ -472,19 +520,22 @@ public class KlineView extends View {
                 return false;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-//                if (mAction == TouchAction.DETAIL && mHandler.hasMessages(WHAT_ONE_CLICK)) {
-//                    mHandler.removeMessages(WHAT_ONE_CLICK);
-//                    mAction = TouchAction.NONE;
-//                    if (mTouchIndex != -1) {
-//                        mTouchIndex = -1;
-//                        redraw();
-//                    }
-//                } else
+                if (mAction == TouchAction.DETAIL
+                        && mHandler.hasMessages(KlineViewHandler.MSG_KEEP_SHOW_DETAIL)) {
+                    // It is considered as a click event, disable detail action and clear detail view
+                    mHandler.removeMessages(KlineViewHandler.MSG_KEEP_SHOW_DETAIL);
+                    mAction = TouchAction.NONE;
+                    if (mDetailView != null) {
+                        mDetailView.onClear();
+                    }
+                    return true;
+                }
+
                 if (mAction == TouchAction.DRAG) {
                     mAction = TouchAction.NONE;
                     mDragInfo.setPreDragDistanceX(mDragInfo.getDragDistanceX());
+                    return true;
                 }
-                return true;
         }
         return super.onTouchEvent(event);
     }

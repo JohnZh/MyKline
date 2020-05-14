@@ -35,7 +35,7 @@ public class DefaultDrawArea implements DrawArea {
     }
 
     @Override
-    public float getDistanceBetweenData(int visibleDataSize) {
+    public float getDataWidth(int visibleDataSize) {
         distanceBetweenData = (viewWidth - paddingLeft - paddingRight) * 1.0f / visibleDataSize;
         return distanceBetweenData;
     }
@@ -51,13 +51,13 @@ public class DefaultDrawArea implements DrawArea {
     }
 
     @Override
-    public float getDataX(int visibleIndex) {
+    public float getDrawX(int visibleIndex) {
         float midOfDistance = distanceBetweenData / 2;
         return paddingLeft + visibleIndex * distanceBetweenData + midOfDistance;
     }
 
     @Override
-    public float getDataY(float number) {
+    public float getDrawY(float number) {
         float max = auxiliaryLines.getMaximum();
         float min = auxiliaryLines.getMinimum();
         if (number < min || number > max) {
@@ -68,10 +68,17 @@ public class DefaultDrawArea implements DrawArea {
     }
 
     @Override
-    public int getVisibleIndex(float touchX) {
+    public int getVisibleIndex(float drawX) {
         float midOfDistance = distanceBetweenData / 2;
-        int visibleIndex = (int) ((touchX - paddingLeft - midOfDistance) / distanceBetweenData);
+        int visibleIndex = (int) ((drawX - paddingLeft - midOfDistance) / distanceBetweenData);
         return visibleIndex;
+    }
+
+    @Override
+    public float getNumber(float drawY) {
+        float max = auxiliaryLines.getMaximum();
+        float min = auxiliaryLines.getMinimum();
+        return max - (drawY - paddingTop) / dataViewHeight * (max - min);
     }
 
     @Override

@@ -99,7 +99,7 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines<KlineData> {
         float left = drawArea.getLeft();
         for (int i = 0; i < horizontalLines.length; i++) {
             float number = horizontalLines[i];
-            float top = drawArea.getDataY(number);
+            float top = drawArea.getDrawY(number);
             float right = left + width;
             Path path = (Path) sharedObjects.getObject(Path.class);
             path.moveTo(left, top);

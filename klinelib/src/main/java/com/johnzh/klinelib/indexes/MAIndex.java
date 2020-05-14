@@ -142,8 +142,8 @@ public class MAIndex extends AbsIndex<KlineData> implements ValueRange {
             for (int j = startIndex; j < endIndex; j++) {
                 Float maValue = klineDataList.get(j).getIndexData().getMa().get(maKey);
                 if (maValue == null) continue;
-                float dataX = drawArea.getDataX(drawArea.getVisibleIndex(j, startIndex));
-                float dataY = drawArea.getDataY(maValue.floatValue());
+                float dataX = drawArea.getDrawX(drawArea.getVisibleIndex(j, startIndex));
+                float dataY = drawArea.getDrawY(maValue.floatValue());
                 if (startX == -1 && startY == -1) { // first point
                     startX = dataX;
                     startY = dataY;

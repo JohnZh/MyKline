@@ -32,8 +32,8 @@ public class DefaultDrawDate implements DrawDate {
     }
 
     @Override
-    public void onDraw(KlineView klineView, int startIndex, int endIndex,
-                       Canvas canvas, Paint paint) {
+    public void drawDate(KlineView klineView, int startIndex, int endIndex,
+                         Canvas canvas, Paint paint) {
         DrawArea drawArea = klineView.getDrawArea();
         List<? extends KlineData> klineDataList = klineView.getKlineDataList();
         KlineData data = klineDataList.get(startIndex);

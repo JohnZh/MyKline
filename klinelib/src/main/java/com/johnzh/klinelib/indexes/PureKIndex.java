@@ -19,20 +19,20 @@ import java.util.List;
 public class PureKIndex extends AbsIndex<KlineData> {
 
     private int[] colors;
-    private float candleWidth;
+    private float dataPaddingHorizontal;
     private float candleLineWidth;
 
     /**
      * @param auxiliaryLines
-     * @param colors colors[0] is positiveColor, colors[1] is negativeColor
-     * @param candleWidth
+     * @param colors                colors[0] is positiveColor, colors[1] is negativeColor
+     * @param dataPaddingHorizontal
      * @param candleLineWidth
      */
     public PureKIndex(AuxiliaryLines<KlineData> auxiliaryLines,
-                      int[] colors, float candleWidth, float candleLineWidth) {
+                      int[] colors, float dataPaddingHorizontal, float candleLineWidth) {
         super(auxiliaryLines);
         this.colors = colors;
-        this.candleWidth = candleWidth;
+        this.dataPaddingHorizontal = dataPaddingHorizontal;
         this.candleLineWidth = candleLineWidth;
     }
 
@@ -54,11 +54,12 @@ public class PureKIndex extends AbsIndex<KlineData> {
             KlineData klineData = klineDataList.get(i);
             int visibleIndex = drawArea.getVisibleIndex(i, startIndex);
 
-            float dataX = drawArea.getDataX(visibleIndex);
-            float firstY = drawArea.getDataY(klineData.getHighestPrice());
-            float secondY = drawArea.getDataY(klineData.getClosePrice());
-            float thirdY = drawArea.getDataY(klineData.getOpenPrice());
-            float fourthY = drawArea.getDataY(klineData.getLowestPrice());
+            float drawX = drawArea.getDrawX(visibleIndex);
+            float firstY = drawArea.getDrawY(klineData.getHighestPrice());
+            float secondY = drawArea.getDrawY(klineData.getClosePrice());
+            float thirdY = drawArea.getDrawY(klineData.getOpenPrice());
+            float fourthY = drawArea.getDrawY(klineData.getLowestPrice());
+            float candleWidth = klineView.getOneDataWidth() - 2 * dataPaddingHorizontal;
 
             int color = colors[0];
             if (klineData.getClosePrice() < klineData.getOpenPrice()) {
@@ -68,33 +69,33 @@ public class PureKIndex extends AbsIndex<KlineData> {
                 secondY = tmp;
             }
 
-            drawLongLowerShadow(dataX, firstY, secondY, thirdY, fourthY, color, canvas, paint);
+            drawLongLowerShadow(drawX, firstY, secondY, thirdY, fourthY, color, canvas, paint);
             RectF rectF = (RectF) klineView.getSharedObjects().getObject(RectF.class);
-            drawCandleBody(dataX, secondY, thirdY, color, rectF,canvas, paint);
+            drawCandleBody(drawX, secondY, thirdY, color, candleWidth, rectF, canvas, paint);
         }
     }
 
-    protected void drawLongLowerShadow(float dataX,
-                                     float firstY, float secondY, float thirdY, float fourthY,
-                                     int color, Canvas canvas, Paint paint) {
+    protected void drawLongLowerShadow(float drawX,
+                                       float firstY, float secondY, float thirdY, float fourthY,
+                                       int color, Canvas canvas, Paint paint) {
         paint.setColor(color);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(candleLineWidth);
-        canvas.drawLine(dataX, firstY, dataX, secondY, paint);
-        canvas.drawLine(dataX, thirdY, dataX, fourthY, paint);
+        canvas.drawLine(drawX, firstY, drawX, secondY, paint);
+        canvas.drawLine(drawX, thirdY, drawX, fourthY, paint);
     }
 
-    protected void drawCandleBody(float dataX, float secondY, float thirdY, int color, RectF rectF, Canvas canvas, Paint paint) {
+    protected void drawCandleBody(float drawX, float secondY, float thirdY, int color, float candleWidth, RectF rectF, Canvas canvas, Paint paint) {
         if (secondY == thirdY) {
-            canvas.drawLine(dataX - candleWidth / 2, secondY,
-                    dataX + candleWidth / 2, thirdY,
+            canvas.drawLine(drawX - candleWidth / 2, secondY,
+                    drawX + candleWidth / 2, thirdY,
                     paint);
         } else {
             paint.setColor(color);
             paint.setStyle(Paint.Style.FILL);
-            rectF.left = dataX - candleWidth / 2;
+            rectF.left = drawX - candleWidth / 2;
             rectF.top = secondY;
-            rectF.right = dataX + candleWidth / 2;
+            rectF.right = drawX + candleWidth / 2;
             rectF.bottom = thirdY;
             canvas.drawRect(rectF, paint);
         }

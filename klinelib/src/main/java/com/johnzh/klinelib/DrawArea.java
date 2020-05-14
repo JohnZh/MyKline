@@ -12,7 +12,7 @@ public interface DrawArea {
 
     void init(KlineView klineView, ViewSize viewSize, AuxiliaryLines auxiliaryLines);
 
-    float getDistanceBetweenData(int visibleDataSize);
+    float getDataWidth(int visibleDataSize);
 
     /**
      * Get real data index of visible data on screen.
@@ -43,7 +43,21 @@ public interface DrawArea {
      */
     int getVisibleIndex(int dataIndex, int startIndex);
 
-    int getVisibleIndex(float touchX);
+    /**
+     * get the visible index of data from x axis when user touch
+     *
+     * @param drawX
+     * @return
+     */
+    int getVisibleIndex(float drawX);
+
+    /**
+     * get the number from the y axis when user touch
+     *
+     * @param drawY
+     * @return
+     */
+    float getNumber(float drawY);
 
     /**
      * get the x axis from visible index of data on screen
@@ -51,7 +65,7 @@ public interface DrawArea {
      * @param visibleIndex
      * @return
      */
-    float getDataX(int visibleIndex);
+    float getDrawX(int visibleIndex);
 
     /**
      * get the y axis from number of data on screen
@@ -59,7 +73,7 @@ public interface DrawArea {
      * @param number
      * @return
      */
-    float getDataY(float number);
+    float getDrawY(float number);
 
     int getTop();
 
