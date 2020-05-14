@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class KlineConfig {
 
-    private static final int DEFAULT_CANDLES = 40;
+    private static final int DEFAULT_CANDLES = 70;
 
     private int initialCandles;
     private List<Index> indexes;

@@ -4,10 +4,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
@@ -16,6 +20,8 @@ import com.johnzh.klinelib.auxiliarylines.SimpleAuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.VolAuxiliaryLines;
 import com.johnzh.klinelib.date.DefaultDrawDate;
 import com.johnzh.klinelib.date.DrawDate;
+import com.johnzh.klinelib.gesture.DragInfo;
+import com.johnzh.klinelib.gesture.Scale;
 import com.johnzh.klinelib.indexes.Index;
 import com.johnzh.klinelib.indexes.MAIndex;
 import com.johnzh.klinelib.indexes.PureKIndex;
@@ -23,8 +29,8 @@ import com.johnzh.klinelib.indexes.VolIndex;
 import com.johnzh.klinelib.size.DefaultViewSize;
 import com.johnzh.klinelib.size.ViewSize;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,7 +44,35 @@ import androidx.annotation.Nullable;
  */
 public class KlineView extends View {
 
+    private enum TouchAction {
+        NONE,
+        DETAIL,
+        DRAG,
+    }
+
+    static class KlineViewHandler extends Handler {
+        static final int WHAT_LONG_PRESS = 1;
+
+        private WeakReference<KlineView> mReference;
+
+        public KlineViewHandler(KlineView view) {
+            this.mReference = new WeakReference<>(view);
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if (msg.what == WHAT_LONG_PRESS) {
+                KlineView klineView = mReference.get();
+                if (klineView != null) {
+                    MotionEvent e = (MotionEvent) msg.obj;
+                    klineView.triggerDetailEvent(e);
+                }
+            }
+        }
+    }
+
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+
     public static final String TAG = KlineView.class.getSimpleName();
     public static final Paint sPaint = new Paint();
 
@@ -54,13 +88,17 @@ public class KlineView extends View {
     private int mCandles;
     private DrawArea mDrawArea;
     private SharedObjects mSharedObjects;
+    private ScaleGestureDetector mScaleGestureDetector;
+    private GestureDetector mGestureDetector;
 
     private int mStartIndex;
     private int mEndIndex;
 
-    private float mViewScale;
     private float mDistanceBetweenData;
-    private float mMaxDragDistance;
+    private DragInfo mDragInfo;
+    private Scale mScale;
+    private TouchAction mAction;
+    private Handler mHandler;
 
     public KlineView(Context context) {
         super(context);
@@ -79,10 +117,62 @@ public class KlineView extends View {
         mConfig = new KlineConfig.Builder().build();
         setConfig(mConfig);
 
-        mViewScale = 1;
+        mScaleGestureDetector = new ScaleGestureDetector(getContext(), mOnScaleGestureListener);
+        mGestureDetector = new GestureDetector(getContext(), mSimpleOnGestureListener);
+
+        mDragInfo = new DragInfo();
+        mScale = new Scale();
+        mAction = TouchAction.NONE;
+        mHandler = new KlineViewHandler(this);
     }
 
+    private ScaleGestureDetector.SimpleOnScaleGestureListener mOnScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+
+        private float mPreScale = 1;
+
+        @Override
+        public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+            float scale = scaleGestureDetector.getScaleFactor() * mPreScale;
+            if (scale > mScale.getMaxScale()) {
+                scale = mScale.getMaxScale();
+            }
+            if (scale < mScale.getMinScale()) {
+                scale = mScale.getMinScale();
+            }
+
+            if (mPreScale != scale) {
+                mScale.setScale(scale);
+                mPreScale = scale;
+
+                if (mScale.getListener() != null) {
+                    mScale.getListener().onScaleChanged(scale);
+                }
+
+                redraw();
+                return true;
+            }
+            return false;
+        }
+    };
+
+    private GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            mHandler.obtainMessage(KlineViewHandler.WHAT_LONG_PRESS, e)
+                    .sendToTarget();
+        }
+    };
+
 // =================== Start: get / set =========================================================
+
+    void triggerDetailEvent(MotionEvent e) {
+
+    }
 
     public Factory getFactory() {
         return mFactory;
@@ -294,7 +384,8 @@ public class KlineView extends View {
 
     private void calcMaxDragDistance() {
         mDistanceBetweenData = mDrawArea.getDistanceBetweenData(mCandles);
-        mMaxDragDistance = Math.max((mKlineDataList.size() - mCandles) * mDistanceBetweenData, 0);
+        mDragInfo.setMaxDragDistanceX(
+                Math.max((mKlineDataList.size() - mCandles) * mDistanceBetweenData, 0));
     }
 
     protected void redraw() {
@@ -322,27 +413,87 @@ public class KlineView extends View {
     }
 
     private void calcVisibleCandles() {
-        mCandles = (int) (mConfig.getInitialCandles() / mViewScale);
+        mCandles = (int) (mConfig.getInitialCandles() / mScale.getScale());
         mStartIndex = mKlineDataList.size() - mCandles < 0
-                ? 0 : (mKlineDataList.size() - mCandles - getMovedCandles());
+                ? 0 : (mKlineDataList.size() - mCandles - getDataMoved());
         int length = Math.min(mKlineDataList.size(), mCandles);
         mEndIndex = mStartIndex + length;
     }
 
-    private int getMovedCandles() {
-        return 0;
+    private int getDataMoved() {
+        return (int) (mDragInfo.getDragDistanceX() / mDistanceBetweenData);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        mScaleGestureDetector.onTouchEvent(event);
+        mGestureDetector.onTouchEvent(event);
+
+        switch (event.getActionMasked() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                if (mAction == TouchAction.DETAIL) {
+//                    Message message = mHandler.obtainMessage(WHAT_ONE_CLICK, event);
+//                    mHandler.sendMessageDelayed(message, DELAY_ONE_CLICK);
+                }
+
+                mDragInfo.setActionDownX(event.getX());
+                return true;
+            case MotionEvent.ACTION_MOVE:
+//                if (Math.abs(mDownX - event.getX()) < CLICK_PIXELS
+//                        || Math.abs(mDownY - event.getY()) < CLICK_PIXELS) {
+//                    return false;
+//                }
+
+                //mHandler.removeMessages(WHAT_ONE_CLICK);
+
+                if (mAction == TouchAction.DETAIL) {
+                    //return triggerCrossLinesRedraw(event);
+                }
+
+                if (mAction == TouchAction.NONE || mAction == TouchAction.DRAG) {
+                    double distance = Math.abs(event.getX() - mDragInfo.getActionDownX());
+                    if (distance > mDistanceBetweenData) {
+                        mAction = TouchAction.DRAG;
+                        mDragInfo.calcDragDistanceX(event.getX());
+                        float maxDragDistanceX = mDragInfo.getMaxDragDistanceX();
+                        if (mDragInfo.getDragDistanceX() > maxDragDistanceX) {
+                            mDragInfo.setDragDistanceX(maxDragDistanceX);
+                            return true;
+                        }
+                        if (mDragInfo.getDragDistanceX() < 0) {
+                            mDragInfo.setDragDistanceX(0);
+                            return true;
+                        }
+
+                        redraw();
+                        return true;
+                    }
+                }
+                return false;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+//                if (mAction == TouchAction.DETAIL && mHandler.hasMessages(WHAT_ONE_CLICK)) {
+//                    mHandler.removeMessages(WHAT_ONE_CLICK);
+//                    mAction = TouchAction.NONE;
+//                    if (mTouchIndex != -1) {
+//                        mTouchIndex = -1;
+//                        redraw();
+//                    }
+//                } else
+                if (mAction == TouchAction.DRAG) {
+                    mAction = TouchAction.NONE;
+                    mDragInfo.setPreDragDistanceX(mDragInfo.getDragDistanceX());
+                }
+                return true;
+        }
         return super.onTouchEvent(event);
     }
 
-    static class CalcTask implements Callable {
-
-        @Override
-        public Object call() throws Exception {
-            return null;
-        }
-    }
+//    static class CalcTask implements Callable {
+//
+//        @Override
+//        public Object call() throws Exception {
+//            return null;
+//        }
+//    }
 }

@@ -1,5 +1,6 @@
 package com.john.mykline;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             binding.klineView.selectIndex(2);
         });
         binding.combination.setOnClickListener(v -> {
-
+            startCombinationActivity();
         });
 
         HttpAgent.getApi().getDailyKline("M2009")
@@ -61,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private void startCombinationActivity() {
+        startActivity(new Intent(this, CombinationActivity.class));
     }
 
     private void convertData(List<List<String>> body, List<MyKlineData> kDataList) {
