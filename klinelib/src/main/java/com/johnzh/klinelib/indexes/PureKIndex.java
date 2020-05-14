@@ -59,7 +59,7 @@ public class PureKIndex extends AbsIndex<KlineData> {
             float secondY = drawArea.getDrawY(klineData.getClosePrice());
             float thirdY = drawArea.getDrawY(klineData.getOpenPrice());
             float fourthY = drawArea.getDrawY(klineData.getLowestPrice());
-            float candleWidth = klineView.getOneDataWidth() - 2 * dataPaddingHorizontal;
+            float candleWidth = drawArea.getOneDataWidth() - 2 * dataPaddingHorizontal;
 
             int color = colors[0];
             if (klineData.getClosePrice() < klineData.getOpenPrice()) {

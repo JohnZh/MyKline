@@ -37,7 +37,7 @@ public class VolIndex extends AbsIndex<KlineData> {
     @Override
     public void drawIndex(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
         DrawArea drawArea = klineView.getDrawArea();
-        float candleWidth = klineView.getOneDataWidth() - 2 * dataPaddingHorizontal;
+        float candleWidth = drawArea.getOneDataWidth() - 2 * dataPaddingHorizontal;
         List<? extends KlineData> klineDataList = klineView.getKlineDataList();
         for (int i = startIndex; i < endIndex; i++) {
             KlineData klineData = klineDataList.get(i);

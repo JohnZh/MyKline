@@ -14,6 +14,8 @@ public interface DrawArea {
 
     float calcOneDataWidth(int visibleDataSize);
 
+    float getOneDataWidth();
+
     /**
      * Get real data index of visible data on screen.
      * For example, total 10 data, the real indexes of data are [0 - 9].

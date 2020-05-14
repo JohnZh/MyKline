@@ -41,6 +41,11 @@ public class DefaultDrawArea implements DrawArea {
     }
 
     @Override
+    public float getOneDataWidth() {
+        return oneDataWidth;
+    }
+
+    @Override
     public int getDataIndex(int visibleIndex, int startIndex) {
         return visibleIndex + startIndex;
     }

@@ -79,7 +79,7 @@ public class KlineView extends View {
                 }
             }
             if (msg.what == MSG_KEEP_SHOW_DETAIL) {
-                // do nothing, just keep detail action
+                // do nothing, just continue detail action
             }
         }
     }
@@ -184,13 +184,24 @@ public class KlineView extends View {
     private GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public boolean onDown(MotionEvent e) {
+            Log.d(TAG, "onDown: ");
             return true;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            return super.onSingleTapConfirmed(e);
         }
 
         @Override
         public void onLongPress(MotionEvent e) {
             mHandler.obtainMessage(KlineViewHandler.MSG_SHOW_DETAIL, e)
                     .sendToTarget();
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            return super.onDoubleTap(e);
         }
     };
 
@@ -513,7 +524,6 @@ public class KlineView extends View {
                 }
 
                 if (mAction == TouchAction.NONE || mAction == TouchAction.DRAG) {
-                    Log.d(TAG, "onTouchEvent: drag");
                     double distance = Math.abs(event.getX() - mDragInfo.getActionDownX());
                     if (distance > mOneDataWidth) {
                         mAction = TouchAction.DRAG;
