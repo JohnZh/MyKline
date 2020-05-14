@@ -18,7 +18,7 @@ public class DefaultDrawArea implements DrawArea {
     private int paddingTop;
     private int paddingRight;
     private int paddingBottom;
-    private float distanceBetweenData;
+    private float oneDataWidth;
     private AuxiliaryLines auxiliaryLines;
 
     @Override
@@ -35,9 +35,9 @@ public class DefaultDrawArea implements DrawArea {
     }
 
     @Override
-    public float getDataWidth(int visibleDataSize) {
-        distanceBetweenData = (viewWidth - paddingLeft - paddingRight) * 1.0f / visibleDataSize;
-        return distanceBetweenData;
+    public float calcOneDataWidth(int visibleDataSize) {
+        oneDataWidth = (viewWidth - paddingLeft - paddingRight) * 1.0f / visibleDataSize;
+        return oneDataWidth;
     }
 
     @Override
@@ -52,8 +52,8 @@ public class DefaultDrawArea implements DrawArea {
 
     @Override
     public float getDrawX(int visibleIndex) {
-        float midOfDistance = distanceBetweenData / 2;
-        return paddingLeft + visibleIndex * distanceBetweenData + midOfDistance;
+        float midOfDataWidth = oneDataWidth / 2;
+        return paddingLeft + visibleIndex * oneDataWidth + midOfDataWidth;
     }
 
     @Override
@@ -69,8 +69,8 @@ public class DefaultDrawArea implements DrawArea {
 
     @Override
     public int getVisibleIndex(float drawX) {
-        float midOfDistance = distanceBetweenData / 2;
-        int visibleIndex = (int) ((drawX - paddingLeft - midOfDistance) / distanceBetweenData);
+        float midOfDistance = oneDataWidth / 2;
+        int visibleIndex = (int) ((drawX - paddingLeft - midOfDistance) / oneDataWidth);
         return visibleIndex;
     }
 

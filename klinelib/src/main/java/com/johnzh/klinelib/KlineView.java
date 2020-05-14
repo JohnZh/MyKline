@@ -50,6 +50,7 @@ public class KlineView extends View {
         DETAIL,
         CLICK,
         DRAG,
+        SCALE
     }
 
     static class KlineViewHandler extends Handler {
@@ -141,24 +142,36 @@ public class KlineView extends View {
 
     private ScaleGestureDetector.SimpleOnScaleGestureListener mOnScaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
-        private float mPreScale = 1;
+        private float mPreScaleFactor = 1;
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            mAction = TouchAction.SCALE;
+            return super.onScaleBegin(detector);
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            mAction = TouchAction.NONE;
+            super.onScaleEnd(detector);
+        }
 
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
-            float scale = scaleGestureDetector.getScaleFactor() * mPreScale;
-            if (scale > mScale.getMaxScale()) {
-                scale = mScale.getMaxScale();
+            float scaleFactor = scaleGestureDetector.getScaleFactor() * mPreScaleFactor;
+            if (scaleFactor > mScale.getMaxScale()) {
+                scaleFactor = mScale.getMaxScale();
             }
-            if (scale < mScale.getMinScale()) {
-                scale = mScale.getMinScale();
+            if (scaleFactor < mScale.getMinScale()) {
+                scaleFactor = mScale.getMinScale();
             }
 
-            if (mPreScale != scale) {
-                mScale.setScale(scale);
-                mPreScale = scale;
+            if (mPreScaleFactor != scaleFactor) {
+                mScale.setScale(scaleFactor);
+                mPreScaleFactor = scaleFactor;
 
                 if (mScale.getListener() != null) {
-                    mScale.getListener().onScaleChanged(scale);
+                    mScale.getListener().onScaleChanged(scaleFactor);
                 }
 
                 redraw();
@@ -435,7 +448,6 @@ public class KlineView extends View {
     }
 
     private void calcMaxDragDistance() {
-        mOneDataWidth = mDrawArea.getDataWidth(mCandles);
         mDragInfo.setMaxDragDistanceX(
                 Math.max((mKlineDataList.size() - mCandles) * mOneDataWidth, 0));
     }
@@ -466,14 +478,16 @@ public class KlineView extends View {
 
     private void calcVisibleCandles() {
         mCandles = (int) (mConfig.getInitialCandles() / mScale.getScale());
+        mOneDataWidth = mDrawArea.calcOneDataWidth(mCandles);
         mStartIndex = mKlineDataList.size() - mCandles < 0
-                ? 0 : (mKlineDataList.size() - mCandles - getDataMoved());
+                ? 0 : (mKlineDataList.size() - mCandles - getDataMoved(mOneDataWidth));
         int length = Math.min(mKlineDataList.size(), mCandles);
         mEndIndex = mStartIndex + length;
     }
 
-    private int getDataMoved() {
-        return (int) (mDragInfo.getDragDistanceX() / mOneDataWidth);
+    private int getDataMoved(float oneDataWidth) {
+        Log.d(TAG, "getDataMoved: " + mDragInfo.getDragDistanceX());
+        return (int) (mDragInfo.getDragDistanceX() / oneDataWidth);
     }
 
     @Override
@@ -499,6 +513,7 @@ public class KlineView extends View {
                 }
 
                 if (mAction == TouchAction.NONE || mAction == TouchAction.DRAG) {
+                    Log.d(TAG, "onTouchEvent: drag");
                     double distance = Math.abs(event.getX() - mDragInfo.getActionDownX());
                     if (distance > mOneDataWidth) {
                         mAction = TouchAction.DRAG;

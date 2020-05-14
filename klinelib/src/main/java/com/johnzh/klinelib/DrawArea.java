@@ -12,7 +12,7 @@ public interface DrawArea {
 
     void init(KlineView klineView, ViewSize viewSize, AuxiliaryLines auxiliaryLines);
 
-    float getDataWidth(int visibleDataSize);
+    float calcOneDataWidth(int visibleDataSize);
 
     /**
      * Get real data index of visible data on screen.
