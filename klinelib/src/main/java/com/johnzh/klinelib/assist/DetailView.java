@@ -1,5 +1,7 @@
 package com.johnzh.klinelib.assist;
 
+import android.view.MotionEvent;
+
 import com.johnzh.klinelib.KlineView;
 
 /**
@@ -16,7 +18,11 @@ public interface DetailView {
      */
     void attach(KlineView klineView);
 
-    void onUpdate(KlineView klineView, float touchX, float touchY);
+    void onActionDown(MotionEvent event);
 
-    void onClear();
+    void onActionMove(MotionEvent event);
+
+    void onActionUp(MotionEvent event);
+
+    void onActionCancel();
 }

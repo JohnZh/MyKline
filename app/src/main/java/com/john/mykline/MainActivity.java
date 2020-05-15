@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
                         .index(binding.klineView.getFactory().createDefaultIndex(MAIndex.class))
                         .index(binding.klineView.getFactory().createDefaultIndex(VolIndex.class))
                         .build());
+        binding.klineView.setDetailView(binding.detailView);
+
         binding.pureK.setOnClickListener(v -> {
             binding.klineView.selectIndex(0);
         });

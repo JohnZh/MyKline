@@ -3,9 +3,15 @@ package com.johnzh.klinelib.assist;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
+import com.johnzh.klinelib.DrawArea;
+import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
+
+import java.util.List;
 
 import androidx.annotation.Nullable;
 
@@ -17,8 +23,16 @@ import androidx.annotation.Nullable;
 public class SimpleDetailView extends View implements DetailView {
 
     private KlineView mKlineView;
+
+    private float mDrawX;
+    private float mDrawY;
     private float mTouchX;
     private float mTouchY;
+    private float mTranslateX;
+    private float mTranslateY;
+    private float mPreTranslateX;
+    private float mPreTranslateY;
+
     private boolean mDrawable;
     private boolean mStick;
 
@@ -40,15 +54,34 @@ public class SimpleDetailView extends View implements DetailView {
     }
 
     @Override
-    public void onUpdate(KlineView klineView, float touchX, float touchY) {
-        mTouchX = touchX;
-        mTouchY = touchY;
+    public void onActionDown(MotionEvent event) {
+        Log.d("Temp", "onActionDown: " + print(event)); // todo remove later
+        mTouchX = event.getX();
+        mTouchY = event.getY();
         mDrawable = true;
-        invalidate();
+    }
+
+    private String print(MotionEvent event) {
+        return "x: " + event.getX() + ", y: " + event.getY();
     }
 
     @Override
-    public void onClear() {
+    public void onActionMove(MotionEvent event) {
+        Log.d("Temp", "onActionMove: " + print(event)); // todo remove later
+        mTranslateX = event.getX() - mTouchX + mPreTranslateX;
+        mTranslateY = event.getY() - mTouchY + mPreTranslateY;
+    }
+
+    @Override
+    public void onActionUp(MotionEvent event) {
+        Log.d("Temp", "onActionUp: " + print(event)); // todo remove later
+        mPreTranslateX = mTranslateX;
+        mPreTranslateY = mTranslateY;
+    }
+
+    @Override
+    public void onActionCancel() {
+        Log.d("Temp", "onActionCancel: "); // todo remove later
         mDrawable = false;
         mTouchX = 0;
         mTouchX = 0;
@@ -57,6 +90,12 @@ public class SimpleDetailView extends View implements DetailView {
     @Override
     protected void onDraw(Canvas canvas) {
         if (mKlineView == null || !mDrawable) return;
+
+        DrawArea drawArea = mKlineView.getDrawArea();
+        List<? extends KlineData> klineDataList = mKlineView.getKlineDataList();
+        int startIndex = mKlineView.getStartIndex();
+        int dataIndex = drawArea.getDataIndex(drawArea.getVisibleIndex(mTouchX), startIndex);
+        KlineData klineData = klineDataList.get(dataIndex);
 
     }
 }

@@ -6,10 +6,12 @@ package com.johnzh.klinelib.gesture;
  * Description:
  */
 public final class DragInfo {
-    private float maxDragDistanceX;
     private float actionDownX;
-    private float dragDistanceX;
-    private float preDragDistanceX;
+
+    private float oneDataWidth;
+    private int draggedDataAmount;
+    private int preDraggedDataAmount;
+    private int maxDraggedDataAmount;
 
     public void setActionDownX(float actionDownX) {
         this.actionDownX = actionDownX;
@@ -19,27 +21,61 @@ public final class DragInfo {
         return actionDownX;
     }
 
-    public void setPreDragDistanceX(float preDragDistanceX) {
-        this.preDragDistanceX = preDragDistanceX;
+//    public void updateDragDistanceX(float scale) {
+//        dragDistanceX = dragDistanceX * scale;
+//        preDragDistanceX = preDragDistanceX * scale;
+//        if (dragDistanceX > maxDragDistanceX) {
+//            dragDistanceX = maxDragDistanceX;
+//        }
+//        if (preDragDistanceX > maxDragDistanceX) {
+//            preDragDistanceX = maxDragDistanceX;
+//        }
+//    }
+
+    public void setOneDataWidth(float oneDataWidth) {
+        this.oneDataWidth = oneDataWidth;
     }
 
-    public void setMaxDragDistanceX(float maxDragDistanceX) {
-        this.maxDragDistanceX = maxDragDistanceX;
+    public int getDraggedDataAmount() {
+        return draggedDataAmount;
     }
 
-    public void setDragDistanceX(float dragDistanceX) {
-        this.dragDistanceX = dragDistanceX;
+    public int calcDraggedDataAmount(float moveX) {
+        int newDraggedDataAmount
+                = (int) ((moveX - actionDownX) / oneDataWidth) + preDraggedDataAmount;
+        if (newDraggedDataAmount > maxDraggedDataAmount) {
+            newDraggedDataAmount = maxDraggedDataAmount;
+        }
+        if (newDraggedDataAmount < 0) {
+            newDraggedDataAmount = 0;
+        }
+        return newDraggedDataAmount;
     }
 
-    public float getMaxDragDistanceX() {
-        return maxDragDistanceX;
+    public void setDraggedDataAmount(int draggedDataAmount) {
+        this.draggedDataAmount = draggedDataAmount;
     }
 
-    public float getDragDistanceX() {
-        return dragDistanceX;
+    public int getPreDraggedDataAmount() {
+        return preDraggedDataAmount;
     }
 
-    public void calcDragDistanceX(float actionMoveX) {
-        dragDistanceX = actionMoveX - actionDownX + preDragDistanceX;
+    public void setPreDraggedDataAmount(int preDraggedDataAmount) {
+        this.preDraggedDataAmount = preDraggedDataAmount;
+    }
+
+    public int getMaxDraggedDataAmount() {
+        return maxDraggedDataAmount;
+    }
+
+    public void setMaxDraggedDataAmount(int maxDraggedDataAmount) {
+        this.maxDraggedDataAmount = maxDraggedDataAmount;
+
+        if (maxDraggedDataAmount < draggedDataAmount) {
+            draggedDataAmount = maxDraggedDataAmount;
+        }
+        if (maxDraggedDataAmount < preDraggedDataAmount) {
+            preDraggedDataAmount = maxDraggedDataAmount;
+        }
     }
 }
