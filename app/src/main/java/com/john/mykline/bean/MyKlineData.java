@@ -13,8 +13,11 @@ import java.util.Date;
  */
 public class MyKlineData implements KlineData<MyIndexData> {
 
+    private static final String DAILY_FORMAT = "yyyy-MM-dd";
+    private static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT
-            = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            = new SimpleDateFormat(DAILY_FORMAT);
 
     private String date;
     private String openPrice;

@@ -254,6 +254,7 @@ public class KlineView extends View {
             if (mDrawDate == null) {
                 mDrawDate = getDefaultDrawDate();
             }
+
             redraw();
         }
     }
