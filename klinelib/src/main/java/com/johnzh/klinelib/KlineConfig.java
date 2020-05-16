@@ -2,7 +2,6 @@ package com.johnzh.klinelib;
 
 import com.johnzh.klinelib.date.DrawDate;
 import com.johnzh.klinelib.indexes.Index;
-import com.johnzh.klinelib.size.ViewSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +16,6 @@ public class KlineConfig {
     private static final int DEFAULT_CANDLES = 70;
 
     private int initialCandles;
-    private List<Index> indexes;
-    private ViewSize viewSize;
-    private DrawDate drawDate;
 
     private KlineConfig() {
     }
@@ -28,39 +24,15 @@ public class KlineConfig {
         return initialCandles;
     }
 
-    public List<Index> getIndexes() {
-        return indexes;
-    }
-
-    public ViewSize getViewSize() {
-        return viewSize;
-    }
-
-    public DrawDate getDrawDate() {
-        return drawDate;
-    }
-
     public void setInitialCandles(int initialCandles) {
         this.initialCandles = initialCandles;
     }
 
-    public void setIndexes(List<Index> indexes) {
-        this.indexes = indexes;
-    }
-
-    public void setViewSize(ViewSize viewSize) {
-        this.viewSize = viewSize;
-    }
-
-    public void setDrawDate(DrawDate drawDate) {
-        this.drawDate = drawDate;
-    }
 
     public static final class Builder {
 
         private int initialCandles;
         private List<Index> indexes;
-        private ViewSize viewSize;
         private DrawDate drawDate;
 
         public Builder() {
@@ -87,11 +59,6 @@ public class KlineConfig {
             return this;
         }
 
-        public Builder viewSize(ViewSize viewSize) {
-            this.viewSize = viewSize;
-            return this;
-        }
-
         public Builder drawDate(DrawDate drawDate) {
             this.drawDate = drawDate;
             return this;
@@ -100,9 +67,6 @@ public class KlineConfig {
         public KlineConfig build() {
             KlineConfig klineConfig = new KlineConfig();
             klineConfig.initialCandles = initialCandles;
-            klineConfig.indexes = indexes;
-            klineConfig.viewSize = this.viewSize;
-            klineConfig.drawDate = this.drawDate;
             return klineConfig;
         }
     }

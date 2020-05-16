@@ -5,6 +5,7 @@ import android.graphics.Paint;
 
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.drawarea.IndexDrawArea;
 import com.johnzh.klinelib.indexes.AbsIndex;
 
 import java.util.List;
@@ -35,7 +36,8 @@ public class KDJIndex extends AbsIndex<MyKlineData> {
     }
 
     @Override
-    public void drawIndex(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
+    public void drawIndex(KlineView klineView, IndexDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
 
     }
+
 }

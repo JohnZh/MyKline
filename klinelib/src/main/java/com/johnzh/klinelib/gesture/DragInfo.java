@@ -8,7 +8,6 @@ package com.johnzh.klinelib.gesture;
 public final class DragInfo {
     private float actionDownX;
 
-    private float oneDataWidth;
     private int draggedDataAmount;
     private int preDraggedDataAmount;
     private int maxDraggedDataAmount;
@@ -21,26 +20,11 @@ public final class DragInfo {
         return actionDownX;
     }
 
-//    public void updateDragDistanceX(float scale) {
-//        dragDistanceX = dragDistanceX * scale;
-//        preDragDistanceX = preDragDistanceX * scale;
-//        if (dragDistanceX > maxDragDistanceX) {
-//            dragDistanceX = maxDragDistanceX;
-//        }
-//        if (preDragDistanceX > maxDragDistanceX) {
-//            preDragDistanceX = maxDragDistanceX;
-//        }
-//    }
-
-    public void setOneDataWidth(float oneDataWidth) {
-        this.oneDataWidth = oneDataWidth;
-    }
-
     public int getDraggedDataAmount() {
         return draggedDataAmount;
     }
 
-    public int calcDraggedDataAmount(float moveX) {
+    public int calcDraggedDataAmount(float moveX, float oneDataWidth) {
         int newDraggedDataAmount
                 = (int) ((moveX - actionDownX) / oneDataWidth) + preDraggedDataAmount;
         if (newDraggedDataAmount > maxDraggedDataAmount) {

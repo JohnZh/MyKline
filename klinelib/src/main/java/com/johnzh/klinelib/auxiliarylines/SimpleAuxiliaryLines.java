@@ -4,13 +4,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.johnzh.klinelib.DrawArea;
 import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.SharedObjects;
 import com.johnzh.klinelib.ValueRange;
+import com.johnzh.klinelib.drawarea.IndexDrawArea;
 import com.johnzh.klinelib.indexes.Index;
 
 import java.util.List;
@@ -92,8 +92,7 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines<KlineData> {
     }
 
     @Override
-    public void drawHorizontalLines(KlineView klineView, Canvas canvas, Paint paint) {
-        DrawArea drawArea = klineView.getDrawArea();
+    public void drawHorizontalLines(KlineView klineView, IndexDrawArea drawArea, Canvas canvas, Paint paint) {
         SharedObjects sharedObjects = klineView.getSharedObjects();
         float width = drawArea.getWidth();
         float left = drawArea.getLeft();
@@ -122,7 +121,7 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines<KlineData> {
     }
 
     @Override
-    public void drawVerticalLines(KlineView klineView, Canvas canvas, Paint paint) {
+    public void drawVerticalLines(KlineView klineView, IndexDrawArea drawArea, Canvas canvas, Paint paint) {
 
     }
 

@@ -3,11 +3,12 @@ package com.johnzh.klinelib.indexes;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.util.Log;
 
-import com.johnzh.klinelib.DrawArea;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.drawarea.IndexDrawArea;
 
 import java.util.List;
 
@@ -47,12 +48,13 @@ public class PureKIndex extends AbsIndex<KlineData> {
     }
 
     @Override
-    public void drawIndex(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint) {
-        DrawArea drawArea = klineView.getDrawArea();
+    public void drawIndex(KlineView klineView, IndexDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
         List<? extends KlineData> klineDataList = klineView.getKlineDataList();
         for (int i = startIndex; i < endIndex; i++) {
             KlineData klineData = klineDataList.get(i);
-            int visibleIndex = drawArea.getVisibleIndex(i, startIndex);
+            int visibleIndex = drawArea.getVisibleIndex(i);
+
+            Log.d("Temp", "drawIndex: " + this.getClass().getSimpleName()); // todo remove later
 
             float drawX = drawArea.getDrawX(visibleIndex);
             float firstY = drawArea.getDrawY(klineData.getHighestPrice());

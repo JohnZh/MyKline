@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.johnzh.klinelib.KlineView;
+import com.johnzh.klinelib.drawarea.DateDrawArea;
 
 /**
  * Modified by john on 2020/5/13
@@ -11,5 +12,6 @@ import com.johnzh.klinelib.KlineView;
  * Description:
  */
 public interface DrawDate {
-    void drawDate(KlineView klineView, int startIndex, int endIndex, Canvas canvas, Paint paint);
+    void drawDate(KlineView klineView, DateDrawArea drawArea,
+                  int startIndex, int endIndex, Canvas canvas, Paint paint);
 }

@@ -3,10 +3,10 @@ package com.johnzh.klinelib.date;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.johnzh.klinelib.DrawArea;
 import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
+import com.johnzh.klinelib.drawarea.DateDrawArea;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -32,9 +32,8 @@ public class DefaultDrawDate implements DrawDate {
     }
 
     @Override
-    public void drawDate(KlineView klineView, int startIndex, int endIndex,
+    public void drawDate(KlineView klineView, DateDrawArea drawArea, int startIndex, int endIndex,
                          Canvas canvas, Paint paint) {
-        DrawArea drawArea = klineView.getDrawArea();
         List<? extends KlineData> klineDataList = klineView.getKlineDataList();
         KlineData data = klineDataList.get(startIndex);
 
@@ -45,12 +44,12 @@ public class DefaultDrawDate implements DrawDate {
         String dateText = data.getDate() != null ?
                 DATE_FORMAT.format(data.getDate()) : "";
         float textLeft = drawArea.getLeft();
-        float textTop = drawArea.getDateTop();
+        float textTop = drawArea.getTop();
         textLeft += textMargin;
         textTop += textMargin;
         DrawTextTool.drawTextFromLeftTop(dateText, textLeft, textTop, canvas, paint);
 
-        int visibleIndex = drawArea.getVisibleIndex(endIndex - 1, startIndex);
+        int visibleIndex = drawArea.getVisibleIndex(endIndex - 1);
         if (visibleIndex == klineView.getCandles() - 1) {
             data = klineDataList.get(endIndex - 1);
             dateText = data.getDate() != null ?

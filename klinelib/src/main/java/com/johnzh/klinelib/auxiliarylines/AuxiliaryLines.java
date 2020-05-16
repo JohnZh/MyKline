@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.ValueRange;
+import com.johnzh.klinelib.drawarea.IndexDrawArea;
 import com.johnzh.klinelib.indexes.Index;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface AuxiliaryLines<T extends KlineData> extends ValueRange {
 
     void calcVerticalLines(List<T> klineDataList, int startIndex, int endIndex);
 
-    void drawHorizontalLines(KlineView klineView, Canvas canvas, Paint paint);
+    void drawHorizontalLines(KlineView klineView, IndexDrawArea drawArea, Canvas canvas, Paint paint);
 
-    void drawVerticalLines(KlineView klineView, Canvas canvas, Paint paint);
+    void drawVerticalLines(KlineView klineView, IndexDrawArea drawArea, Canvas canvas, Paint paint);
 }

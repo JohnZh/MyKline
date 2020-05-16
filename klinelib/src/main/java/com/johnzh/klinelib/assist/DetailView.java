@@ -18,11 +18,23 @@ public interface DetailView {
      */
     void attach(KlineView klineView);
 
-    void onActionDown(MotionEvent event);
+    /**
+     * Touch event from klineView about detail feature, down, move, up, cancel
+     *
+     * @param event
+     */
+    void onKlineViewTouchEvent(MotionEvent event);
 
-    void onActionMove(MotionEvent event);
+    /**
+     * Call before {@link this#onKlineViewTouchEvent(MotionEvent)} with down event
+     *
+     * @param event
+     */
+    void onStart(MotionEvent event);
 
-    void onActionUp(MotionEvent event);
-
-    void onActionCancel();
+    /**
+     * Call after {@link this#onKlineViewTouchEvent(MotionEvent)} with cancel/up event
+     * @param event
+     */
+    void onCancel(MotionEvent event);
 }
