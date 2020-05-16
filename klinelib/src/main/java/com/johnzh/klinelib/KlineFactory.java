@@ -26,7 +26,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class DefaultFactory implements Factory {
+public class KlineFactory implements Factory {
 
     // all units are dp
     public static final int DATA_HEIGHT = 240;
@@ -35,7 +35,7 @@ public class DefaultFactory implements Factory {
 
     private Context mContext;
 
-    public DefaultFactory(Context context) {
+    public KlineFactory(Context context) {
         mContext = context;
     }
 

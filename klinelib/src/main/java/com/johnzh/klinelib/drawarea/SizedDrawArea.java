@@ -9,7 +9,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class SizedDrawArea implements DrawArea {
+public abstract class SizedDrawArea implements DrawArea {
 
     protected int width;
     protected int height;
@@ -31,7 +31,7 @@ public class SizedDrawArea implements DrawArea {
     }
 
     @Override
-    public void initOnDraw(KlineView view, List<DrawArea> allDrawAreas) {
+    public void prepareOnDraw(KlineView view, List<DrawArea> allDrawAreas) {
         this.left = view.getPaddingLeft();
         if (width < 0) { // match parent
             this.width = view.getWidth() - view.getPaddingLeft() - view.getPaddingRight();

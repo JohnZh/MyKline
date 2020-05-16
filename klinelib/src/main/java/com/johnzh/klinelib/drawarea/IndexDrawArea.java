@@ -1,5 +1,9 @@
 package com.johnzh.klinelib.drawarea;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
+import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.indexes.Index;
@@ -22,10 +26,24 @@ public class IndexDrawArea extends SizedDrawArea
     private int mStartIndex;
 
     @Override
-    public void initOnDraw(KlineView view, List<DrawArea> allDrawAreas) {
-        super.initOnDraw(view, allDrawAreas);
+    public void prepareOnDraw(KlineView view, List<DrawArea> allDrawAreas) {
+        super.prepareOnDraw(view, allDrawAreas);
         mStartIndex = view.getStartIndex();
         mOneDataWidth = view.getOneDataWidth();
+    }
+
+    @Override
+    public void calculate(List<? extends KlineData> list, int startIndex, int endIndex) {
+        getCurIndex().calcIndex(list, startIndex, endIndex);
+        getCurIndex().calcAuxiliaryLines(list, startIndex, endIndex);
+    }
+
+    @Override
+    public void draw(KlineView klineView, Canvas canvas, Paint paint) {
+        getCurIndex().drawAuxiliaryLines(klineView, this, canvas, paint);
+        getCurIndex().drawIndex(klineView, this,
+                klineView.getStartIndex(), klineView.getEndIndex(),
+                canvas, paint);
     }
 
     public IndexDrawArea(int height, @NonNull List<Index> indexList) {

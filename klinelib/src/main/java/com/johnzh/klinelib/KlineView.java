@@ -15,9 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.johnzh.klinelib.assist.DetailView;
-import com.johnzh.klinelib.drawarea.DateDrawArea;
 import com.johnzh.klinelib.drawarea.DrawArea;
-import com.johnzh.klinelib.drawarea.IndexDrawArea;
 import com.johnzh.klinelib.gesture.DragInfo;
 import com.johnzh.klinelib.gesture.Scale;
 
@@ -121,7 +119,7 @@ public class KlineView extends View {
     }
 
     private void init() {
-        mDrawAreaList = new DefaultFactory(getContext()).createDrawAreas();
+        mDrawAreaList = new KlineFactory(getContext()).createDrawAreas();
         mSharedObjects = new SharedObjects();
         mConfig = new KlineConfig.Builder().build();
         setConfig(mConfig);
@@ -203,7 +201,7 @@ public class KlineView extends View {
     }
 // =================== Start: get / set =========================================================
 
-    public void setDrawAreaList(DefaultFactory factory) {
+    public void setDrawAreaList(KlineFactory factory) {
         mDrawAreaList = factory.createDrawAreas();
         redraw();
     }
@@ -343,69 +341,22 @@ public class KlineView extends View {
         }
 
         calcVisibleCandles();
-        calcIndex();
-        calcAuxiliaryLines();
 
         for (DrawArea drawArea : mDrawAreaList) {
-            drawArea.initOnDraw(this, mDrawAreaList);
+            drawArea.calculate(mKlineDataList, mStartIndex, mEndIndex);
         }
 
-        drawAuxiliaryLines(canvas);
-        drawIndex(canvas);
-        drawDate(canvas);
+        for (DrawArea drawArea : mDrawAreaList) {
+            drawArea.prepareOnDraw(this, mDrawAreaList);
+        }
+
+        for (DrawArea drawArea : mDrawAreaList) {
+            drawArea.draw(this, canvas, sPaint);
+        }
     }
 
     protected void redraw() {
         invalidate();
-    }
-
-    private void drawDate(Canvas canvas) {
-        for (DrawArea drawArea : mDrawAreaList) {
-            if (drawArea instanceof DateDrawArea) {
-                DateDrawArea dateDrawArea = (DateDrawArea) drawArea;
-                dateDrawArea.getDrawDate()
-                        .drawDate(this, dateDrawArea, mStartIndex, mEndIndex, canvas, sPaint);
-            }
-        }
-    }
-
-    private void drawIndex(Canvas canvas) {
-        for (DrawArea drawArea : mDrawAreaList) {
-            if (drawArea instanceof IndexDrawArea) {
-                IndexDrawArea indexDrawArea = (IndexDrawArea) drawArea;
-                indexDrawArea.getCurIndex()
-                        .drawIndex(this, indexDrawArea, mStartIndex, mEndIndex, canvas, sPaint);
-            }
-        }
-    }
-
-    private void drawAuxiliaryLines(Canvas canvas) {
-        for (DrawArea drawArea : mDrawAreaList) {
-            if (drawArea instanceof IndexDrawArea) {
-                IndexDrawArea indexDrawArea = (IndexDrawArea) drawArea;
-                indexDrawArea.getCurIndex()
-                        .drawAuxiliaryLines(this, indexDrawArea, canvas, sPaint);
-
-            }
-        }
-    }
-
-    private void calcAuxiliaryLines() {
-        for (DrawArea drawArea : mDrawAreaList) {
-            if (drawArea instanceof IndexDrawArea) {
-                ((IndexDrawArea) drawArea)
-                        .getCurIndex().calcAuxiliaryLines(mKlineDataList, mStartIndex, mEndIndex);
-            }
-        }
-    }
-
-    private void calcIndex() {
-        for (DrawArea drawArea : mDrawAreaList) {
-            if (drawArea instanceof IndexDrawArea) {
-                ((IndexDrawArea) drawArea)
-                        .getCurIndex().calcIndex(mKlineDataList, mStartIndex, mEndIndex);
-            }
-        }
     }
 
     private void calcVisibleCandles() {

@@ -1,5 +1,9 @@
 package com.johnzh.klinelib.drawarea;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
+import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 
 import java.util.List;
@@ -11,7 +15,7 @@ import java.util.List;
  */
 public interface DrawArea {
 
-    void initOnDraw(KlineView view, List<DrawArea> allDrawAreas);
+    void prepareOnDraw(KlineView view, List<DrawArea> allDrawAreas);
 
     int getLeft();
 
@@ -24,4 +28,8 @@ public interface DrawArea {
     void hide(boolean hide);
 
     boolean isVisible();
+
+    void calculate(List<? extends KlineData> list, int startIndex, int endIndex);
+
+    void draw(KlineView klineView, Canvas canvas, Paint paint);
 }

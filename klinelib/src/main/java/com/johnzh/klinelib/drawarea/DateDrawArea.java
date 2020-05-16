@@ -1,5 +1,9 @@
 package com.johnzh.klinelib.drawarea;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
+import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.date.DrawDate;
 
@@ -21,9 +25,20 @@ public class DateDrawArea extends SizedDrawArea implements DataIndexConverter {
     }
 
     @Override
-    public void initOnDraw(KlineView view, List<DrawArea> allDrawAreas) {
-        super.initOnDraw(view, allDrawAreas);
+    public void prepareOnDraw(KlineView view, List<DrawArea> allDrawAreas) {
+        super.prepareOnDraw(view, allDrawAreas);
         mStartIndex = view.getStartIndex();
+    }
+
+    @Override
+    public void calculate(List<? extends KlineData> list, int startIndex, int endIndex) {
+    }
+
+    @Override
+    public void draw(KlineView klineView, Canvas canvas, Paint paint) {
+        mDrawDate.drawDate(klineView, this,
+                klineView.getStartIndex(), klineView.getEndIndex(),
+                canvas, paint);
     }
 
     public DrawDate getDrawDate() {
