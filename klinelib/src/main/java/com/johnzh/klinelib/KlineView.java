@@ -16,13 +16,13 @@ import android.view.ViewGroup;
 
 import com.johnzh.klinelib.detail.DetailView;
 import com.johnzh.klinelib.drawarea.DrawArea;
+import com.johnzh.klinelib.drawarea.IndexDrawArea;
 import com.johnzh.klinelib.gesture.DragInfo;
 import com.johnzh.klinelib.gesture.Scale;
+import com.johnzh.klinelib.indexes.Index;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,7 +33,8 @@ import androidx.annotation.Nullable;
  * Description:
  */
 public class KlineView extends View {
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+    // TODO: 2020/5/17 asynchronous task to calculate indexes. Is it necessary?
+    //public static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
 
     private enum TouchAction {
         NONE,
@@ -199,6 +200,41 @@ public class KlineView extends View {
     }
 
     // =================== Start: get / set =========================================================
+
+    /**
+     * Select a index from a specific IndexDrawArea, and redraw KlineView
+     *
+     * @param drawAreaIndex
+     * @param indexOfIndex
+     */
+    public void selectIndex(int drawAreaIndex, int indexOfIndex) {
+        if (drawAreaIndex >= 0 && drawAreaIndex < mDrawAreaList.size()) {
+            DrawArea drawArea = mDrawAreaList.get(drawAreaIndex);
+            if (drawArea instanceof IndexDrawArea) {
+                IndexDrawArea indexDrawArea = (IndexDrawArea) drawArea;
+                indexDrawArea.selectIndex(indexOfIndex);
+                redraw();
+            }
+        }
+    }
+
+    public void selectIndex(Class<? extends Index> clazz) {
+        boolean redraw = false;
+        for (DrawArea drawArea : mDrawAreaList) {
+            if (drawArea instanceof IndexDrawArea) {
+                IndexDrawArea indexDrawArea = (IndexDrawArea) drawArea;
+                List<Index> indexList = indexDrawArea.getIndexList();
+                for (int i = 0; i < indexList.size(); i++) {
+                    if (indexList.get(i).getClass() == clazz) {
+                        indexDrawArea.selectIndex(i);
+                        redraw = true;
+                    }
+                }
+            }
+        }
+        if (redraw) redraw();
+    }
+
     public List<DrawArea> getDrawAreaList() {
         return mDrawAreaList;
     }
@@ -281,6 +317,7 @@ public class KlineView extends View {
             mDetailView.attach(this);
         }
     }
+
     // =================== End: get / set ============================================================
     public float toPx(int unit, float value) {
         return TypedValue.applyDimension(unit, value, getResources().getDisplayMetrics());

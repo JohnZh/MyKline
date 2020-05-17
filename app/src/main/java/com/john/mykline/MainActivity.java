@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import com.john.mykline.bean.MyKlineData;
 import com.john.mykline.databinding.ActivityMainBinding;
 import com.johnzh.klinelib.KlineConfig;
+import com.johnzh.klinelib.indexes.MAIndex;
+import com.johnzh.klinelib.indexes.VolIndex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +31,15 @@ public class MainActivity extends AppCompatActivity {
         binding.klineView.setConfig(new KlineConfig.Builder().build());
         binding.klineView.setDetailView(binding.detailView);
 
-//        binding.pureK.setOnClickListener(v -> {
-//            binding.klineView.selectIndex(0);
-//        });
-//        binding.ma.setOnClickListener(v -> {
-//            binding.klineView.selectIndex(1);
-//        });
-//        binding.vol.setOnClickListener(v -> {
-//            binding.klineView.selectIndex(2);
-//        });
+        binding.pureK.setOnClickListener(v -> {
+            binding.klineView.selectIndex(0, 0);
+        });
+        binding.ma.setOnClickListener(v -> {
+            binding.klineView.selectIndex(MAIndex.class);
+        });
+        binding.vol.setOnClickListener(v -> {
+            binding.klineView.selectIndex(VolIndex.class);
+        });
         binding.combination.setOnClickListener(v -> {
             startCombinationActivity();
         });

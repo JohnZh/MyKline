@@ -70,6 +70,10 @@ public class IndexDrawArea extends RectDrawArea implements YAxisConverter {
         }
     }
 
+    public List<Index> getIndexList() {
+        return mIndexList;
+    }
+
     @Override
     public int getDataIndex(int visibleIndex) {
         return visibleIndex + mStartIndex;
