@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import com.john.mykline.bean.MyKlineData;
 import com.john.mykline.databinding.ActivityMainBinding;
 import com.johnzh.klinelib.KlineConfig;
+import com.johnzh.klinelib.detail.DetailView;
 import com.johnzh.klinelib.indicators.MAIndex;
 import com.johnzh.klinelib.indicators.VolIndex;
 
@@ -28,7 +29,10 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this));
         setContentView(binding.getRoot());
 
-        binding.klineView.setConfig(new KlineConfig.Builder().build());
+        binding.klineView.setConfig(
+                new KlineConfig.Builder()
+                        .activeDetailAction(DetailView.TRIGGERED_BY_DOUBLE_TAP)
+                        .build());
         binding.klineView.setDetailView(binding.detailView);
 
         binding.pureK.setOnClickListener(v -> {

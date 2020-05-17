@@ -45,17 +45,15 @@ public class KlineView extends View {
     }
 
     static class InnerHandler extends Handler {
-        static final int MSG_LONG_PRESS = 1;
-        static final int MSG_KEEP_SHOW_DETAIL = 2;
-        static final int MSG_CANCEL_SCALE = 3;
+        static final int MSG_ACTIVE_DETAIL = 1;
+        static final int MSG_CANCEL_SCALE = 2;
+        static final int MSG_CANCEL_DETAIL_WITH_ACTION_UP = 3;
 
         /**
          * Cancel detail action if the period of the touch from down to up/cancel is <= PERIOD_OF_CANCEL_DETAIL.
          * In another word, cancel detail action when touch is a click event
          */
-        static final int PERIOD_OF_CANCEL_DETAIL = 100;
-
-        static final int DURATION_OF_LONG_PRESS = 500;
+        static final int DURATION_OF_ON_CLICK = 200;
 
         static final int DELAY_FOR_AVOID_DRAG = 500;
 
@@ -67,13 +65,13 @@ public class KlineView extends View {
 
         @Override
         public void handleMessage(@NonNull Message msg) {
-            if (msg.what == MSG_LONG_PRESS) {
+            if (msg.what == MSG_ACTIVE_DETAIL) {
                 KlineView klineView = mReference.get();
                 if (klineView != null) {
                     MotionEvent e = (MotionEvent) msg.obj;
                     klineView.triggerDetailEvent(e);
                 }
-            } else if (msg.what == MSG_KEEP_SHOW_DETAIL) {
+            } else if (msg.what == MSG_CANCEL_DETAIL_WITH_ACTION_UP) {
                 // do nothing, just continue detail action
             } else if (msg.what == MSG_CANCEL_SCALE) {
                 KlineView klineView = mReference.get();
@@ -139,9 +137,12 @@ public class KlineView extends View {
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
-            mAction = TouchAction.SCALE;
-            Log.d(TAG, "onScaleBegin: ");
-            return super.onScaleBegin(detector);
+            if (mAction == TouchAction.NONE) {
+                mAction = TouchAction.SCALE;
+                Log.d(TAG, "onScaleBegin: ");
+                return true;
+            }
+            return false;
         }
 
         @Override
@@ -185,6 +186,22 @@ public class KlineView extends View {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             return super.onSingleTapConfirmed(e);
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            super.onLongPress(e);
+            if (mConfig.getActiveDetailAction() == DetailView.TRIGGERED_BY_LONG_PRESS) {
+                mHandler.obtainMessage(InnerHandler.MSG_ACTIVE_DETAIL, e).sendToTarget();
+            }
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            if (mConfig.getActiveDetailAction() == DetailView.TRIGGERED_BY_DOUBLE_TAP) {
+                mHandler.obtainMessage(InnerHandler.MSG_ACTIVE_DETAIL, e).sendToTarget();
+            }
+            return super.onDoubleTap(e);
         }
     };
 
@@ -402,7 +419,7 @@ public class KlineView extends View {
         }
     }
 
-    protected void redraw() {
+    public void redraw() {
         invalidate();
     }
 
@@ -431,20 +448,20 @@ public class KlineView extends View {
             case MotionEvent.ACTION_DOWN:
                 if (mAction == TouchAction.DETAIL) {
                     Log.d(TAG, "onTouchEvent: detail");
-                    Message msg = mHandler.obtainMessage(InnerHandler.MSG_KEEP_SHOW_DETAIL, event);
-                    mHandler.sendMessageDelayed(msg, InnerHandler.PERIOD_OF_CANCEL_DETAIL);
+
+                    Message msg = mHandler.obtainMessage(
+                            InnerHandler.MSG_CANCEL_DETAIL_WITH_ACTION_UP, event);
+                    mHandler.sendMessageDelayed(msg, InnerHandler.DURATION_OF_ON_CLICK);
+
                     if (mDetailView != null) mDetailView.onDownAgain(event);
                     return true;
                 }
-
-                Message msg = mHandler.obtainMessage(InnerHandler.MSG_LONG_PRESS, event);
-                mHandler.sendMessageDelayed(msg, InnerHandler.DURATION_OF_LONG_PRESS);
 
                 mDragInfo.setActionDownX(event.getX());
                 return true;
             case MotionEvent.ACTION_MOVE:
                 if (mAction == TouchAction.DETAIL
-                        && !mHandler.hasMessages(InnerHandler.MSG_KEEP_SHOW_DETAIL)) {
+                        && !mHandler.hasMessages(InnerHandler.MSG_CANCEL_DETAIL_WITH_ACTION_UP)) {
                     if (mDetailView != null) mDetailView.onMove(event);
                     return true;
                 }
@@ -456,8 +473,8 @@ public class KlineView extends View {
                         mAction = TouchAction.DRAG;
 
                         // It has been considered as drag action, cancel long press
-                        if (mHandler.hasMessages(InnerHandler.MSG_LONG_PRESS)) {
-                            mHandler.removeMessages(InnerHandler.MSG_LONG_PRESS);
+                        if (mHandler.hasMessages(InnerHandler.MSG_ACTIVE_DETAIL)) {
+                            mHandler.removeMessages(InnerHandler.MSG_ACTIVE_DETAIL);
                         }
 
                         int newDraggedDataAmount = mDragInfo
@@ -479,16 +496,11 @@ public class KlineView extends View {
                 return false;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (mHandler.hasMessages(InnerHandler.MSG_LONG_PRESS)) {
-                    // time is not enough to trigger long press
-                    mHandler.removeMessages(InnerHandler.MSG_LONG_PRESS);
-                }
-
                 if (mAction == TouchAction.DETAIL) {
-                    if (mHandler.hasMessages(InnerHandler.MSG_KEEP_SHOW_DETAIL)) {
+                    if (mHandler.hasMessages(InnerHandler.MSG_CANCEL_DETAIL_WITH_ACTION_UP)) {
                         // It is considered as a click event
-                        // then disable detail action and clear detail view
-                        mHandler.removeMessages(InnerHandler.MSG_KEEP_SHOW_DETAIL);
+                        // then cancel detail feature
+                        mHandler.removeMessages(InnerHandler.MSG_CANCEL_DETAIL_WITH_ACTION_UP);
                         mAction = TouchAction.NONE;
                         if (mDetailView != null) {
                             mDetailView.onCancel(event);

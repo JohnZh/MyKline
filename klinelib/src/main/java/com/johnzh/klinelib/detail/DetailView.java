@@ -11,6 +11,9 @@ import com.johnzh.klinelib.KlineView;
  */
 public interface DetailView {
 
+    int TRIGGERED_BY_LONG_PRESS = 666;
+    int TRIGGERED_BY_DOUBLE_TAP = 888;
+
     /**
      * Call when {@link KlineView#setDetailView(DetailView)}
      *

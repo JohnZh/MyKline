@@ -1,11 +1,5 @@
 package com.johnzh.klinelib;
 
-import com.johnzh.klinelib.date.DrawDate;
-import com.johnzh.klinelib.indicators.Index;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Modified by john on 2020/5/6
  * <p>
@@ -16,6 +10,7 @@ public class KlineConfig {
     private static final int DEFAULT_CANDLES = 70;
 
     private int initialCandles;
+    private int activeDetailAction;
 
     private KlineConfig() {
     }
@@ -28,16 +23,21 @@ public class KlineConfig {
         this.initialCandles = initialCandles;
     }
 
+    public int getActiveDetailAction() {
+        return activeDetailAction;
+    }
+
+    public void setActiveDetailAction(int activeDetailAction) {
+        this.activeDetailAction = activeDetailAction;
+    }
 
     public static final class Builder {
 
         private int initialCandles;
-        private List<Index> indexes;
-        private DrawDate drawDate;
+        private int activeDetailAction;
 
         public Builder() {
             initialCandles = DEFAULT_CANDLES;
-            indexes = new ArrayList<>();
         }
 
         public static Builder builder() {
@@ -49,24 +49,15 @@ public class KlineConfig {
             return this;
         }
 
-        public Builder indexes(List<Index> indexes) {
-            this.indexes = indexes;
-            return this;
-        }
-
-        public Builder index(Index index) {
-            this.indexes.add(index);
-            return this;
-        }
-
-        public Builder drawDate(DrawDate drawDate) {
-            this.drawDate = drawDate;
+        public Builder activeDetailAction(int activeDetailAction) {
+            this.activeDetailAction = activeDetailAction;
             return this;
         }
 
         public KlineConfig build() {
             KlineConfig klineConfig = new KlineConfig();
             klineConfig.initialCandles = initialCandles;
+            klineConfig.activeDetailAction = activeDetailAction;
             return klineConfig;
         }
     }
