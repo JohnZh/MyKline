@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
  * Description: Draw area is not contain padding. It is also a class for calculating.
  */
 public class IndexDrawArea extends SizedDrawArea
-        implements DataIndexConverter, CoordinateConverter {
+        implements DataIndexConverter, YAxisConverter, XAxisConverter {
 
     private List<Index> mIndexList;
     private float mOneDataWidth;
@@ -89,17 +89,17 @@ public class IndexDrawArea extends SizedDrawArea
     }
 
     @Override
+    public float getDrawX(int visibleIndex) {
+        float midOfDataWidth = mOneDataWidth / 2;
+        return left + visibleIndex * mOneDataWidth + midOfDataWidth;
+    }
+
+    @Override
     public float getNumber(float drawY) {
         AuxiliaryLines auxiliaryLines = getCurIndex().getAuxiliaryLines();
         float max = auxiliaryLines.getMaximum();
         float min = auxiliaryLines.getMinimum();
         return max - (drawY - top) / height * (max - min);
-    }
-
-    @Override
-    public float getDrawX(int visibleIndex) {
-        float midOfDataWidth = mOneDataWidth / 2;
-        return left + visibleIndex * mOneDataWidth + midOfDataWidth;
     }
 
     @Override

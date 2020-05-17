@@ -14,10 +14,13 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class DateDrawArea extends SizedDrawArea implements DataIndexConverter {
+public class DateDrawArea extends SizedDrawArea
+        implements DataIndexConverter, XAxisConverter {
 
     private DrawDate mDrawDate;
     private int mStartIndex;
+    private float mOneDataWidth;
+
 
     public DateDrawArea(int height, DrawDate drawDate) {
         super(height);
@@ -28,6 +31,7 @@ public class DateDrawArea extends SizedDrawArea implements DataIndexConverter {
     public void prepareOnDraw(KlineView view, List<DrawArea> allDrawAreas) {
         super.prepareOnDraw(view, allDrawAreas);
         mStartIndex = view.getStartIndex();
+        mOneDataWidth = view.getOneDataWidth();
     }
 
     @Override
@@ -53,5 +57,18 @@ public class DateDrawArea extends SizedDrawArea implements DataIndexConverter {
     @Override
     public int getVisibleIndex(int dataIndex) {
         return dataIndex - mStartIndex;
+    }
+
+    @Override
+    public int getVisibleIndex(float drawX) {
+        float midOfDistance = mOneDataWidth / 2;
+        int visibleIndex = (int) ((drawX - left - midOfDistance) / mOneDataWidth);
+        return visibleIndex;
+    }
+
+    @Override
+    public float getDrawX(int visibleIndex) {
+        float midOfDataWidth = mOneDataWidth / 2;
+        return left + visibleIndex * mOneDataWidth + midOfDataWidth;
     }
 }

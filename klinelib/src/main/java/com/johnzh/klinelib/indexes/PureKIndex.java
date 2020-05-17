@@ -3,7 +3,6 @@ package com.johnzh.klinelib.indexes;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
@@ -53,8 +52,6 @@ public class PureKIndex extends AbsIndex<KlineData> {
         for (int i = startIndex; i < endIndex; i++) {
             KlineData klineData = klineDataList.get(i);
             int visibleIndex = drawArea.getVisibleIndex(i);
-
-            Log.d("Temp", "drawIndex: " + this.getClass().getSimpleName()); // todo remove later
 
             float drawX = drawArea.getDrawX(visibleIndex);
             float firstY = drawArea.getDrawY(klineData.getHighestPrice());

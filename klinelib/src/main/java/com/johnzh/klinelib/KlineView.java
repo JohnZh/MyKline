@@ -14,7 +14,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.johnzh.klinelib.assist.DetailView;
+import com.johnzh.klinelib.detail.DetailView;
 import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.gesture.DragInfo;
 import com.johnzh.klinelib.gesture.Scale;
@@ -90,18 +90,17 @@ public class KlineView extends View {
     private List<? extends KlineData> mKlineDataList;
 
     private List<DrawArea> mDrawAreaList;
-
     private KlineConfig mConfig;
-    private int mCandles;
     private SharedObjects mSharedObjects;
 
     private ScaleGestureDetector mScaleGestureDetector;
     private GestureDetector mGestureDetector;
 
+    private int mCandles;
     private int mStartIndex;
     private int mEndIndex;
-
     private float mOneDataWidth;
+
     private DragInfo mDragInfo;
     private Scale mScale;
     private TouchAction mAction;
@@ -196,7 +195,7 @@ public class KlineView extends View {
         setTouchAction(TouchAction.DETAIL);
         if (mDetailView != null) {
             mDetailView.onStart(e);
-            mDetailView.onKlineViewTouchEvent(e);
+            mDetailView.onMove(e);
         }
     }
 // =================== Start: get / set =========================================================
@@ -386,7 +385,7 @@ public class KlineView extends View {
                     Log.d(TAG, "onTouchEvent: detail");
                     Message msg = mHandler.obtainMessage(InnerHandler.MSG_KEEP_SHOW_DETAIL, event);
                     mHandler.sendMessageDelayed(msg, InnerHandler.PERIOD_OF_CANCEL_DETAIL);
-                    if (mDetailView != null) mDetailView.onKlineViewTouchEvent(event);
+                    if (mDetailView != null) mDetailView.onMove(event);
                     return true;
                 }
 
@@ -398,7 +397,7 @@ public class KlineView extends View {
             case MotionEvent.ACTION_MOVE:
                 if (mAction == TouchAction.DETAIL
                         && !mHandler.hasMessages(InnerHandler.MSG_KEEP_SHOW_DETAIL)) {
-                    if (mDetailView != null) mDetailView.onKlineViewTouchEvent(event);
+                    if (mDetailView != null) mDetailView.onMove(event);
                     return true;
                 }
 
@@ -444,12 +443,12 @@ public class KlineView extends View {
                         mHandler.removeMessages(InnerHandler.MSG_KEEP_SHOW_DETAIL);
                         mAction = TouchAction.NONE;
                         if (mDetailView != null) {
-                            mDetailView.onKlineViewTouchEvent(event);
+                            mDetailView.onMove(event);
                             mDetailView.onCancel(event);
                         }
                     } else {
                         if (mDetailView != null) {
-                            mDetailView.onKlineViewTouchEvent(event);
+                            mDetailView.onMove(event);
                         }
                     }
                     return true;

@@ -1,4 +1,4 @@
-package com.johnzh.klinelib.assist;
+package com.johnzh.klinelib.detail;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -67,7 +67,7 @@ public class SimpleDetailView extends View implements DetailView {
     }
 
     @Override
-    public void onKlineViewTouchEvent(MotionEvent event) {
+    public void onMove(MotionEvent event) {
         mGestureDetector.onTouchEvent(event);
         invalidate();
     }
