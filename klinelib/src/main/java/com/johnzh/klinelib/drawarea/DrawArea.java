@@ -13,7 +13,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public interface DrawArea {
+public interface DrawArea extends XAxisConverter, DataIndexConverter {
 
     void prepareOnDraw(KlineView view, List<DrawArea> allDrawAreas);
 
@@ -24,6 +24,8 @@ public interface DrawArea {
     int getTop();
 
     int getHeight();
+
+    boolean contains(float x, float y);
 
     void hide(boolean hide);
 

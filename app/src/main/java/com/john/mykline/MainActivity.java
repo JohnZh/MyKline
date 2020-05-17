@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.klineView.setConfig(new KlineConfig.Builder().build());
-        binding.klineView.setDetailView(null);
+        binding.klineView.setDetailView(binding.detailView);
 
 //        binding.pureK.setOnClickListener(v -> {
 //            binding.klineView.selectIndex(0);

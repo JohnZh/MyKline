@@ -8,7 +8,7 @@ import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.CandlesAuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.SimpleAuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.VolAuxiliaryLines;
-import com.johnzh.klinelib.date.DefaultDrawDate;
+import com.johnzh.klinelib.date.SimpleDrawDate;
 import com.johnzh.klinelib.date.DrawDate;
 import com.johnzh.klinelib.drawarea.DateDrawArea;
 import com.johnzh.klinelib.drawarea.DrawArea;
@@ -55,7 +55,7 @@ public class KlineFactory implements Factory {
         float fontSize = sp2Px( 10);
         float textMargin = dp2Px( 2);
         int color = Color.parseColor("#999999");
-        return new DefaultDrawDate(fontSize, textMargin, color);
+        return new SimpleDrawDate(fontSize, textMargin, color);
     }
 
     private List<Index> getIndexListForData() {

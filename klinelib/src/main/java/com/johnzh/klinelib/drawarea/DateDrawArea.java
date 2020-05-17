@@ -14,8 +14,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class DateDrawArea extends SizedDrawArea
-        implements DataIndexConverter, XAxisConverter {
+public class DateDrawArea extends RectDrawArea {
 
     private DrawDate mDrawDate;
     private int mStartIndex;

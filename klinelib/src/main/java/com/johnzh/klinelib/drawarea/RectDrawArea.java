@@ -9,7 +9,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public abstract class SizedDrawArea implements DrawArea {
+public abstract class RectDrawArea implements DrawArea {
 
     protected int width;
     protected int height;
@@ -17,15 +17,15 @@ public abstract class SizedDrawArea implements DrawArea {
     protected int top;
     protected boolean hide;
 
-    public SizedDrawArea() {
+    public RectDrawArea() {
         this(-1, -1); // -1 match parent
     }
 
-    public SizedDrawArea(int height) {
+    public RectDrawArea(int height) {
         this(-1, height); // -1 match parent
     }
 
-    public SizedDrawArea(int width, int height) {
+    public RectDrawArea(int width, int height) {
         this.width = width;
         this.height = height;
     }
@@ -65,6 +65,12 @@ public abstract class SizedDrawArea implements DrawArea {
     @Override
     public int getHeight() {
         return height;
+    }
+
+    @Override
+    public boolean contains(float x, float y) {
+        return width != 0 && height != 0  // check for empty first
+                && x >= left && x <= left + width && y >= top && y <= top + height;
     }
 
     @Override

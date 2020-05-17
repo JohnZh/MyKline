@@ -2,6 +2,7 @@ package com.johnzh.klinelib;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
 
 /**
  * Modified by john on 2020/5/10
@@ -44,6 +45,30 @@ public class DrawTextTool {
         float offset = fontHeight / 2 - fontMetrics.bottom;
         float y = top + fontHeight / 2 + offset;
         canvas.drawText(text, left, y, paint);
+    }
+
+    public static void getTextBgFromLeftTop(String text, float left, float top,
+                                            RectF rectF, Paint paint) {
+        getTextBgFromLeftTop(text, left, top, 0, 0, rectF, paint);
+    }
+
+    public static void getTextBgFromLeftTop(String text, float left, float top,
+                                            int paddingX, int paddingY,
+                                            RectF rectF, Paint paint) {
+        getTextBgFromLeftTop(text, left, top, paddingX, paddingY, paddingX, paddingY, rectF, paint);
+    }
+
+    public static void getTextBgFromLeftTop(String text, float left, float top,
+                                            int paddingLeft, int paddingTop,
+                                            int paddingRight, int paddingBottom,
+                                            RectF rectF, Paint paint) {
+        float width = paint.measureText(text);
+        Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+        float height = fontMetrics.bottom - fontMetrics.top;
+        rectF.left = left - paddingLeft;
+        rectF.right = left + width + paddingRight;
+        rectF.top = top - paddingTop;
+        rectF.bottom = top + height + paddingBottom;
     }
 
     /**

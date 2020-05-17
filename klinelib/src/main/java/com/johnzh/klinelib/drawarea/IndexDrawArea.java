@@ -17,8 +17,7 @@ import androidx.annotation.NonNull;
  * <p>
  * Description: Draw area is not contain padding. It is also a class for calculating.
  */
-public class IndexDrawArea extends SizedDrawArea
-        implements DataIndexConverter, YAxisConverter, XAxisConverter {
+public class IndexDrawArea extends RectDrawArea implements YAxisConverter {
 
     private List<Index> mIndexList;
     private float mOneDataWidth;

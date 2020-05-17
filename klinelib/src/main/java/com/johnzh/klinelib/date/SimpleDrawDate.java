@@ -16,16 +16,16 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class DefaultDrawDate implements DrawDate {
+public class SimpleDrawDate implements DrawDate {
 
     private float fontSize;
     private float textMargin;
     private int color;
 
-    static final SimpleDateFormat DATE_FORMAT
+    public static final SimpleDateFormat DATE_FORMAT
             = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-    public DefaultDrawDate(float fontSize, float textMargin, int color) {
+    public SimpleDrawDate(float fontSize, float textMargin, int color) {
         this.fontSize = fontSize;
         this.textMargin = textMargin;
         this.color = color;
