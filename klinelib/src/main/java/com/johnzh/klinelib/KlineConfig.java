@@ -1,7 +1,7 @@
 package com.johnzh.klinelib;
 
 import com.johnzh.klinelib.date.DrawDate;
-import com.johnzh.klinelib.indexes.Index;
+import com.johnzh.klinelib.indicators.Index;
 
 import java.util.ArrayList;
 import java.util.List;

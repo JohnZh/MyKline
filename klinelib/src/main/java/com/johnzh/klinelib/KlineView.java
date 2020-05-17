@@ -19,7 +19,7 @@ import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.IndexDrawArea;
 import com.johnzh.klinelib.gesture.DragInfo;
 import com.johnzh.klinelib.gesture.Scale;
-import com.johnzh.klinelib.indexes.Index;
+import com.johnzh.klinelib.indicators.Index;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

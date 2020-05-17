@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.indexes.Index;
+import com.johnzh.klinelib.indicators.Index;
 
 import java.util.List;
 

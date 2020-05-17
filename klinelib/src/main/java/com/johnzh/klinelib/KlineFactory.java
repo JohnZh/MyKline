@@ -13,10 +13,10 @@ import com.johnzh.klinelib.date.DrawDate;
 import com.johnzh.klinelib.drawarea.DateDrawArea;
 import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.IndexDrawArea;
-import com.johnzh.klinelib.indexes.Index;
-import com.johnzh.klinelib.indexes.MAIndex;
-import com.johnzh.klinelib.indexes.PureKIndex;
-import com.johnzh.klinelib.indexes.VolIndex;
+import com.johnzh.klinelib.indicators.Index;
+import com.johnzh.klinelib.indicators.MAIndex;
+import com.johnzh.klinelib.indicators.PureKIndex;
+import com.johnzh.klinelib.indicators.VolIndex;
 
 import java.util.ArrayList;
 import java.util.List;

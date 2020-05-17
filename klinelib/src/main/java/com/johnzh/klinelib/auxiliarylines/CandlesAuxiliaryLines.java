@@ -3,7 +3,7 @@ package com.johnzh.klinelib.auxiliarylines;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.ValueRange;
-import com.johnzh.klinelib.indexes.Index;
+import com.johnzh.klinelib.indicators.Index;
 
 import java.util.List;
 

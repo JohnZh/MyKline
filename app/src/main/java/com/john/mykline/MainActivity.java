@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import com.john.mykline.bean.MyKlineData;
 import com.john.mykline.databinding.ActivityMainBinding;
 import com.johnzh.klinelib.KlineConfig;
-import com.johnzh.klinelib.indexes.MAIndex;
-import com.johnzh.klinelib.indexes.VolIndex;
+import com.johnzh.klinelib.indicators.MAIndex;
+import com.johnzh.klinelib.indicators.VolIndex;
 
 import java.util.ArrayList;
 import java.util.List;

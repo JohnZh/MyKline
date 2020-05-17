@@ -1,4 +1,4 @@
-package com.johnzh.klinelib.indexes;
+package com.johnzh.klinelib.indicators;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

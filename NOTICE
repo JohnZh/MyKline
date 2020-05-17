@@ -1,0 +1,5 @@
+Extensible KLine Component For Android App
+Copyright 2020 John Zhang.
+
+This component contains code some indicator algorithm, such as
+MA, BOLL, MACD, KDJ, RSI, WR.

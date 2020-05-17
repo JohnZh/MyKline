@@ -1,6 +1,6 @@
 package com.johnzh.klinelib;
 
-import com.johnzh.klinelib.indexes.MAIndex;
+import com.johnzh.klinelib.indicators.MAIndex;
 
 /**
  * Modified by john on 2020/5/11
