@@ -4,13 +4,14 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.SparseArray;
 
-import com.johnzh.klinelib.drawarea.IndexDrawArea;
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.FloatCalc;
-import com.johnzh.klinelib.IndexData;
+import com.johnzh.klinelib.IndicatorData;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.ValueRange;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.drawarea.IndexDrawArea;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class MAIndex extends AbsIndex<KlineData> implements ValueRange {
+public class MAIndex extends AbsIndex implements ValueRange {
 
     private PureKIndex pureKIndex;
     private float lineWidth;
@@ -29,7 +30,7 @@ public class MAIndex extends AbsIndex<KlineData> implements ValueRange {
     private float maxPrice;
     private float minPrice;
 
-    public MAIndex(AuxiliaryLines<KlineData> auxiliaryLines,
+    public MAIndex(AuxiliaryLines auxiliaryLines,
                    PureKIndex pureKIndex,
                    float lineWidth,
                    int[] ma, int[] colors) {
@@ -70,36 +71,36 @@ public class MAIndex extends AbsIndex<KlineData> implements ValueRange {
     }
 
     @Override
-    public void calcIndexAsync(List<KlineData> klineDataList) {
+    public void calcIndexAsync(List<DATA> dataList) {
 
     }
 
     @Override
-    public void calcIndex(List<KlineData> klineDataList, int startIndex, int endIndex) {
-        pureKIndex.calcIndex(klineDataList, startIndex, endIndex);
+    public void calcIndex(List<DATA> dataList, int startIndex, int endIndex) {
+        pureKIndex.calcIndex(dataList, startIndex, endIndex);
 
         resetMaxMinPrice();
 
         for (int i = startIndex; i < endIndex; i++) {
-            IndexData indexData = klineDataList.get(i).getIndexData();
-            if (indexData == null) {
-                indexData = klineDataList.get(i).newIndexData();
+            IndicatorData indicatorData = dataList.get(i).getIndexData();
+            if (indicatorData == null) {
+                indicatorData = dataList.get(i).newIndexData();
             }
 
             for (int maKey : this.ma) {
                 if (i - maKey < -1) continue; // data is not enough
 
-                Float maValue = indexData.getMa().get(maKey);
+                Float maValue = indicatorData.getMa().get(maKey);
                 if (maValue != null) {
                     updateMaxMinPrice(maValue);
                     continue;
                 }
 
-                Float newMaValue = calcMaValue(klineDataList, i, maKey);
+                Float newMaValue = calcMaValue(dataList, i, maKey);
                 updateMaxMinPrice(newMaValue);
-                indexData.getMa().put(maKey, newMaValue);
+                indicatorData.getMa().put(maKey, newMaValue);
             }
-            klineDataList.get(i).setIndexData(indexData);
+            dataList.get(i).setIndexData(indicatorData);
         }
     }
 
@@ -127,7 +128,7 @@ public class MAIndex extends AbsIndex<KlineData> implements ValueRange {
     public void drawIndex(KlineView klineView, IndexDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
         pureKIndex.drawIndex(klineView, drawArea, startIndex, endIndex, canvas, paint);
 
-        List<? extends KlineData> klineDataList = klineView.getKlineDataList();
+        List<? extends KlineData> klineDataList = klineView.getDataList();
 
         for (int i = 0; i < ma.length; i++) {
             int maKey = ma[i];

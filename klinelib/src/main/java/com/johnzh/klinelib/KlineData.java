@@ -7,7 +7,7 @@ import java.util.Date;
  * <p>
  * Description:
  */
-public interface KlineData<T extends IndexData> {
+public interface KlineData<T extends IndicatorData> {
 
     float getOpenPrice();
 

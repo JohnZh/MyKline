@@ -4,9 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
-import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.SharedObjects;
 import com.johnzh.klinelib.ValueRange;
@@ -20,7 +20,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class SimpleAuxiliaryLines implements AuxiliaryLines<KlineData> {
+public class SimpleAuxiliaryLines implements AuxiliaryLines {
 
     protected float[] horizontalLines;
 
@@ -65,7 +65,7 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines<KlineData> {
     }
 
     @Override
-    public void calcHorizontalLines(List<KlineData> klineDataList, Index<KlineData> curIndex, int startIndex, int endIndex) {
+    public void calcHorizontalLines(List<DATA> dataList, Index curIndex, int startIndex, int endIndex) {
         float max = Float.MIN_VALUE;
         float min = Float.MAX_VALUE;
 
@@ -87,7 +87,7 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines<KlineData> {
     }
 
     @Override
-    public void calcVerticalLines(List<KlineData> klineDataList, int startIndex, int endIndex) {
+    public void calcVerticalLines(List<DATA> dataList, int startIndex, int endIndex) {
 
     }
 

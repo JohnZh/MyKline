@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
@@ -16,28 +17,28 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class VolIndex extends AbsIndex<KlineData> {
+public class VolIndex extends AbsIndex {
     private int[] colors;
     private float dataPaddingHorizontal;
 
-    public VolIndex(AuxiliaryLines<KlineData> auxiliaryLines, int[] colors, float dataPaddingHorizontal) {
+    public VolIndex(AuxiliaryLines auxiliaryLines, int[] colors, float dataPaddingHorizontal) {
         super(auxiliaryLines);
         this.colors = colors;
         this.dataPaddingHorizontal = dataPaddingHorizontal;
     }
 
     @Override
-    public void calcIndexAsync(List<KlineData> klineDataList) {
+    public void calcIndexAsync(List<DATA> klineDataList) {
     }
 
     @Override
-    public void calcIndex(List<KlineData> klineDataList, int startIndex, int endIndex) {
+    public void calcIndex(List<DATA> klineDataList, int startIndex, int endIndex) {
     }
 
     @Override
     public void drawIndex(KlineView klineView, IndexDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
         float candleWidth = drawArea.getOneDataWidth() - 2 * dataPaddingHorizontal;
-        List<? extends KlineData> klineDataList = klineView.getKlineDataList();
+        List<? extends KlineData> klineDataList = klineView.getDataList();
         for (int i = startIndex; i < endIndex; i++) {
             KlineData klineData = klineDataList.get(i);
             float dataX = drawArea.getDrawX(drawArea.getVisibleIndex(i));

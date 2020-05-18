@@ -34,7 +34,7 @@ public class SimpleDrawDate implements DrawDate {
     @Override
     public void drawDate(KlineView klineView, DateDrawArea drawArea, int startIndex, int endIndex,
                          Canvas canvas, Paint paint) {
-        List<? extends KlineData> klineDataList = klineView.getKlineDataList();
+        List<? extends KlineData> klineDataList = klineView.getDataList();
         KlineData data = klineDataList.get(startIndex);
 
         paint.setColor(color);

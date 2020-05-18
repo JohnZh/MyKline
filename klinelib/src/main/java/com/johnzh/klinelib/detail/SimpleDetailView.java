@@ -129,9 +129,7 @@ public class SimpleDetailView extends View implements DetailView {
 
     private PointInfo mPointInfo;
     private CrossPointInfo mCrossPointInfo;
-
     private boolean mStarted;
-    private boolean mStick;
 
     public SimpleDetailView(Context context) {
         super(context);
@@ -152,10 +150,6 @@ public class SimpleDetailView extends View implements DetailView {
         mLineColor = Color.parseColor("#000000");
         mTextColor = Color.parseColor("#ffffff");
 
-    }
-
-    public void setStick(boolean stick) {
-        mStick = stick;
     }
 
     @Override
@@ -237,7 +231,7 @@ public class SimpleDetailView extends View implements DetailView {
     @Override
     protected void onDraw(Canvas canvas) {
         if (mKlineView == null || mDrawArea == null || !mStarted) return;
-        List<? extends KlineData> klineDataList = mKlineView.getKlineDataList();
+        List<? extends KlineData> klineDataList = mKlineView.getDataList();
         int dataIndex = mDrawArea.getDataIndex(mCrossPointInfo.visibleIndex);
         KlineData klineData = klineDataList.get(dataIndex);
         float cx = mDrawArea.getDrawX(mCrossPointInfo.visibleIndex);

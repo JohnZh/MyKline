@@ -3,7 +3,7 @@ package com.johnzh.klinelib.drawarea;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.johnzh.klinelib.KlineData;
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public interface DrawArea extends XAxisConverter, DataIndexConverter {
 
     boolean isVisible();
 
-    void calculate(List<? extends KlineData> list, int startIndex, int endIndex);
+    void calculate(List<DATA> list, int startIndex, int endIndex);
 
     void draw(KlineView klineView, Canvas canvas, Paint paint);
 }

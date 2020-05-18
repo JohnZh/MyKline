@@ -1,5 +1,6 @@
 package com.johnzh.klinelib.auxiliarylines;
 
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.ValueRange;
@@ -20,7 +21,7 @@ public class CandlesAuxiliaryLines extends SimpleAuxiliaryLines {
     }
 
     @Override
-    public void calcHorizontalLines(List<KlineData> klineDataList, Index<KlineData> curIndex, int startIndex, int endIndex) {
+    public void calcHorizontalLines(List<DATA> klineDataList, Index curIndex, int startIndex, int endIndex) {
         float max = Float.MIN_VALUE;
         float min = Float.MAX_VALUE;
 

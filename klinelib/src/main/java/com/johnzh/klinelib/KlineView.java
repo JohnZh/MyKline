@@ -86,7 +86,7 @@ public class KlineView extends View {
     public static final String TAG = KlineView.class.getSimpleName();
     public static final Paint sPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private List<? extends KlineData> mKlineDataList;
+    private List<DATA> mDataList;
 
     private List<DrawArea> mDrawAreaList;
     private KlineConfig mConfig;
@@ -303,17 +303,18 @@ public class KlineView extends View {
         return mSharedObjects;
     }
 
-    public void setKlineDataList(@NonNull List<? extends KlineData> klineDataList) {
-        mKlineDataList = klineDataList;
+    public void setDataList(@NonNull List<DATA> dataList) {
+        mDataList = dataList;
         redraw();
     }
 
-    public List<? extends KlineData> getKlineDataList() {
-        return mKlineDataList;
+    public List<? extends KlineData> getDataList() {
+        return mDataList;
     }
 
-    public void appendKlineData(@NonNull List<? extends KlineData> data) {
-
+    public void addHistoricalData(@NonNull List<DATA> dataList) {
+        if (mDataList != null) mDataList.addAll(0, dataList);
+        redraw();
     }
 
     public float getOneDataWidth() {
@@ -348,7 +349,6 @@ public class KlineView extends View {
         return toPx(TypedValue.COMPLEX_UNIT_DIP, value);
     }
     // =================== End: tool methods =========================================================
-
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -394,7 +394,7 @@ public class KlineView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mKlineDataList == null || mKlineDataList.isEmpty()) {
+        if (mDataList == null || mDataList.isEmpty()) {
             Log.i(TAG, "onDraw: mKlineDataList is null or empty");
             return;
         }
@@ -407,7 +407,7 @@ public class KlineView extends View {
         calcVisibleCandles();
 
         for (DrawArea drawArea : mDrawAreaList) {
-            drawArea.calculate(mKlineDataList, mStartIndex, mEndIndex);
+            drawArea.calculate(mDataList, mStartIndex, mEndIndex);
         }
 
         for (DrawArea drawArea : mDrawAreaList) {
@@ -426,11 +426,11 @@ public class KlineView extends View {
     private void calcVisibleCandles() {
         mCandles = (int) (mConfig.getInitialCandles() / mScale.getScale());
         mOneDataWidth = calcOneDataWidth(mCandles);
-        mDragInfo.setMaxDraggedDataAmount(Math.max((mKlineDataList.size() - mCandles), 0));
+        mDragInfo.setMaxDraggedDataAmount(Math.max((mDataList.size() - mCandles), 0));
         int dataMoved = mDragInfo.getDraggedDataAmount();
-        mStartIndex = mKlineDataList.size() - mCandles < 0
-                ? 0 : (mKlineDataList.size() - mCandles - dataMoved);
-        int length = Math.min(mKlineDataList.size(), mCandles);
+        mStartIndex = mDataList.size() - mCandles < 0
+                ? 0 : (mDataList.size() - mCandles - dataMoved);
+        int length = Math.min(mDataList.size(), mCandles);
         mEndIndex = mStartIndex + length;
     }
 

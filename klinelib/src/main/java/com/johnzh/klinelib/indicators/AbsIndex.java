@@ -3,7 +3,7 @@ package com.johnzh.klinelib.indicators;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.johnzh.klinelib.KlineData;
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.drawarea.IndexDrawArea;
@@ -15,18 +15,18 @@ import java.util.List;
  * <p>
  * Description:
  */
-public abstract class AbsIndex<T extends KlineData> implements Index<T> {
+public abstract class AbsIndex implements Index {
 
-    private AuxiliaryLines<T> auxiliaryLines;
+    private AuxiliaryLines auxiliaryLines;
 
-    public AbsIndex(AuxiliaryLines<T> auxiliaryLines) {
+    public AbsIndex(AuxiliaryLines auxiliaryLines) {
         this.auxiliaryLines = auxiliaryLines;
     }
 
     @Override
-    public void calcAuxiliaryLines(List<T> klineDataList, int startIndex, int endIndex) {
-        this.auxiliaryLines.calcHorizontalLines(klineDataList, this, startIndex, endIndex);
-        this.auxiliaryLines.calcVerticalLines(klineDataList, startIndex, endIndex);
+    public void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
+        this.auxiliaryLines.calcHorizontalLines(dataList, this, startIndex, endIndex);
+        this.auxiliaryLines.calcVerticalLines(dataList, startIndex, endIndex);
     }
 
     @Override
@@ -36,7 +36,7 @@ public abstract class AbsIndex<T extends KlineData> implements Index<T> {
     }
 
     @Override
-    public AuxiliaryLines<T> getAuxiliaryLines() {
+    public AuxiliaryLines getAuxiliaryLines() {
         return auxiliaryLines;
     }
 }

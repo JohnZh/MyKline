@@ -3,7 +3,7 @@ package com.johnzh.klinelib.drawarea;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.johnzh.klinelib.KlineData;
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.date.DrawDate;
 
@@ -34,7 +34,7 @@ public class DateDrawArea extends RectDrawArea {
     }
 
     @Override
-    public void calculate(List<? extends KlineData> list, int startIndex, int endIndex) {
+    public void calculate(List<DATA> list, int startIndex, int endIndex) {
     }
 
     @Override

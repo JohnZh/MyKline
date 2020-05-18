@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
@@ -16,7 +17,7 @@ import java.util.List;
  * <p>
  * Description: no index implement, just k line candles
  */
-public class PureKIndex extends AbsIndex<KlineData> {
+public class PureKIndex extends AbsIndex {
 
     private int[] colors;
     private float dataPaddingHorizontal;
@@ -28,7 +29,7 @@ public class PureKIndex extends AbsIndex<KlineData> {
      * @param dataPaddingHorizontal
      * @param candleLineWidth
      */
-    public PureKIndex(AuxiliaryLines<KlineData> auxiliaryLines,
+    public PureKIndex(AuxiliaryLines auxiliaryLines,
                       int[] colors, float dataPaddingHorizontal, float candleLineWidth) {
         super(auxiliaryLines);
         this.colors = colors;
@@ -37,18 +38,18 @@ public class PureKIndex extends AbsIndex<KlineData> {
     }
 
     @Override
-    public void calcIndexAsync(List<KlineData> klineDataList) {
+    public void calcIndexAsync(List<DATA> dataList) {
 
     }
 
     @Override
-    public void calcIndex(List<KlineData> klineDataList, int startIndex, int endIndex) {
+    public void calcIndex(List<DATA> dataList, int startIndex, int endIndex) {
 
     }
 
     @Override
     public void drawIndex(KlineView klineView, IndexDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
-        List<? extends KlineData> klineDataList = klineView.getKlineDataList();
+        List<? extends KlineData> klineDataList = klineView.getDataList();
         for (int i = startIndex; i < endIndex; i++) {
             KlineData klineData = klineDataList.get(i);
             int visibleIndex = drawArea.getVisibleIndex(i);

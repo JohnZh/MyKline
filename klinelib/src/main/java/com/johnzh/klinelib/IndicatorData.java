@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 John Zhang
+ * Copyright (c) 2020 JohnZh
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,36 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.johnzh.klinelib.indicators;
+package com.johnzh.klinelib;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-
-import com.johnzh.klinelib.DATA;
-import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.drawarea.IndexDrawArea;
-
-import java.util.List;
+import com.johnzh.klinelib.indicators.MAIndex;
 
 /**
- * Modified by john on 2020/5/18
- *
- * <p>Index for kline</p>
- *
+ * Modified by john on 2020/5/11
+ * <p>
+ * Description:
  */
-public interface Index {
+public class IndicatorData {
 
-    void calcIndexAsync(List<DATA> dataList);
+    private MAIndex.MA ma;
 
-    void calcIndex(List<DATA> dataList, int startIndex, int endIndex);
-
-    void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex);
-
-    void drawAuxiliaryLines(KlineView klineView, IndexDrawArea drawArea, Canvas canvas, Paint paint);
-
-    void drawIndex(KlineView klineView, IndexDrawArea drawArea, int startIndex, int endIndex,
-                   Canvas canvas, Paint paint);
-
-    AuxiliaryLines getAuxiliaryLines();
+    public MAIndex.MA getMa() {
+        if (ma == null) {
+            ma = new MAIndex.MA();
+        }
+        return ma;
+    }
 }

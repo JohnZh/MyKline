@@ -3,7 +3,7 @@ package com.johnzh.klinelib.drawarea;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.johnzh.klinelib.KlineData;
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.indicators.Index;
@@ -32,7 +32,7 @@ public class IndexDrawArea extends RectDrawArea implements YAxisConverter {
     }
 
     @Override
-    public void calculate(List<? extends KlineData> list, int startIndex, int endIndex) {
+    public void calculate(List<DATA> list, int startIndex, int endIndex) {
         getCurIndex().calcIndex(list, startIndex, endIndex);
         getCurIndex().calcAuxiliaryLines(list, startIndex, endIndex);
     }

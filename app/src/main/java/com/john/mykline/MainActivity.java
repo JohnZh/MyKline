@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 
 import com.john.mykline.bean.MyKlineData;
 import com.john.mykline.databinding.ActivityMainBinding;
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineConfig;
 import com.johnzh.klinelib.detail.DetailView;
 import com.johnzh.klinelib.indicators.MAIndex;
@@ -52,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
                 .enqueue(new Callback<List<List<String>>>() {
                     @Override
                     public void onResponse(Call<List<List<String>>> call, Response<List<List<String>>> response) {
-                        List<MyKlineData> myKlineDataList = new ArrayList<>();
-                        convertData(response.body(), myKlineDataList);
-                        updateKlineView(myKlineDataList);
+                        List<DATA> data = new ArrayList<>();
+                        convertData(response.body(), data);
+                        updateKlineView(data);
                     }
 
                     @Override
@@ -62,19 +63,20 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+
     }
 
     private void startCombinationActivity() {
         startActivity(new Intent(this, CombinationActivity.class));
     }
 
-    private void convertData(List<List<String>> body, List<MyKlineData> kDataList) {
+    private void convertData(List<List<String>> body, List<DATA> kDataList) {
         for (List<String> stringList : body) {
-            kDataList.add(getKData(stringList));
+            kDataList.add(getData(stringList));
         }
     }
 
-    private MyKlineData getKData(List<String> stringList) {
+    private DATA getData(List<String> stringList) {
         MyKlineData kData = new MyKlineData();
         if (stringList.size() >= 6) {
             int i = 0;
@@ -85,10 +87,10 @@ public class MainActivity extends AppCompatActivity {
             kData.setClosePrice(stringList.get(i++));
             kData.setVolume(stringList.get(i++));
         }
-        return kData;
+        return new DATA(kData);
     }
 
-    private void updateKlineView(List<MyKlineData> body) {
-        binding.klineView.setKlineDataList(body);
+    private void updateKlineView(List<DATA> body) {
+        binding.klineView.setDataList(body);
     }
 }
