@@ -6,6 +6,18 @@ package com.johnzh.klinelib.gesture;
  * Description:
  */
 public final class DragInfo {
+
+    public interface Listener {
+        /**
+         * Call when drag occur, totalData = remainingData + draggedData + visibleData
+         *
+         * @param remainingData the remaining data in the left of visible data
+         * @param draggedData   the dragged data in the right of visible data
+         * @param visibleData   the quality of visible data
+         */
+        void onDrag(int remainingData, int draggedData, int visibleData);
+    }
+
     private float actionDownX;
 
     private int draggedDataAmount;
@@ -61,5 +73,15 @@ public final class DragInfo {
         if (maxDraggedDataAmount < preDraggedDataAmount) {
             preDraggedDataAmount = maxDraggedDataAmount;
         }
+    }
+
+    public boolean isLeftMost() {
+        return maxDraggedDataAmount != 0
+                && draggedDataAmount == maxDraggedDataAmount;
+    }
+
+    public boolean isRightMost() {
+        return maxDraggedDataAmount != 0
+                && draggedDataAmount == 0;
     }
 }

@@ -3,8 +3,8 @@ package com.johnzh.klinelib.date;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.DrawTextTool;
-import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.drawarea.DateDrawArea;
 
@@ -34,8 +34,8 @@ public class SimpleDrawDate implements DrawDate {
     @Override
     public void drawDate(KlineView klineView, DateDrawArea drawArea, int startIndex, int endIndex,
                          Canvas canvas, Paint paint) {
-        List<? extends KlineData> klineDataList = klineView.getDataList();
-        KlineData data = klineDataList.get(startIndex);
+        List<DATA> klineDataList = klineView.getDataList();
+        DATA data = klineDataList.get(startIndex);
 
         paint.setColor(color);
         paint.setTextSize(fontSize);

@@ -22,6 +22,7 @@ import com.johnzh.klinelib.gesture.Scale;
 import com.johnzh.klinelib.indicators.Indicator;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -87,6 +88,7 @@ public class KlineView extends View {
     public static final Paint sPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private List<DATA> mDataList;
+    private List<DATA> mNewDataList; // Saving the new data when dragging
 
     private List<DrawArea> mDrawAreaList;
     private KlineConfig mConfig;
@@ -94,6 +96,8 @@ public class KlineView extends View {
 
     private ScaleGestureDetector mScaleGestureDetector;
     private GestureDetector mGestureDetector;
+    private DragInfo.Listener mOnDataDragListener;
+    private Scale.Listener mOnScaleListener;
 
     private int mCandles;
     private int mStartIndex;
@@ -117,6 +121,7 @@ public class KlineView extends View {
     }
 
     private void init() {
+        mNewDataList = new ArrayList<>();
         mDrawAreaList = new KlineFactory(getContext()).createDrawAreas();
         mSharedObjects = new SharedObjects();
         mConfig = new KlineConfig.Builder().build();
@@ -126,7 +131,6 @@ public class KlineView extends View {
         mGestureDetector = new GestureDetector(getContext(), mSimpleOnGestureListener);
 
         mDragInfo = new DragInfo();
-        mScale = new Scale();
         mAction = TouchAction.NONE;
         mHandler = new InnerHandler(this);
     }
@@ -166,8 +170,8 @@ public class KlineView extends View {
                 mScale.setScale(scaleFactor);
                 mPreScaleFactor = scaleFactor;
 
-                if (mScale.getListener() != null) {
-                    mScale.getListener().onScaleChanged(scaleFactor);
+                if (mOnScaleListener != null) {
+                    mOnScaleListener.onScaleChanged(scaleFactor);
                 }
 
                 redraw();
@@ -219,7 +223,7 @@ public class KlineView extends View {
     // =================== Start: get / set =========================================================
 
     /**
-     * Select a index from a specific IndexDrawArea, and redraw KlineView
+     * Select a indicator from a specific IndexDrawArea, and redraw KlineView
      *
      * @param drawAreaIndex
      * @param indicatorIndex
@@ -235,6 +239,11 @@ public class KlineView extends View {
         }
     }
 
+    /**
+     * Select indicator from all drewArea
+     *
+     * @param clazz
+     */
     public void selectIndicator(Class<? extends Indicator> clazz) {
         boolean redraw = false;
         for (DrawArea drawArea : mDrawAreaList) {
@@ -264,6 +273,10 @@ public class KlineView extends View {
     public void setConfig(@NonNull KlineConfig config) {
         if (config != null) {
             mConfig = config;
+            mScale = mConfig.getScale();
+            if (mScale == null) {
+                mScale = new Scale();
+            }
             redraw();
         }
     }
@@ -303,18 +316,28 @@ public class KlineView extends View {
         return mSharedObjects;
     }
 
+    public void setOnDataDragListener(DragInfo.Listener onDataDragListener) {
+        mOnDataDragListener = onDataDragListener;
+    }
+
+    public void setOnScaleListener(Scale.Listener onScaleListener) {
+        mOnScaleListener = onScaleListener;
+    }
+
     public void setDataList(@NonNull List<DATA> dataList) {
         mDataList = dataList;
         redraw();
     }
 
-    public List<? extends KlineData> getDataList() {
+    public List<DATA> getDataList() {
         return mDataList;
     }
 
     public void addHistoricalData(@NonNull List<DATA> dataList) {
-        if (mDataList != null) mDataList.addAll(0, dataList);
-        redraw();
+        if (mDataList != null) {
+            mDataList.addAll(0, dataList);
+            redraw();
+        }
     }
 
     public float getOneDataWidth() {
@@ -334,6 +357,14 @@ public class KlineView extends View {
         if (mDetailView != null) {
             mDetailView.attach(this);
         }
+    }
+
+    public Scale getScale() {
+        return mScale;
+    }
+
+    public DragInfo getDragInfo() {
+        return mDragInfo;
     }
 
     // =================== End: get / set ============================================================
@@ -469,13 +500,7 @@ public class KlineView extends View {
                 if (mAction == TouchAction.NONE || mAction == TouchAction.DRAG) {
                     float distance = Math.abs(event.getX() - mDragInfo.getActionDownX());
                     if (distance > mOneDataWidth) {
-                        Log.d(TAG, "onTouchEvent: " + distance);
                         mAction = TouchAction.DRAG;
-
-                        // It has been considered as drag action, cancel long press
-                        if (mHandler.hasMessages(InnerHandler.MSG_ACTIVE_DETAIL)) {
-                            mHandler.removeMessages(InnerHandler.MSG_ACTIVE_DETAIL);
-                        }
 
                         int newDraggedDataAmount = mDragInfo
                                 .calcDraggedDataAmount(event.getX(), mOneDataWidth);
@@ -487,8 +512,17 @@ public class KlineView extends View {
 
                         if (newDraggedDataAmount != mDragInfo.getDraggedDataAmount()) {
                             mDragInfo.setDraggedDataAmount(newDraggedDataAmount);
+
                             Log.d(TAG, "onTouchEvent: redraw");
+
                             redraw();
+
+                            if (mOnDataDragListener != null) {
+                                int remainingData = mDragInfo.getMaxDraggedDataAmount()
+                                        - mDragInfo.getDraggedDataAmount();
+                                mOnDataDragListener.onDrag(remainingData,
+                                        mDragInfo.getDraggedDataAmount(), mCandles);
+                            }
                         }
                         return true;
                     }

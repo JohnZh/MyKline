@@ -49,9 +49,9 @@ public class PureKIndicator extends AbsIndicator {
 
     @Override
     public void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
-        List<? extends KlineData> klineDataList = klineView.getDataList();
+        List<DATA> dataList = klineView.getDataList();
         for (int i = startIndex; i < endIndex; i++) {
-            KlineData klineData = klineDataList.get(i);
+            KlineData klineData = dataList.get(i);
             int visibleIndex = drawArea.getVisibleIndex(i);
 
             float drawX = drawArea.getDrawX(visibleIndex);

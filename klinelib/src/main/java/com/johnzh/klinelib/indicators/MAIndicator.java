@@ -128,7 +128,7 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     public void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
         pureKIndex.drawIndex(klineView, drawArea, startIndex, endIndex, canvas, paint);
 
-        List<? extends KlineData> klineDataList = klineView.getDataList();
+        List<DATA> dataList = klineView.getDataList();
 
         for (int i = 0; i < ma.length; i++) {
             int maKey = ma[i];
@@ -140,7 +140,7 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
             float startX = -1;
             float startY = -1;
             for (int j = startIndex; j < endIndex; j++) {
-                Float maValue = klineDataList.get(j).getIndexData().getMa().get(maKey);
+                Float maValue = dataList.get(j).getIndexData().getMa().get(maKey);
                 if (maValue == null) continue;
                 float dataX = drawArea.getDrawX(drawArea.getVisibleIndex(j));
                 float dataY = drawArea.getDrawY(maValue.floatValue());

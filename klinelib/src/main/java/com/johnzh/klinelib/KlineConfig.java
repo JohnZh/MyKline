@@ -1,5 +1,7 @@
 package com.johnzh.klinelib;
 
+import com.johnzh.klinelib.gesture.Scale;
+
 /**
  * Modified by john on 2020/5/6
  * <p>
@@ -11,6 +13,7 @@ public class KlineConfig {
 
     private int initialCandles;
     private int activeDetailAction;
+    private Scale scale;
 
     private KlineConfig() {
     }
@@ -31,10 +34,19 @@ public class KlineConfig {
         this.activeDetailAction = activeDetailAction;
     }
 
+    public Scale getScale() {
+        return scale;
+    }
+
+    public void setScale(Scale scale) {
+        this.scale = scale;
+    }
+
     public static final class Builder {
 
         private int initialCandles;
         private int activeDetailAction;
+        private Scale scale;
 
         public Builder() {
             initialCandles = DEFAULT_CANDLES;
@@ -54,10 +66,16 @@ public class KlineConfig {
             return this;
         }
 
+        public Builder scale(Scale scale) {
+            this.scale = scale;
+            return this;
+        }
+
         public KlineConfig build() {
             KlineConfig klineConfig = new KlineConfig();
             klineConfig.initialCandles = initialCandles;
             klineConfig.activeDetailAction = activeDetailAction;
+            klineConfig.scale = scale;
             return klineConfig;
         }
     }

@@ -2,6 +2,7 @@ package com.john.mykline;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 
 import com.john.mykline.bean.MyKlineData;
@@ -9,6 +10,7 @@ import com.john.mykline.databinding.ActivityMainBinding;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineConfig;
 import com.johnzh.klinelib.detail.DetailView;
+import com.johnzh.klinelib.gesture.DragInfo;
 import com.johnzh.klinelib.indicators.MAIndicator;
 import com.johnzh.klinelib.indicators.VolIndicator;
 
@@ -21,6 +23,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String TAG = "KlineView";
 
     private ActivityMainBinding binding;
 
@@ -35,6 +39,15 @@ public class MainActivity extends AppCompatActivity {
                         .activeDetailAction(DetailView.TRIGGERED_BY_DOUBLE_TAP)
                         .build());
         binding.klineView.setDetailView(binding.detailView);
+        binding.klineView.setOnDataDragListener(new DragInfo.Listener() {
+            @Override
+            public void onDrag(int remainingData, int draggedData, int visibleData) {
+                Log.d(TAG, "onDrag: " + remainingData);
+                if (binding.klineView.getDragInfo().isLeftMost()) {
+                    getTestDataForHistory();
+                }
+            }
+        });
 
         binding.pureK.setOnClickListener(v -> {
             binding.klineView.selectIndicator(0, 0);
@@ -49,13 +62,18 @@ public class MainActivity extends AppCompatActivity {
             startCombinationActivity();
         });
 
+        getTestData();
+
+    }
+
+    private void getTestData() {
         HttpAgent.getApi().getDailyKline("M2009")
                 .enqueue(new Callback<List<List<String>>>() {
                     @Override
                     public void onResponse(Call<List<List<String>>> call, Response<List<List<String>>> response) {
                         List<DATA> data = new ArrayList<>();
                         convertData(response.body(), data);
-                        updateKlineView(data);
+                        binding.klineView.setDataList(data);
                     }
 
                     @Override
@@ -63,7 +81,21 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+    }
 
+    private void getTestDataForHistory() {
+        HttpAgent.getApi().getDailyKline("M2009")
+                .enqueue(new Callback<List<List<String>>>() {
+                    @Override
+                    public void onResponse(Call<List<List<String>>> call, Response<List<List<String>>> response) {
+                        List<DATA> data = new ArrayList<>();
+                        convertData(response.body(), data);
+                        binding.klineView.addHistoricalData(data);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<List<String>>> call, Throwable t) {}
+                });
     }
 
     private void startCombinationActivity() {
@@ -88,9 +120,5 @@ public class MainActivity extends AppCompatActivity {
             kData.setVolume(stringList.get(i++));
         }
         return new DATA(kData);
-    }
-
-    private void updateKlineView(List<DATA> body) {
-        binding.klineView.setDataList(body);
     }
 }

@@ -38,9 +38,9 @@ public class VolIndicator extends AbsIndicator {
     @Override
     public void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
         float candleWidth = drawArea.getOneDataWidth() - 2 * dataPaddingHorizontal;
-        List<? extends KlineData> klineDataList = klineView.getDataList();
+        List<DATA> dataList = klineView.getDataList();
         for (int i = startIndex; i < endIndex; i++) {
-            KlineData klineData = klineDataList.get(i);
+            KlineData klineData = dataList.get(i);
             float dataX = drawArea.getDrawX(drawArea.getVisibleIndex(i));
             float dataY = drawArea.getDrawY(klineData.getVolume());
             int color = colors[0];

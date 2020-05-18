@@ -12,9 +12,9 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
-import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.date.SimpleDrawDate;
 import com.johnzh.klinelib.drawarea.DateDrawArea;
@@ -231,9 +231,9 @@ public class SimpleDetailView extends View implements DetailView {
     @Override
     protected void onDraw(Canvas canvas) {
         if (mKlineView == null || mDrawArea == null || !mStarted) return;
-        List<? extends KlineData> klineDataList = mKlineView.getDataList();
+        List<DATA> klineDataList = mKlineView.getDataList();
         int dataIndex = mDrawArea.getDataIndex(mCrossPointInfo.visibleIndex);
-        KlineData klineData = klineDataList.get(dataIndex);
+        DATA data = klineDataList.get(dataIndex);
         float cx = mDrawArea.getDrawX(mCrossPointInfo.visibleIndex);
         float cy = mCrossPointInfo.y;
 
@@ -249,7 +249,7 @@ public class SimpleDetailView extends View implements DetailView {
         canvas.drawLine(left, cy, right, cy, mPaint); // vertical line
 
         // date
-        String date = SimpleDrawDate.DATE_FORMAT.format(klineData.getDate());
+        String date = SimpleDrawDate.DATE_FORMAT.format(data.getDate());
         float textSize = mKlineView.sp2Px(FONT_SIZE);
         int padding = (int) mKlineView.dp2Px(TEXT_PADDING);
         float radius = mKlineView.dp2Px(2);

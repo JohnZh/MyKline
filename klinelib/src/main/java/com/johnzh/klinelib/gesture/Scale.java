@@ -17,20 +17,14 @@ public final class Scale {
     private float maxScale;
     private float minScale;
     private float scale;
-    private Listener listener;
 
     public Scale() {
         this(MAX_SCALE, MIN_SCALE);
     }
 
     public Scale(float maxScale, float minScale) {
-        this(maxScale, minScale, null);
-    }
-
-    public Scale(float maxScale, float minScale, Listener listener) {
         this.maxScale = maxScale;
         this.minScale = minScale;
-        this.listener = listener;
         this.scale = DEFAULT_SCALE;
     }
 
@@ -48,9 +42,5 @@ public final class Scale {
 
     public void setScale(float scale) {
         this.scale = scale;
-    }
-
-    public Listener getListener() {
-        return listener;
     }
 }
