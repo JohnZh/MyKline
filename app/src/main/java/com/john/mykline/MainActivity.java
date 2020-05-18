@@ -9,8 +9,8 @@ import com.john.mykline.databinding.ActivityMainBinding;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineConfig;
 import com.johnzh.klinelib.detail.DetailView;
-import com.johnzh.klinelib.indicators.MAIndex;
-import com.johnzh.klinelib.indicators.VolIndex;
+import com.johnzh.klinelib.indicators.MAIndicator;
+import com.johnzh.klinelib.indicators.VolIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +37,13 @@ public class MainActivity extends AppCompatActivity {
         binding.klineView.setDetailView(binding.detailView);
 
         binding.pureK.setOnClickListener(v -> {
-            binding.klineView.selectIndex(0, 0);
+            binding.klineView.selectIndicator(0, 0);
         });
         binding.ma.setOnClickListener(v -> {
-            binding.klineView.selectIndex(MAIndex.class);
+            binding.klineView.selectIndicator(MAIndicator.class);
         });
         binding.vol.setOnClickListener(v -> {
-            binding.klineView.selectIndex(VolIndex.class);
+            binding.klineView.selectIndicator(VolIndicator.class);
         });
         binding.combination.setOnClickListener(v -> {
             startCombinationActivity();

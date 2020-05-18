@@ -2,7 +2,7 @@ package com.johnzh.klinelib;
 
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.drawarea.DrawArea;
-import com.johnzh.klinelib.indicators.Index;
+import com.johnzh.klinelib.indicators.Indicator;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public interface Factory {
     List<DrawArea> createDrawAreas();
 
-    Index createDefaultIndex(Class clazz);
+    Indicator createDefaultIndex(Class clazz);
 
     AuxiliaryLines createDefaultAuxiliaryLines(Class clazz);
 }

@@ -4,7 +4,7 @@ import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.ValueRange;
-import com.johnzh.klinelib.indicators.Index;
+import com.johnzh.klinelib.indicators.Indicator;
 
 import java.util.List;
 
@@ -21,13 +21,13 @@ public class CandlesAuxiliaryLines extends SimpleAuxiliaryLines {
     }
 
     @Override
-    public void calcHorizontalLines(List<DATA> klineDataList, Index curIndex, int startIndex, int endIndex) {
+    public void calcHorizontalLines(List<DATA> klineDataList, Indicator curIndicator, int startIndex, int endIndex) {
         float max = Float.MIN_VALUE;
         float min = Float.MAX_VALUE;
 
-        if (curIndex instanceof ValueRange) {
-            max = Math.max(((ValueRange) curIndex).getMaximum(), max);
-            min = Math.min(((ValueRange) curIndex).getMinimum(), min);
+        if (curIndicator instanceof ValueRange) {
+            max = Math.max(((ValueRange) curIndicator).getMaximum(), max);
+            min = Math.min(((ValueRange) curIndicator).getMinimum(), min);
         }
 
         for (int i = startIndex; i < endIndex; i++) {

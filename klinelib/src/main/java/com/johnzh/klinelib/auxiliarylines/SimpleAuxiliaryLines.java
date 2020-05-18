@@ -10,8 +10,8 @@ import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.SharedObjects;
 import com.johnzh.klinelib.ValueRange;
-import com.johnzh.klinelib.drawarea.IndexDrawArea;
-import com.johnzh.klinelib.indicators.Index;
+import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
+import com.johnzh.klinelib.indicators.Indicator;
 
 import java.util.List;
 
@@ -65,13 +65,13 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
     }
 
     @Override
-    public void calcHorizontalLines(List<DATA> dataList, Index curIndex, int startIndex, int endIndex) {
+    public void calcHorizontalLines(List<DATA> dataList, Indicator curIndicator, int startIndex, int endIndex) {
         float max = Float.MIN_VALUE;
         float min = Float.MAX_VALUE;
 
-        if (curIndex instanceof ValueRange) {
-            max = Math.max(((ValueRange) curIndex).getMaximum(), max);
-            min = Math.min(((ValueRange) curIndex).getMinimum(), min);
+        if (curIndicator instanceof ValueRange) {
+            max = Math.max(((ValueRange) curIndicator).getMaximum(), max);
+            min = Math.min(((ValueRange) curIndicator).getMinimum(), min);
         }
 
         if (max == Float.MIN_VALUE || min == Float.MAX_VALUE) return;
@@ -92,7 +92,7 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
     }
 
     @Override
-    public void drawHorizontalLines(KlineView klineView, IndexDrawArea drawArea, Canvas canvas, Paint paint) {
+    public void drawHorizontalLines(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint) {
         SharedObjects sharedObjects = klineView.getSharedObjects();
         float width = drawArea.getWidth();
         float left = drawArea.getLeft();
@@ -121,7 +121,7 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
     }
 
     @Override
-    public void drawVerticalLines(KlineView klineView, IndexDrawArea drawArea, Canvas canvas, Paint paint) {
+    public void drawVerticalLines(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint) {
 
     }
 

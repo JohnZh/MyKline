@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.indicators.Index;
+import com.johnzh.klinelib.indicators.Indicator;
 
 import java.util.List;
 
@@ -17,9 +17,9 @@ import androidx.annotation.NonNull;
  * <p>
  * Description: Draw area is not contain padding. It is also a class for calculating.
  */
-public class IndexDrawArea extends RectDrawArea implements YAxisConverter {
+public class IndicatorDrawArea extends RectDrawArea implements YAxisConverter {
 
-    private List<Index> mIndexList;
+    private List<Indicator> mIndicatorList;
     private float mOneDataWidth;
     private int mCurIndex;
     private int mStartIndex;
@@ -33,24 +33,24 @@ public class IndexDrawArea extends RectDrawArea implements YAxisConverter {
 
     @Override
     public void calculate(List<DATA> list, int startIndex, int endIndex) {
-        getCurIndex().calcIndex(list, startIndex, endIndex);
-        getCurIndex().calcAuxiliaryLines(list, startIndex, endIndex);
+        getCurIndicator().calcIndex(list, startIndex, endIndex);
+        getCurIndicator().calcAuxiliaryLines(list, startIndex, endIndex);
     }
 
     @Override
     public void draw(KlineView klineView, Canvas canvas, Paint paint) {
-        getCurIndex().drawAuxiliaryLines(klineView, this, canvas, paint);
-        getCurIndex().drawIndex(klineView, this,
+        getCurIndicator().drawAuxiliaryLines(klineView, this, canvas, paint);
+        getCurIndicator().drawIndex(klineView, this,
                 klineView.getStartIndex(), klineView.getEndIndex(),
                 canvas, paint);
     }
 
-    public IndexDrawArea(int height, @NonNull List<Index> indexList) {
+    public IndicatorDrawArea(int height, @NonNull List<Indicator> indicatorList) {
         super(height);
-        mIndexList = indexList;
+        mIndicatorList = indicatorList;
         mCurIndex = 0;
 
-        if (mIndexList.isEmpty()) {
+        if (mIndicatorList.isEmpty()) {
             throw new IllegalArgumentException("indexList cannot be empty");
         }
     }
@@ -59,19 +59,19 @@ public class IndexDrawArea extends RectDrawArea implements YAxisConverter {
         return mOneDataWidth;
     }
 
-    public Index getCurIndex() {
-        return mIndexList.get(mCurIndex);
+    public Indicator getCurIndicator() {
+        return mIndicatorList.get(mCurIndex);
     }
 
-    public void selectIndex(int indexOfIndexes) {
-        if (indexOfIndexes < 0 || indexOfIndexes >= mIndexList.size()) return;
-        if (indexOfIndexes != mCurIndex) {
-            mCurIndex = indexOfIndexes;
+    public void selectIndicator(int indexesIndex) {
+        if (indexesIndex < 0 || indexesIndex >= mIndicatorList.size()) return;
+        if (indexesIndex != mCurIndex) {
+            mCurIndex = indexesIndex;
         }
     }
 
-    public List<Index> getIndexList() {
-        return mIndexList;
+    public List<Indicator> getIndicatorList() {
+        return mIndicatorList;
     }
 
     @Override
@@ -99,7 +99,7 @@ public class IndexDrawArea extends RectDrawArea implements YAxisConverter {
 
     @Override
     public float getNumber(float drawY) {
-        AuxiliaryLines auxiliaryLines = getCurIndex().getAuxiliaryLines();
+        AuxiliaryLines auxiliaryLines = getCurIndicator().getAuxiliaryLines();
         float max = auxiliaryLines.getMaximum();
         float min = auxiliaryLines.getMinimum();
         return max - (drawY - top) / height * (max - min);
@@ -107,7 +107,7 @@ public class IndexDrawArea extends RectDrawArea implements YAxisConverter {
 
     @Override
     public float getDrawY(float number) {
-        AuxiliaryLines auxiliaryLines = getCurIndex().getAuxiliaryLines();
+        AuxiliaryLines auxiliaryLines = getCurIndicator().getAuxiliaryLines();
         float max = auxiliaryLines.getMaximum();
         float min = auxiliaryLines.getMinimum();
         if (number < min || number > max) {

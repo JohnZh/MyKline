@@ -6,8 +6,8 @@ import android.graphics.Paint;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.drawarea.IndexDrawArea;
-import com.johnzh.klinelib.indicators.AbsIndex;
+import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
+import com.johnzh.klinelib.indicators.AbsIndicator;
 
 import java.util.List;
 
@@ -16,9 +16,9 @@ import java.util.List;
  *
  * <p></p>
  */
-public class KDJIndex extends AbsIndex {
+public class KDJIndicator extends AbsIndicator {
 
-    public KDJIndex(AuxiliaryLines auxiliaryLines) {
+    public KDJIndicator(AuxiliaryLines auxiliaryLines) {
         super(auxiliaryLines);
     }
 
@@ -37,7 +37,7 @@ public class KDJIndex extends AbsIndex {
     }
 
     @Override
-    public void drawIndex(KlineView klineView, IndexDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
+    public void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
 
     }
 

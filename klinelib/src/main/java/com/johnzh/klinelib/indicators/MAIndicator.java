@@ -11,7 +11,7 @@ import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.ValueRange;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.drawarea.IndexDrawArea;
+import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class MAIndex extends AbsIndex implements ValueRange {
+public class MAIndicator extends AbsIndicator implements ValueRange {
 
-    private PureKIndex pureKIndex;
+    private PureKIndicator pureKIndex;
     private float lineWidth;
     private int[] ma;
     private int[] colors;
@@ -30,10 +30,10 @@ public class MAIndex extends AbsIndex implements ValueRange {
     private float maxPrice;
     private float minPrice;
 
-    public MAIndex(AuxiliaryLines auxiliaryLines,
-                   PureKIndex pureKIndex,
-                   float lineWidth,
-                   int[] ma, int[] colors) {
+    public MAIndicator(AuxiliaryLines auxiliaryLines,
+                       PureKIndicator pureKIndex,
+                       float lineWidth,
+                       int[] ma, int[] colors) {
         super(auxiliaryLines);
         this.pureKIndex = pureKIndex;
         this.lineWidth = lineWidth;
@@ -125,7 +125,7 @@ public class MAIndex extends AbsIndex implements ValueRange {
     }
 
     @Override
-    public void drawIndex(KlineView klineView, IndexDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
+    public void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
         pureKIndex.drawIndex(klineView, drawArea, startIndex, endIndex, canvas, paint);
 
         List<? extends KlineData> klineDataList = klineView.getDataList();

@@ -23,7 +23,7 @@
  */
 package com.johnzh.klinelib;
 
-import com.johnzh.klinelib.indicators.MAIndex;
+import com.johnzh.klinelib.indicators.MAIndicator;
 
 /**
  * Modified by john on 2020/5/11
@@ -32,11 +32,11 @@ import com.johnzh.klinelib.indicators.MAIndex;
  */
 public class IndicatorData {
 
-    private MAIndex.MA ma;
+    private MAIndicator.MA ma;
 
-    public MAIndex.MA getMa() {
+    public MAIndicator.MA getMa() {
         if (ma == null) {
-            ma = new MAIndex.MA();
+            ma = new MAIndicator.MA();
         }
         return ma;
     }

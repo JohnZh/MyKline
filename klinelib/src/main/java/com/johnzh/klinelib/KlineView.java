@@ -16,10 +16,10 @@ import android.view.ViewGroup;
 
 import com.johnzh.klinelib.detail.DetailView;
 import com.johnzh.klinelib.drawarea.DrawArea;
-import com.johnzh.klinelib.drawarea.IndexDrawArea;
+import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
 import com.johnzh.klinelib.gesture.DragInfo;
 import com.johnzh.klinelib.gesture.Scale;
-import com.johnzh.klinelib.indicators.Index;
+import com.johnzh.klinelib.indicators.Indicator;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -222,28 +222,28 @@ public class KlineView extends View {
      * Select a index from a specific IndexDrawArea, and redraw KlineView
      *
      * @param drawAreaIndex
-     * @param indexOfIndex
+     * @param indicatorIndex
      */
-    public void selectIndex(int drawAreaIndex, int indexOfIndex) {
+    public void selectIndicator(int drawAreaIndex, int indicatorIndex) {
         if (drawAreaIndex >= 0 && drawAreaIndex < mDrawAreaList.size()) {
             DrawArea drawArea = mDrawAreaList.get(drawAreaIndex);
-            if (drawArea instanceof IndexDrawArea) {
-                IndexDrawArea indexDrawArea = (IndexDrawArea) drawArea;
-                indexDrawArea.selectIndex(indexOfIndex);
+            if (drawArea instanceof IndicatorDrawArea) {
+                IndicatorDrawArea indicatorDrawArea = (IndicatorDrawArea) drawArea;
+                indicatorDrawArea.selectIndicator(indicatorIndex);
                 redraw();
             }
         }
     }
 
-    public void selectIndex(Class<? extends Index> clazz) {
+    public void selectIndicator(Class<? extends Indicator> clazz) {
         boolean redraw = false;
         for (DrawArea drawArea : mDrawAreaList) {
-            if (drawArea instanceof IndexDrawArea) {
-                IndexDrawArea indexDrawArea = (IndexDrawArea) drawArea;
-                List<Index> indexList = indexDrawArea.getIndexList();
-                for (int i = 0; i < indexList.size(); i++) {
-                    if (indexList.get(i).getClass() == clazz) {
-                        indexDrawArea.selectIndex(i);
+            if (drawArea instanceof IndicatorDrawArea) {
+                IndicatorDrawArea indicatorDrawArea = (IndicatorDrawArea) drawArea;
+                List<Indicator> indicatorList = indicatorDrawArea.getIndicatorList();
+                for (int i = 0; i < indicatorList.size(); i++) {
+                    if (indicatorList.get(i).getClass() == clazz) {
+                        indicatorDrawArea.selectIndicator(i);
                         redraw = true;
                     }
                 }

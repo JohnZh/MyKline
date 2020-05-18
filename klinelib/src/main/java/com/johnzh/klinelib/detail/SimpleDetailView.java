@@ -19,7 +19,7 @@ import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.date.SimpleDrawDate;
 import com.johnzh.klinelib.drawarea.DateDrawArea;
 import com.johnzh.klinelib.drawarea.DrawArea;
-import com.johnzh.klinelib.drawarea.IndexDrawArea;
+import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
 
 import java.util.List;
 
@@ -283,9 +283,9 @@ public class SimpleDetailView extends View implements DetailView {
         }
 
         // number
-        if (mDrawArea instanceof IndexDrawArea) {
-            float number = ((IndexDrawArea) mDrawArea).getNumber(cy);
-            float minimum = ((IndexDrawArea) mDrawArea).getCurIndex().getAuxiliaryLines().getMinimum();
+        if (mDrawArea instanceof IndicatorDrawArea) {
+            float number = ((IndicatorDrawArea) mDrawArea).getNumber(cy);
+            float minimum = ((IndicatorDrawArea) mDrawArea).getCurIndicator().getAuxiliaryLines().getMinimum();
             int numberScale = FloatCalc.get().getScale(minimum);
             String numStr = FloatCalc.get().format(number, numberScale);
             float textWidth = mPaint.measureText(numStr);

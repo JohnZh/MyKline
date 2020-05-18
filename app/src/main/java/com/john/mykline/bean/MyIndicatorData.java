@@ -9,9 +9,9 @@ import com.johnzh.klinelib.IndicatorData;
  */
 public class MyIndicatorData extends IndicatorData {
 
-    private KDJIndex.KDJ mKDJ;
+    private KDJIndicator.KDJ mKDJ;
 
-    public KDJIndex.KDJ getKDJ() {
+    public KDJIndicator.KDJ getKDJ() {
         return mKDJ;
     }
 }

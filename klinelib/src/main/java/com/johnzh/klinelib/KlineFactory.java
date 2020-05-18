@@ -12,11 +12,11 @@ import com.johnzh.klinelib.date.SimpleDrawDate;
 import com.johnzh.klinelib.date.DrawDate;
 import com.johnzh.klinelib.drawarea.DateDrawArea;
 import com.johnzh.klinelib.drawarea.DrawArea;
-import com.johnzh.klinelib.drawarea.IndexDrawArea;
-import com.johnzh.klinelib.indicators.Index;
-import com.johnzh.klinelib.indicators.MAIndex;
-import com.johnzh.klinelib.indicators.PureKIndex;
-import com.johnzh.klinelib.indicators.VolIndex;
+import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
+import com.johnzh.klinelib.indicators.Indicator;
+import com.johnzh.klinelib.indicators.MAIndicator;
+import com.johnzh.klinelib.indicators.PureKIndicator;
+import com.johnzh.klinelib.indicators.VolIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +45,9 @@ public class KlineFactory implements Factory {
         int dateHeight = (int) dp2Px(DATE_HEIGHT);
         int indexHeight = (int) dp2Px(INDEX_HEIGHT);
         List<DrawArea> drawAreaList = new ArrayList<>();
-        drawAreaList.add(new IndexDrawArea(dataHeight, getIndexListForData()));
+        drawAreaList.add(new IndicatorDrawArea(dataHeight, getIndexListForData()));
         drawAreaList.add(new DateDrawArea(dateHeight, getDefaultDrawDate()));
-        drawAreaList.add(new IndexDrawArea(indexHeight, getIndexForIndexes()));
+        drawAreaList.add(new IndicatorDrawArea(indexHeight, getIndexForIndexes()));
         return drawAreaList;
     }
 
@@ -58,21 +58,21 @@ public class KlineFactory implements Factory {
         return new SimpleDrawDate(fontSize, textMargin, color);
     }
 
-    private List<Index> getIndexListForData() {
-        List<Index> list = new ArrayList<>();
-        list.add(createDefaultIndex(PureKIndex.class));
-        list.add(createDefaultIndex(MAIndex.class));
+    private List<Indicator> getIndexListForData() {
+        List<Indicator> list = new ArrayList<>();
+        list.add(createDefaultIndex(PureKIndicator.class));
+        list.add(createDefaultIndex(MAIndicator.class));
         return list;
     }
 
-    private List<Index> getIndexForIndexes() {
-        List<Index> list = new ArrayList<>();
-        list.add(createDefaultIndex(VolIndex.class));
+    private List<Indicator> getIndexForIndexes() {
+        List<Indicator> list = new ArrayList<>();
+        list.add(createDefaultIndex(VolIndicator.class));
         return list;
     }
 
     @Override
-    public Index createDefaultIndex(Class clazz) {
+    public Indicator createDefaultIndex(Class clazz) {
         int[] posNegColor = {
                 Color.parseColor("#f62048"),
                 Color.parseColor("#39ae13")
@@ -80,28 +80,28 @@ public class KlineFactory implements Factory {
 
         float dataPaddingHorizontal = toPx(TypedValue.COMPLEX_UNIT_DIP, 0.5f);
 
-        if (clazz.isAssignableFrom(PureKIndex.class)) {
+        if (clazz.isAssignableFrom(PureKIndicator.class)) {
             float candleLineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
             AuxiliaryLines auxiliaryLines
                     = createDefaultAuxiliaryLines(CandlesAuxiliaryLines.class);
-            return new PureKIndex(auxiliaryLines, posNegColor, dataPaddingHorizontal, candleLineWidth);
+            return new PureKIndicator(auxiliaryLines, posNegColor, dataPaddingHorizontal, candleLineWidth);
         }
 
-        if (clazz.isAssignableFrom(MAIndex.class)) {
+        if (clazz.isAssignableFrom(MAIndicator.class)) {
             int[] maColors = {
                     Color.parseColor("#ffb405"),
                     Color.parseColor("#890cff")
             };
             AuxiliaryLines auxiliaryLines
                     = createDefaultAuxiliaryLines(CandlesAuxiliaryLines.class);
-            PureKIndex purKIndex = (PureKIndex) createDefaultIndex(PureKIndex.class);
+            PureKIndicator purKIndex = (PureKIndicator) createDefaultIndex(PureKIndicator.class);
             float lineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
-            return new MAIndex(auxiliaryLines, purKIndex, lineWidth, new int[]{5, 10}, maColors);
+            return new MAIndicator(auxiliaryLines, purKIndex, lineWidth, new int[]{5, 10}, maColors);
         }
 
-        if (clazz.isAssignableFrom(VolIndex.class)) {
+        if (clazz.isAssignableFrom(VolIndicator.class)) {
             AuxiliaryLines volAuxiliaryLines = createDefaultAuxiliaryLines(VolAuxiliaryLines.class);
-            return new VolIndex(volAuxiliaryLines, posNegColor, dataPaddingHorizontal);
+            return new VolIndicator(volAuxiliaryLines, posNegColor, dataPaddingHorizontal);
         }
 
         return null;

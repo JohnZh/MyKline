@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.drawarea.IndexDrawArea;
+import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
 
 import java.util.List;
 
@@ -15,11 +15,11 @@ import java.util.List;
  * <p>
  * Description:
  */
-public abstract class AbsIndex implements Index {
+public abstract class AbsIndicator implements Indicator {
 
     private AuxiliaryLines auxiliaryLines;
 
-    public AbsIndex(AuxiliaryLines auxiliaryLines) {
+    public AbsIndicator(AuxiliaryLines auxiliaryLines) {
         this.auxiliaryLines = auxiliaryLines;
     }
 
@@ -30,7 +30,7 @@ public abstract class AbsIndex implements Index {
     }
 
     @Override
-    public void drawAuxiliaryLines(KlineView klineView, IndexDrawArea drawArea, Canvas canvas, Paint paint) {
+    public void drawAuxiliaryLines(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint) {
         this.auxiliaryLines.drawHorizontalLines(klineView, drawArea, canvas, paint);
         this.auxiliaryLines.drawVerticalLines(klineView, drawArea, canvas, paint);
     }

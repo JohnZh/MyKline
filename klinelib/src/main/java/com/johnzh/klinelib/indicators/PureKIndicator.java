@@ -8,7 +8,7 @@ import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.drawarea.IndexDrawArea;
+import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  * <p>
  * Description: no index implement, just k line candles
  */
-public class PureKIndex extends AbsIndex {
+public class PureKIndicator extends AbsIndicator {
 
     private int[] colors;
     private float dataPaddingHorizontal;
@@ -29,8 +29,8 @@ public class PureKIndex extends AbsIndex {
      * @param dataPaddingHorizontal
      * @param candleLineWidth
      */
-    public PureKIndex(AuxiliaryLines auxiliaryLines,
-                      int[] colors, float dataPaddingHorizontal, float candleLineWidth) {
+    public PureKIndicator(AuxiliaryLines auxiliaryLines,
+                          int[] colors, float dataPaddingHorizontal, float candleLineWidth) {
         super(auxiliaryLines);
         this.colors = colors;
         this.dataPaddingHorizontal = dataPaddingHorizontal;
@@ -48,7 +48,7 @@ public class PureKIndex extends AbsIndex {
     }
 
     @Override
-    public void drawIndex(KlineView klineView, IndexDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
+    public void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
         List<? extends KlineData> klineDataList = klineView.getDataList();
         for (int i = startIndex; i < endIndex; i++) {
             KlineData klineData = klineDataList.get(i);
