@@ -23,21 +23,46 @@
  */
 package com.johnzh.klinelib;
 
-import com.johnzh.klinelib.indicators.MAIndicator;
+import com.johnzh.klinelib.indicators.data.InData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Modified by john on 2020/5/11
+ * Created by john on 2020/5/11
  * <p>
  * Description:
  */
 public class IndicatorData {
 
-    private MAIndicator.MA ma;
+    private List<InData> indicatorDataList;
 
-    public MAIndicator.MA getMa() {
-        if (ma == null) {
-            ma = new MAIndicator.MA();
+    public IndicatorData() {
+        this.indicatorDataList = new ArrayList<>();
+    }
+
+    public <T extends InData> T get(Class<T> clazz) {
+        InData result = null;
+        for (InData inData : indicatorDataList) {
+            if (inData.getClass() == clazz) {
+                result = inData;
+                break;
+            }
         }
-        return ma;
+        if (result == null) {
+            if (InData.class.isAssignableFrom(clazz)) {
+                try {
+                    result = clazz.newInstance();
+                    indicatorDataList.add(result);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                throw new IllegalArgumentException("The type of clazz should be subclass of InData");
+            }
+        }
+        return (T) result;
     }
 }

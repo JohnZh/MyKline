@@ -2,7 +2,6 @@ package com.johnzh.klinelib.indicators;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.SparseArray;
 
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.FloatCalc;
@@ -11,7 +10,8 @@ import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.ValueRange;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
+import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
+import com.johnzh.klinelib.indicators.data.MA;
 
 import java.util.List;
 
@@ -54,22 +54,6 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
         return minPrice;
     }
 
-    public static class MA {
-        SparseArray<Float> map;
-
-        public MA() {
-            this.map = new SparseArray<>();
-        }
-
-        public void put(int maKey, Float maValue) {
-            map.put(maKey, maValue);
-        }
-
-        public Float get(int maKey) {
-            return map.get(maKey);
-        }
-    }
-
     @Override
     public void calcIndexAsync(List<DATA> dataList) {
 
@@ -82,15 +66,15 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
         resetMaxMinPrice();
 
         for (int i = startIndex; i < endIndex; i++) {
-            IndicatorData indicatorData = dataList.get(i).getIndexData();
+            IndicatorData indicatorData = dataList.get(i).getIndicator();
             if (indicatorData == null) {
-                indicatorData = dataList.get(i).newIndexData();
+                indicatorData = dataList.get(i).newIndicator();
             }
 
             for (int maKey : this.ma) {
                 if (i - maKey < -1) continue; // data is not enough
 
-                Float maValue = indicatorData.getMa().get(maKey);
+                Float maValue = indicatorData.get(MA.class).get(maKey);
                 if (maValue != null) {
                     updateMaxMinPrice(maValue);
                     continue;
@@ -98,9 +82,9 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
 
                 Float newMaValue = calcMaValue(dataList, i, maKey);
                 updateMaxMinPrice(newMaValue);
-                indicatorData.getMa().put(maKey, newMaValue);
+                indicatorData.get(MA.class).put(maKey, newMaValue);
             }
-            dataList.get(i).setIndexData(indicatorData);
+            dataList.get(i).setIndicator(indicatorData);
         }
     }
 
@@ -140,7 +124,7 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
             float startX = -1;
             float startY = -1;
             for (int j = startIndex; j < endIndex; j++) {
-                Float maValue = dataList.get(j).getIndexData().getMa().get(maKey);
+                Float maValue = dataList.get(j).getIndicator().get(MA.class).get(maKey);
                 if (maValue == null) continue;
                 float dataX = drawArea.getDrawX(drawArea.getVisibleIndex(j));
                 float dataY = drawArea.getDrawY(maValue.floatValue());

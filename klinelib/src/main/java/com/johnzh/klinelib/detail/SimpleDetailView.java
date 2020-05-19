@@ -17,16 +17,16 @@ import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.date.SimpleDrawDate;
-import com.johnzh.klinelib.drawarea.DateDrawArea;
+import com.johnzh.klinelib.drawarea.impl.DateDrawArea;
 import com.johnzh.klinelib.drawarea.DrawArea;
-import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
+import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 
 import java.util.List;
 
 import androidx.annotation.Nullable;
 
 /**
- * Modified by john on 2020/5/14
+ * Created by john on 2020/5/14
  * <p>
  * Description: Just a simple sample code of DetailView implementation
  */
@@ -225,6 +225,16 @@ public class SimpleDetailView extends View implements DetailView {
         mPointInfo.reset();
         mCrossPointInfo.reset();
 
+        invalidate();
+    }
+
+    @Override
+    public void onPreKlineViewDraw(KlineView view) {
+
+    }
+
+    @Override
+    public void onPostKlineViewDraw(KlineView view) {
         invalidate();
     }
 

@@ -100,18 +100,18 @@ public class MyKlineData implements KlineData<MyIndicatorData> {
     private MyIndicatorData indexData;
 
     @Override
-    public MyIndicatorData getIndexData() {
+    public MyIndicatorData getIndicator() {
         return indexData;
     }
 
     @Override
-    public MyIndicatorData newIndexData() {
+    public MyIndicatorData newIndicator() {
         return new MyIndicatorData();
     }
 
 
     @Override
-    public void setIndexData(MyIndicatorData indexData) {
-        this.indexData = indexData;
+    public void setIndicator(MyIndicatorData indicatorData) {
+        this.indexData = indicatorData;
     }
 }

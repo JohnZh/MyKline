@@ -79,17 +79,17 @@ public class DATA implements KlineData  {
     }
 
     @Override
-    public IndicatorData getIndexData() {
-        return klineData.getIndexData();
+    public IndicatorData getIndicator() {
+        return klineData.getIndicator();
     }
 
     @Override
-    public IndicatorData newIndexData() {
-        return klineData.newIndexData();
+    public IndicatorData newIndicator() {
+        return klineData.newIndicator();
     }
 
     @Override
-    public void setIndexData(IndicatorData indexData) {
-        klineData.setIndexData(indexData);
+    public void setIndicator(IndicatorData indicatorData) {
+        klineData.setIndicator(indicatorData);
     }
 }

@@ -21,9 +21,9 @@ public interface KlineData<T extends IndicatorData> {
 
     Date getDate();
 
-    T getIndexData();
+    T getIndicator();
 
-    T newIndexData();
+    T newIndicator();
 
-    void setIndexData(T indexData);
+    void setIndicator(T indicatorData);
 }

@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 John Zhang
+ * Copyright (c) 2020 JohnZh
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,36 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.johnzh.klinelib.indicators;
+package com.johnzh.klinelib.drawarea.impl;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
+import com.johnzh.klinelib.date.DrawDate;
+import com.johnzh.klinelib.drawarea.DrawArea;
 
 import java.util.List;
 
 /**
- * Modified by john on 2020/5/18
- *
- * <p>Index for kline</p>
- *
+ * Created by john on 2020/5/16
+ * <p>
+ * A draw area which is used to draw date below indicator generally
  */
-public interface Indicator {
+public class DateDrawArea extends ConvertDrawArea {
 
-    void calcIndexAsync(List<DATA> dataList);
+    private DrawDate mDrawDate;
+    private int mStartIndex;
+    private float mOneDataWidth;
 
-    void calcIndex(List<DATA> dataList, int startIndex, int endIndex);
+    public DateDrawArea(int height, DrawDate drawDate) {
+        super(height);
+        mDrawDate = drawDate;
+    }
 
-    void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex);
+    @Override
+    public void prepareOnDraw(KlineView view, List<DrawArea> allDrawAreas) {
+        super.prepareOnDraw(view, allDrawAreas);
+        mStartIndex = view.getStartIndex();
+        mOneDataWidth = view.getOneDataWidth();
+    }
 
-    void drawAuxiliaryLines(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint);
+    @Override
+    public void calculate(List<DATA> list, int startIndex, int endIndex) {
+    }
 
-    void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex,
-                   Canvas canvas, Paint paint);
+    @Override
+    public void draw(KlineView klineView, Canvas canvas, Paint paint) {
+        mDrawDate.drawDate(klineView, this,
+                klineView.getStartIndex(), klineView.getEndIndex(),
+                canvas, paint);
+    }
 
-    AuxiliaryLines getAuxiliaryLines();
+    public DrawDate getDrawDate() {
+        return mDrawDate;
+    }
 }

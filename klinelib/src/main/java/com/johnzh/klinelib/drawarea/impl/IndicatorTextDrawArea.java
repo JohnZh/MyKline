@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 John Zhang
+ * Copyright (c) 2020 JohnZh
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,36 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.johnzh.klinelib.indicators;
+package com.johnzh.klinelib.drawarea.impl;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
+import com.johnzh.klinelib.indicators.Indicator;
 
 import java.util.List;
 
 /**
- * Modified by john on 2020/5/18
+ * Created by JohnZh on 2020/5/19
  *
- * <p>Index for kline</p>
- *
+ * <p>A draw area which is used to display indicator detail of last data above indicator draw area generally </p>
  */
-public interface Indicator {
+public class IndicatorTextDrawArea extends ConvertDrawArea {
 
-    void calcIndexAsync(List<DATA> dataList);
+    private boolean mDrawable;
+    private IndicatorDrawArea mIndicatorDrawArea;
 
-    void calcIndex(List<DATA> dataList, int startIndex, int endIndex);
+    public IndicatorTextDrawArea(int height, IndicatorDrawArea indicatorDrawArea) {
+        super(height);
+        mIndicatorDrawArea = indicatorDrawArea;
+    }
 
-    void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex);
+    public boolean isDrawable() {
+        return mDrawable;
+    }
 
-    void drawAuxiliaryLines(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint);
+    public void setDrawable(boolean drawable) {
+        mDrawable = drawable;
+    }
 
-    void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex,
-                   Canvas canvas, Paint paint);
+    @Override
+    public void calculate(List<DATA> list, int startIndex, int endIndex) {
+    }
 
-    AuxiliaryLines getAuxiliaryLines();
+    @Override
+    public void draw(KlineView klineView, Canvas canvas, Paint paint) {
+        if (mDrawable) {
+            Indicator curIndicator = mIndicatorDrawArea.getCurIndicator();
+            int lastVisibleIndex = klineView.getEndIndex() - 1;
+            int dataIndex = getDataIndex(lastVisibleIndex);
+            DATA data = klineView.getDataList().get(dataIndex);
+
+        }
+    }
 }

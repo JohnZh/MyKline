@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.johnzh.klinelib.detail.DetailView;
 import com.johnzh.klinelib.drawarea.DrawArea;
-import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
+import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 import com.johnzh.klinelib.gesture.DragInfo;
 import com.johnzh.klinelib.gesture.Scale;
 import com.johnzh.klinelib.indicators.Indicator;
@@ -480,6 +480,10 @@ public class KlineView extends View {
 
         for (DrawArea drawArea : mDrawAreaList) {
             drawArea.draw(this, canvas, sPaint);
+        }
+
+        if (mDetailView != null) {
+            mDetailView.onPostKlineViewDraw(this);
         }
     }
 

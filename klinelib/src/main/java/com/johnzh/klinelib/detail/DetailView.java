@@ -55,4 +55,18 @@ public interface DetailView {
      * @param event
      */
     void onCancel(MotionEvent event);
+
+    /**
+     * Call before its attached KlineView draw elements
+     *
+     * @param view
+     */
+    void onPreKlineViewDraw(KlineView view);
+
+    /**
+     * Call after its attached KlineView draw elements
+     *
+     * @param view
+     */
+    void onPostKlineViewDraw(KlineView view);
 }

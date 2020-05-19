@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
+import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 import com.johnzh.klinelib.indicators.AbsIndicator;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class KDJIndicator extends AbsIndicator {
 
     @Override
     public void calcIndexAsync(List<DATA> dataList) {
-        dataList.get(0).getIndexData().getMa();
+
     }
 
     @Override

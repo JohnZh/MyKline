@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.drawarea.DateDrawArea;
+import com.johnzh.klinelib.drawarea.impl.DateDrawArea;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

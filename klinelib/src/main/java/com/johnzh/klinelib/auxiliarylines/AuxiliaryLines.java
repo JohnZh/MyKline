@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.ValueRange;
-import com.johnzh.klinelib.drawarea.IndicatorDrawArea;
+import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 import com.johnzh.klinelib.indicators.Indicator;
 
 import java.util.List;
