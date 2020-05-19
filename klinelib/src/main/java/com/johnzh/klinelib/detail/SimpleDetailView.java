@@ -17,10 +17,12 @@ import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.date.SimpleDrawDate;
-import com.johnzh.klinelib.drawarea.impl.DateDrawArea;
 import com.johnzh.klinelib.drawarea.DrawArea;
+import com.johnzh.klinelib.drawarea.impl.DateDrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
+import com.johnzh.klinelib.drawarea.impl.IndicatorTextDrawArea;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -33,7 +35,6 @@ import androidx.annotation.Nullable;
 public class SimpleDetailView extends View implements DetailView {
 
     static class PointInfo {
-
         private Rect rect;
         private PointF firstP;
         private PointF downP;
@@ -121,6 +122,7 @@ public class SimpleDetailView extends View implements DetailView {
 
     private KlineView mKlineView;
     private DrawArea mDrawArea;
+    private List<DrawArea> mIndicatorTextDrawAreaList;
 
     private Paint mPaint;
     private RectF mBgRectF;
@@ -149,7 +151,7 @@ public class SimpleDetailView extends View implements DetailView {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mLineColor = Color.parseColor("#000000");
         mTextColor = Color.parseColor("#ffffff");
-
+        mIndicatorTextDrawAreaList = new ArrayList<>();
     }
 
     @Override
@@ -205,6 +207,21 @@ public class SimpleDetailView extends View implements DetailView {
         mStarted = true;
 
         checkAndRedraw();
+
+        hideKlineViewIndicatorText();
+    }
+
+    private void hideKlineViewIndicatorText() {
+        List<DrawArea> drawAreaList = mKlineView.getDrawAreaList();
+        for (DrawArea drawArea : drawAreaList) {
+            if (drawArea instanceof IndicatorTextDrawArea) {
+                ((IndicatorTextDrawArea) drawArea).setDetailActivated(true);
+                mIndicatorTextDrawAreaList.add(drawArea);
+            }
+        }
+        if (!mIndicatorTextDrawAreaList.isEmpty()) {
+            mKlineView.redraw();
+        }
     }
 
     private void getRangRectF(Rect rect) {
@@ -225,7 +242,21 @@ public class SimpleDetailView extends View implements DetailView {
         mPointInfo.reset();
         mCrossPointInfo.reset();
 
+        showKlineViewIndicatorText();
+
         invalidate();
+    }
+
+    private void showKlineViewIndicatorText() {
+        if (!mIndicatorTextDrawAreaList.isEmpty()) {
+            for (DrawArea drawArea : mIndicatorTextDrawAreaList) {
+                if (drawArea instanceof IndicatorTextDrawArea) {
+                    ((IndicatorTextDrawArea) drawArea).setDetailActivated(false);
+                }
+            }
+            mIndicatorTextDrawAreaList.clear();
+            mKlineView.redraw();
+        }
     }
 
     @Override
@@ -311,6 +342,12 @@ public class SimpleDetailView extends View implements DetailView {
             canvas.drawRoundRect(mBgRectF, radius, radius, mPaint);
             mPaint.setColor(mTextColor);
             DrawTextTool.drawTextFromLeftTop(numStr, textLeft, textTop, canvas, mPaint);
+        }
+
+        for (DrawArea drawArea : mIndicatorTextDrawAreaList) {
+            if (drawArea instanceof IndicatorTextDrawArea) {
+                ((IndicatorTextDrawArea) drawArea).draw(mKlineView, data, canvas, mPaint);
+            }
         }
     }
 }

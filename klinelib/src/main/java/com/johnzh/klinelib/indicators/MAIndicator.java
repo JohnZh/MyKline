@@ -146,9 +146,8 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     }
 
     @Override
-    public void drawIndicatorText(KlineView klineView, DrawArea drawArea, Canvas canvas, Paint paint) {
-        int lastDataIndex = klineView.getEndIndex() - 1;
-        DATA data = klineView.getDataList().get(lastDataIndex);
+    public void drawIndicatorText(KlineView klineView, DrawArea drawArea, DATA data,
+                                  Canvas canvas, Paint paint) {
         float textLeft = drawArea.getLeft();
         for (int i = 0; i < ma.length; i++) {
             int maKey = ma[i];

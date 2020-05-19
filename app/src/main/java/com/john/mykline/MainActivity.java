@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.pureK.setOnClickListener(v -> {
-            binding.klineView.selectIndicator(0, 0);
+            binding.klineView.selectIndicator(1, 0);
         });
         binding.ma.setOnClickListener(v -> {
             binding.klineView.selectIndicator(MAIndicator.class);

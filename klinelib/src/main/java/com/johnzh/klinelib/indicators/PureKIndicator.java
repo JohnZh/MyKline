@@ -79,9 +79,10 @@ public class PureKIndicator extends AbsIndicator {
     }
 
     @Override
-    public void drawIndicatorText(KlineView klineView, DrawArea drawArea, Canvas canvas, Paint paint) {
+    public void drawIndicatorText(KlineView klineView, DrawArea drawArea, DATA data, Canvas canvas, Paint paint) {
 
     }
+
 
     protected void drawLongLowerShadow(float drawX,
                                        float firstY, float secondY, float thirdY, float fourthY,

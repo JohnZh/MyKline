@@ -62,7 +62,7 @@ public class VolIndicator extends AbsIndicator {
     }
 
     @Override
-    public void drawIndicatorText(KlineView klineView, DrawArea drawArea, Canvas canvas, Paint paint) {
+    public void drawIndicatorText(KlineView klineView, DrawArea drawArea, DATA data, Canvas canvas, Paint paint) {
 
     }
 }

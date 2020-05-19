@@ -39,21 +39,16 @@ import java.util.List;
  */
 public class IndicatorTextDrawArea extends ConvertDrawArea {
 
-    private boolean mDrawable;
     private IndicatorDrawArea mIndicatorDrawArea;
+    private boolean mDetailActivated;
 
     public IndicatorTextDrawArea(int height, IndicatorDrawArea indicatorDrawArea) {
         super(height);
         mIndicatorDrawArea = indicatorDrawArea;
-        mDrawable = true;
     }
 
-    public boolean isDrawable() {
-        return mDrawable;
-    }
-
-    public void setDrawable(boolean drawable) {
-        mDrawable = drawable;
+    public void setDetailActivated(boolean activated) {
+        mDetailActivated = activated;
     }
 
     @Override
@@ -62,9 +57,16 @@ public class IndicatorTextDrawArea extends ConvertDrawArea {
 
     @Override
     public void draw(KlineView klineView, Canvas canvas, Paint paint) {
-        if (mDrawable) {
+        if (!mDetailActivated) {
+            int lastDataIndex = klineView.getEndIndex() - 1;
+            DATA data = klineView.getDataList().get(lastDataIndex);
             Indicator curIndicator = mIndicatorDrawArea.getCurIndicator();
-            curIndicator.drawIndicatorText(klineView, this, canvas, paint);
+            curIndicator.drawIndicatorText(klineView, this, data, canvas, paint);
         }
+    }
+
+    public void draw(KlineView klineView, DATA data, Canvas canvas, Paint paint) {
+        Indicator curIndicator = mIndicatorDrawArea.getCurIndicator();
+        curIndicator.drawIndicatorText(klineView, this, data, canvas, paint);
     }
 }

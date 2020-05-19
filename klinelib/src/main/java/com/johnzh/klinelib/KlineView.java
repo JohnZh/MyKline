@@ -468,6 +468,10 @@ public class KlineView extends View {
             return;
         }
 
+        if (mAction == TouchAction.DETAIL && mDetailView != null) {
+            mDetailView.onPreKlineViewDraw(this);
+        }
+
         calcVisibleCandles();
 
         for (DrawArea drawArea : mDrawAreaList) {
@@ -482,7 +486,7 @@ public class KlineView extends View {
             drawArea.draw(this, canvas, sPaint);
         }
 
-        if (mDetailView != null) {
+        if (mAction == TouchAction.DETAIL && mDetailView != null) {
             mDetailView.onPostKlineViewDraw(this);
         }
     }

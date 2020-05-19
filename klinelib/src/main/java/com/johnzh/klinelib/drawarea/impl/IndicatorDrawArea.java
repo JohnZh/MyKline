@@ -73,9 +73,10 @@ public class IndicatorDrawArea extends ConvertDrawArea implements YAxisConverter
     }
 
     public void selectIndicator(int indexesIndex) {
-        if (indexesIndex < 0 || indexesIndex >= mIndicatorList.size()) return;
-        if (indexesIndex != mCurIndex) {
-            mCurIndex = indexesIndex;
+        if (indexesIndex >= 0 && indexesIndex < mIndicatorList.size()){
+            if (indexesIndex != mCurIndex) {
+                mCurIndex = indexesIndex;
+            }
         }
     }
 

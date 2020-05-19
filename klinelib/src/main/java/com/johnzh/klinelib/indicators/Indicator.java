@@ -52,7 +52,7 @@ public interface Indicator {
 
     void drawIndicator(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint);
 
-    void drawIndicatorText(KlineView klineView, DrawArea drawArea, Canvas canvas, Paint paint);
+    void drawIndicatorText(KlineView klineView, DrawArea drawArea, DATA data, Canvas canvas, Paint paint);
 
     AuxiliaryLines getAuxiliaryLines();
 }
