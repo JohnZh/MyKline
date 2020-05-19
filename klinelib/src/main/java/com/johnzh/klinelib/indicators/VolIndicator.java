@@ -8,6 +8,7 @@ import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 
 import java.util.List;
@@ -28,17 +29,19 @@ public class VolIndicator extends AbsIndicator {
     }
 
     @Override
-    public void calcIndexAsync(List<DATA> klineDataList) {
+    public void calcIndicatorAsync(List<DATA> klineDataList) {
     }
 
     @Override
-    public void calcIndex(List<DATA> klineDataList, int startIndex, int endIndex) {
+    public void calcIndicator(List<DATA> klineDataList, int startIndex, int endIndex) {
     }
 
     @Override
-    public void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
+    public void drawIndicator(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint) {
         float candleWidth = drawArea.getOneDataWidth() - 2 * dataPaddingHorizontal;
         List<DATA> dataList = klineView.getDataList();
+        int startIndex = klineView.getStartIndex();
+        int endIndex = klineView.getEndIndex();
         for (int i = startIndex; i < endIndex; i++) {
             KlineData klineData = dataList.get(i);
             float dataX = drawArea.getDrawX(drawArea.getVisibleIndex(i));
@@ -56,5 +59,10 @@ public class VolIndicator extends AbsIndicator {
             rectf.bottom = drawArea.getDrawY(0);
             canvas.drawRect(rectf, paint);
         }
+    }
+
+    @Override
+    public void drawIndicatorText(KlineView klineView, DrawArea drawArea, Canvas canvas, Paint paint) {
+
     }
 }

@@ -45,6 +45,7 @@ public class IndicatorTextDrawArea extends ConvertDrawArea {
     public IndicatorTextDrawArea(int height, IndicatorDrawArea indicatorDrawArea) {
         super(height);
         mIndicatorDrawArea = indicatorDrawArea;
+        mDrawable = true;
     }
 
     public boolean isDrawable() {
@@ -63,10 +64,7 @@ public class IndicatorTextDrawArea extends ConvertDrawArea {
     public void draw(KlineView klineView, Canvas canvas, Paint paint) {
         if (mDrawable) {
             Indicator curIndicator = mIndicatorDrawArea.getCurIndicator();
-            int lastVisibleIndex = klineView.getEndIndex() - 1;
-            int dataIndex = getDataIndex(lastVisibleIndex);
-            DATA data = klineView.getDataList().get(dataIndex);
-
+            curIndicator.drawIndicatorText(klineView, this, canvas, paint);
         }
     }
 }

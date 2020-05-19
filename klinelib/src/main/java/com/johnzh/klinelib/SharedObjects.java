@@ -20,22 +20,21 @@ public class SharedObjects {
         mRectF = new RectF();
     }
 
-    public Object getObject(Class clazz) {
+    public <T> T getObject(Class<T> clazz) {
         if (clazz.isInstance(mPath)) {
             mPath.reset();
-            return mPath;
+            return (T) mPath;
         }
 
         if (clazz.isInstance(mStringBuilder)) {
             mStringBuilder.setLength(0);
-            return mStringBuilder;
+            return (T) mStringBuilder;
         }
 
         if (clazz.isInstance(mRectF)) {
             mRectF.setEmpty();
-            return mRectF;
+            return (T) mRectF;
         }
-
         return null;
     }
 }

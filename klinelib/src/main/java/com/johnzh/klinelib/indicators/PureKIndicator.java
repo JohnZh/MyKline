@@ -8,6 +8,7 @@ import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 
 import java.util.List;
@@ -38,18 +39,20 @@ public class PureKIndicator extends AbsIndicator {
     }
 
     @Override
-    public void calcIndexAsync(List<DATA> dataList) {
+    public void calcIndicatorAsync(List<DATA> dataList) {
 
     }
 
     @Override
-    public void calcIndex(List<DATA> dataList, int startIndex, int endIndex) {
+    public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
 
     }
 
     @Override
-    public void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
+    public void drawIndicator(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint) {
         List<DATA> dataList = klineView.getDataList();
+        int startIndex = klineView.getStartIndex();
+        int endIndex = klineView.getEndIndex();
         for (int i = startIndex; i < endIndex; i++) {
             KlineData klineData = dataList.get(i);
             int visibleIndex = drawArea.getVisibleIndex(i);
@@ -73,6 +76,11 @@ public class PureKIndicator extends AbsIndicator {
             RectF rectF = (RectF) klineView.getSharedObjects().getObject(RectF.class);
             drawCandleBody(drawX, secondY, thirdY, color, candleWidth, rectF, canvas, paint);
         }
+    }
+
+    @Override
+    public void drawIndicatorText(KlineView klineView, DrawArea drawArea, Canvas canvas, Paint paint) {
+
     }
 
     protected void drawLongLowerShadow(float drawX,
@@ -100,4 +108,5 @@ public class PureKIndicator extends AbsIndicator {
             canvas.drawRect(rectF, paint);
         }
     }
+
 }

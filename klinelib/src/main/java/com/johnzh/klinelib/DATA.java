@@ -43,6 +43,7 @@ public class DATA implements KlineData  {
     }
 
     private KlineData klineData;
+    private IndicatorData indicatorData;
 
     public DATA(KlineData klineData) {
         this.klineData = klineData;
@@ -78,18 +79,15 @@ public class DATA implements KlineData  {
         return klineData.getDate();
     }
 
-    @Override
     public IndicatorData getIndicator() {
-        return klineData.getIndicator();
+        return indicatorData;
     }
 
-    @Override
     public IndicatorData newIndicator() {
-        return klineData.newIndicator();
+        return new IndicatorData();
     }
 
-    @Override
     public void setIndicator(IndicatorData indicatorData) {
-        klineData.setIndicator(indicatorData);
+        this.indicatorData = indicatorData;
     }
 }

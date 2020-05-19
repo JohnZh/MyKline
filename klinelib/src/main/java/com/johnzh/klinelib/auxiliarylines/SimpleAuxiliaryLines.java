@@ -100,7 +100,7 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
             float number = horizontalLines[i];
             float top = drawArea.getDrawY(number);
             float right = left + width;
-            Path path = (Path) sharedObjects.getObject(Path.class);
+            Path path = sharedObjects.getObject(Path.class);
             path.moveTo(left, top);
             path.lineTo(right, top);
             setHorizontalLinePaint(paint);

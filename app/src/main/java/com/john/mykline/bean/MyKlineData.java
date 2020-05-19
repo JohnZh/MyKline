@@ -11,7 +11,7 @@ import java.util.Date;
  * <p>
  * Description:
  */
-public class MyKlineData implements KlineData<MyIndicatorData> {
+public class MyKlineData implements KlineData {
 
     private static final String DAILY_FORMAT = "yyyy-MM-dd";
     private static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -95,23 +95,5 @@ public class MyKlineData implements KlineData<MyIndicatorData> {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private MyIndicatorData indexData;
-
-    @Override
-    public MyIndicatorData getIndicator() {
-        return indexData;
-    }
-
-    @Override
-    public MyIndicatorData newIndicator() {
-        return new MyIndicatorData();
-    }
-
-
-    @Override
-    public void setIndicator(MyIndicatorData indicatorData) {
-        this.indexData = indicatorData;
     }
 }

@@ -29,6 +29,7 @@ import android.graphics.Paint;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 
 import java.util.List;
@@ -41,16 +42,17 @@ import java.util.List;
  */
 public interface Indicator {
 
-    void calcIndexAsync(List<DATA> dataList);
+    void calcIndicatorAsync(List<DATA> dataList);
 
-    void calcIndex(List<DATA> dataList, int startIndex, int endIndex);
+    void calcIndicator(List<DATA> dataList, int startIndex, int endIndex);
 
     void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex);
 
     void drawAuxiliaryLines(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint);
 
-    void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex,
-                   Canvas canvas, Paint paint);
+    void drawIndicator(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint);
+
+    void drawIndicatorText(KlineView klineView, DrawArea drawArea, Canvas canvas, Paint paint);
 
     AuxiliaryLines getAuxiliaryLines();
 }

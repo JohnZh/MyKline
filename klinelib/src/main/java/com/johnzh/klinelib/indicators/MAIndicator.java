@@ -4,12 +4,14 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.johnzh.klinelib.DATA;
+import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.IndicatorData;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.ValueRange;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 import com.johnzh.klinelib.indicators.data.MA;
 
@@ -24,6 +26,7 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
 
     private PureKIndicator pureKIndex;
     private float lineWidth;
+    private float fontSize;
     private int[] ma;
     private int[] colors;
 
@@ -32,11 +35,12 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
 
     public MAIndicator(AuxiliaryLines auxiliaryLines,
                        PureKIndicator pureKIndex,
-                       float lineWidth,
+                       float lineWidth, float fontSize,
                        int[] ma, int[] colors) {
         super(auxiliaryLines);
         this.pureKIndex = pureKIndex;
         this.lineWidth = lineWidth;
+        this.fontSize = fontSize;
         this.ma = ma;
         this.colors = colors;
         if (ma.length != colors.length) {
@@ -55,13 +59,12 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     }
 
     @Override
-    public void calcIndexAsync(List<DATA> dataList) {
-
+    public void calcIndicatorAsync(List<DATA> dataList) {
     }
 
     @Override
-    public void calcIndex(List<DATA> dataList, int startIndex, int endIndex) {
-        pureKIndex.calcIndex(dataList, startIndex, endIndex);
+    public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
+        pureKIndex.calcIndicator(dataList, startIndex, endIndex);
 
         resetMaxMinPrice();
 
@@ -109,8 +112,8 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     }
 
     @Override
-    public void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
-        pureKIndex.drawIndex(klineView, drawArea, startIndex, endIndex, canvas, paint);
+    public void drawIndicator(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint) {
+        pureKIndex.drawIndicator(klineView, drawArea, canvas, paint);
 
         List<DATA> dataList = klineView.getDataList();
 
@@ -123,6 +126,8 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
 
             float startX = -1;
             float startY = -1;
+            int startIndex = klineView.getStartIndex();
+            int endIndex = klineView.getEndIndex();
             for (int j = startIndex; j < endIndex; j++) {
                 Float maValue = dataList.get(j).getIndicator().get(MA.class).get(maKey);
                 if (maValue == null) continue;
@@ -137,6 +142,32 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
                     startY = dataY;
                 }
             }
+        }
+    }
+
+    @Override
+    public void drawIndicatorText(KlineView klineView, DrawArea drawArea, Canvas canvas, Paint paint) {
+        int lastDataIndex = klineView.getEndIndex() - 1;
+        DATA data = klineView.getDataList().get(lastDataIndex);
+        float textLeft = drawArea.getLeft();
+        for (int i = 0; i < ma.length; i++) {
+            int maKey = ma[i];
+            int maColor = colors[i];
+            Float maValue = data.getIndicator().get(MA.class).get(maKey);
+            if (maValue == null) continue;
+            int scale = FloatCalc.get().getScale(data.getClosePrice());
+            StringBuilder builder = klineView.getSharedObjects().getObject(StringBuilder.class);
+            String text = builder.append("MA").append(maKey).append(":")
+                    .append(FloatCalc.get().format(maValue, scale))
+                    .append("  ")
+                    .toString();
+            paint.setTextSize(fontSize);
+            paint.setColor(maColor);
+            paint.setStyle(Paint.Style.FILL);
+            float textWidth = paint.measureText(text);
+            float textTop = drawArea.getTop();
+            DrawTextTool.drawTextFromLeftTop(text, textLeft, textTop, canvas, paint);
+            textLeft += textWidth;
         }
     }
 }

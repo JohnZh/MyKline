@@ -13,6 +13,7 @@ import com.johnzh.klinelib.date.DrawDate;
 import com.johnzh.klinelib.drawarea.impl.DateDrawArea;
 import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
+import com.johnzh.klinelib.drawarea.impl.IndicatorTextDrawArea;
 import com.johnzh.klinelib.indicators.Indicator;
 import com.johnzh.klinelib.indicators.MAIndicator;
 import com.johnzh.klinelib.indicators.PureKIndicator;
@@ -29,9 +30,10 @@ import java.util.List;
 public class KlineFactory implements Factory {
 
     // all units are dp
+    public static final int TEXT_HEIGHT = 18;
     public static final int DATA_HEIGHT = 240;
-    public static final int DATE_HEIGHT = 30;
-    public static final int INDEX_HEIGHT = 120;
+    public static final int DATE_HEIGHT = 24;
+    public static final int INDICATOR_HEIGHT = 120;
 
     private Context mContext;
 
@@ -41,31 +43,34 @@ public class KlineFactory implements Factory {
 
     @Override
     public List<DrawArea> createDrawAreas() {
+        int textHeight = (int) dp2Px(TEXT_HEIGHT);
         int dataHeight = (int) dp2Px(DATA_HEIGHT);
         int dateHeight = (int) dp2Px(DATE_HEIGHT);
-        int indexHeight = (int) dp2Px(INDEX_HEIGHT);
+        int indexHeight = (int) dp2Px(INDICATOR_HEIGHT);
         List<DrawArea> drawAreaList = new ArrayList<>();
-        drawAreaList.add(new IndicatorDrawArea(dataHeight, getIndexListForData()));
+        IndicatorDrawArea indicatorDrawArea = new IndicatorDrawArea(dataHeight, getIndexListForData());
+        drawAreaList.add(new IndicatorTextDrawArea(textHeight, indicatorDrawArea));
+        drawAreaList.add(indicatorDrawArea);
         drawAreaList.add(new DateDrawArea(dateHeight, getDefaultDrawDate()));
         drawAreaList.add(new IndicatorDrawArea(indexHeight, getIndexForIndexes()));
         return drawAreaList;
     }
 
-    private DrawDate getDefaultDrawDate() {
+    protected DrawDate getDefaultDrawDate() {
         float fontSize = sp2Px( 10);
         float textMargin = dp2Px( 2);
         int color = Color.parseColor("#999999");
         return new SimpleDrawDate(fontSize, textMargin, color);
     }
 
-    private List<Indicator> getIndexListForData() {
+    protected List<Indicator> getIndexListForData() {
         List<Indicator> list = new ArrayList<>();
         list.add(createDefaultIndex(PureKIndicator.class));
         list.add(createDefaultIndex(MAIndicator.class));
         return list;
     }
 
-    private List<Indicator> getIndexForIndexes() {
+    protected List<Indicator> getIndexForIndexes() {
         List<Indicator> list = new ArrayList<>();
         list.add(createDefaultIndex(VolIndicator.class));
         return list;
@@ -79,6 +84,7 @@ public class KlineFactory implements Factory {
         };
 
         float dataPaddingHorizontal = toPx(TypedValue.COMPLEX_UNIT_DIP, 0.5f);
+        float fontSize = sp2Px(10);
 
         if (clazz.isAssignableFrom(PureKIndicator.class)) {
             float candleLineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
@@ -95,8 +101,9 @@ public class KlineFactory implements Factory {
             AuxiliaryLines auxiliaryLines
                     = createDefaultAuxiliaryLines(CandlesAuxiliaryLines.class);
             PureKIndicator purKIndex = (PureKIndicator) createDefaultIndex(PureKIndicator.class);
-            float lineWidth = toPx(TypedValue.COMPLEX_UNIT_DIP, 1);
-            return new MAIndicator(auxiliaryLines, purKIndex, lineWidth, new int[]{5, 10}, maColors);
+            float lineWidth = dp2Px(1);
+            return new MAIndicator(auxiliaryLines, purKIndex, lineWidth, fontSize,
+                    new int[]{5, 10}, maColors);
         }
 
         if (clazz.isAssignableFrom(VolIndicator.class)) {

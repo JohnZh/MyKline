@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 import com.johnzh.klinelib.indicators.AbsIndicator;
 
@@ -22,23 +23,23 @@ public class KDJIndicator extends AbsIndicator {
         super(auxiliaryLines);
     }
 
-    public static class KDJ {
+    @Override
+    public void calcIndicatorAsync(List<DATA> dataList) {
 
     }
 
     @Override
-    public void calcIndexAsync(List<DATA> dataList) {
+    public void calcIndicator(List<DATA> klineDataList, int startIndex, int endIndex) {
 
     }
 
     @Override
-    public void calcIndex(List<DATA> klineDataList, int startIndex, int endIndex) {
+    public void drawIndicator(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint) {
 
     }
 
     @Override
-    public void drawIndex(KlineView klineView, IndicatorDrawArea drawArea, int startIndex, int endIndex, Canvas canvas, Paint paint) {
+    public void drawIndicatorText(KlineView klineView, DrawArea drawArea, Canvas canvas, Paint paint) {
 
     }
-
 }
