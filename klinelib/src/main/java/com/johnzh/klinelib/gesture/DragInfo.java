@@ -84,4 +84,10 @@ public final class DragInfo {
         return maxDraggedDataAmount != 0
                 && draggedDataAmount == 0;
     }
+
+    public void clear() {
+        draggedDataAmount = 0;
+        preDraggedDataAmount = 0;
+        maxDraggedDataAmount = 0;
+    }
 }

@@ -88,7 +88,7 @@ public class KlineView extends View {
     public static final Paint sPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private List<DATA> mDataList;
-    private List<DATA> mNewDataList; // Saving the new data when dragging
+    private List<DATA> mBufferedList; // Saving the new data when dragging or in the right-most
 
     private List<DrawArea> mDrawAreaList;
     private KlineConfig mConfig;
@@ -121,7 +121,8 @@ public class KlineView extends View {
     }
 
     private void init() {
-        mNewDataList = new ArrayList<>();
+        mBufferedList = new ArrayList<>();
+        mDataList = new ArrayList<>();
         mDrawAreaList = new KlineFactory(getContext()).createDrawAreas();
         mSharedObjects = new SharedObjects();
         mConfig = new KlineConfig.Builder().build();
@@ -324,9 +325,41 @@ public class KlineView extends View {
         mOnScaleListener = onScaleListener;
     }
 
+    /**
+     * Add list to buffered list, and refresh data when dragged to the right-most
+     *
+     * @param dataList this list will be add to buffered list
+     */
+    public void setBufferedList(@NonNull List<DATA> dataList) {
+        if (!mBufferedList.isEmpty()) {
+            mBufferedList.clear();
+        }
+        if (mDragInfo.isRightMost()) {
+            setDataList(dataList);
+        } else {
+            mBufferedList.addAll(dataList);
+            Log.d(TAG, "setBufferedList: ");
+        }
+    }
+
     public void setDataList(@NonNull List<DATA> dataList) {
-        mDataList = dataList;
+        clear();
+        mDataList.addAll(dataList);
         redraw();
+    }
+
+    public void clear() {
+        mBufferedList.clear();
+        clearExceptBuffer();
+    }
+
+    private void clearExceptBuffer() {
+        mDataList.clear();
+        mStartIndex = 0;
+        mEndIndex = 0;
+        mCandles = 0;
+        mOneDataWidth = 0;
+        mDragInfo.clear();
     }
 
     public List<DATA> getDataList() {
@@ -499,7 +532,7 @@ public class KlineView extends View {
 
                 if (mAction == TouchAction.NONE || mAction == TouchAction.DRAG) {
                     float distance = Math.abs(event.getX() - mDragInfo.getActionDownX());
-                    if (distance > mOneDataWidth) {
+                    if (mOneDataWidth != 0 && distance > mOneDataWidth) {
                         mAction = TouchAction.DRAG;
 
                         int newDraggedDataAmount = mDragInfo
@@ -522,6 +555,14 @@ public class KlineView extends View {
                                         - mDragInfo.getDraggedDataAmount();
                                 mOnDataDragListener.onDrag(remainingData,
                                         mDragInfo.getDraggedDataAmount(), mCandles);
+                            }
+
+                            if (mDragInfo.isRightMost() && !mBufferedList.isEmpty()) {
+                                Log.d(TAG, "refresh: " + mBufferedList.size());
+                                clearExceptBuffer();
+                                mDataList.addAll(mBufferedList);
+                                mBufferedList.clear();
+                                redraw();
                             }
                         }
                         return true;

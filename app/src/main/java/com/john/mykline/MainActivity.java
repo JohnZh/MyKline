@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         binding.klineView.setOnDataDragListener(new DragInfo.Listener() {
             @Override
             public void onDrag(int remainingData, int draggedData, int visibleData) {
-                Log.d(TAG, "onDrag: " + remainingData);
                 if (binding.klineView.getDragInfo().isLeftMost()) {
                     getTestDataForHistory();
                 }
@@ -59,21 +58,29 @@ public class MainActivity extends AppCompatActivity {
             binding.klineView.selectIndicator(VolIndicator.class);
         });
         binding.combination.setOnClickListener(v -> {
-            startCombinationActivity();
+            getTestData(true);
+            //startCombinationActivity();
         });
 
-        getTestData();
+        getTestData(false);
 
     }
 
-    private void getTestData() {
+    private void getTestData(boolean buffered) {
         HttpAgent.getApi().getDailyKline("M2009")
                 .enqueue(new Callback<List<List<String>>>() {
                     @Override
                     public void onResponse(Call<List<List<String>>> call, Response<List<List<String>>> response) {
                         List<DATA> data = new ArrayList<>();
                         convertData(response.body(), data);
-                        binding.klineView.setDataList(data);
+                        if (buffered) {
+                            DATA more = data.get(data.size() - 1);
+                            data.add(more);
+                            binding.klineView.setBufferedList(data);
+                        } else {
+                            Log.d(TAG, "onResponse: " + data.size());
+                            binding.klineView.setDataList(data);
+                        }
                     }
 
                     @Override
