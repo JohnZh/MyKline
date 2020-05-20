@@ -26,7 +26,7 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
 
     private PureKIndicator pureKIndex;
     private float lineWidth;
-    private float fontSize;
+    private float textSize;
     private int[] ma;
     private int[] colors;
 
@@ -35,12 +35,12 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
 
     public MAIndicator(AuxiliaryLines auxiliaryLines,
                        PureKIndicator pureKIndex,
-                       float lineWidth, float fontSize,
+                       float lineWidth, float textSize,
                        int[] ma, int[] colors) {
         super(auxiliaryLines);
         this.pureKIndex = pureKIndex;
         this.lineWidth = lineWidth;
-        this.fontSize = fontSize;
+        this.textSize = textSize;
         this.ma = ma;
         this.colors = colors;
         if (ma.length != colors.length) {
@@ -64,8 +64,6 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
 
     @Override
     public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
-        pureKIndex.calcIndicator(dataList, startIndex, endIndex);
-
         resetMaxMinPrice();
 
         for (int i = startIndex; i < endIndex; i++) {
@@ -160,12 +158,12 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
                     .append(FloatCalc.get().format(maValue, scale))
                     .append("  ")
                     .toString();
-            paint.setTextSize(fontSize);
+            paint.setTextSize(textSize);
             paint.setColor(maColor);
             paint.setStyle(Paint.Style.FILL);
             float textWidth = paint.measureText(text);
-            float textTop = drawArea.getTop();
-            DrawTextTool.drawTextFromLeftTop(text, textLeft, textTop, canvas, paint);
+            float textBottom = drawArea.getTop() + drawArea.getHeight();
+            DrawTextTool.drawTextFromLeftBottom(text, textLeft, textBottom, canvas, paint);
             textLeft += textWidth;
         }
     }

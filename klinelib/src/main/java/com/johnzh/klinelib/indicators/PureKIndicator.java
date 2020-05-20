@@ -21,20 +21,20 @@ import java.util.List;
 public class PureKIndicator extends AbsIndicator {
 
     private int[] colors;
-    private float dataPaddingHorizontal;
+    private float dataPaddingX;
     private float candleLineWidth;
 
     /**
      * @param auxiliaryLines
-     * @param colors                colors[0] is positiveColor, colors[1] is negativeColor
-     * @param dataPaddingHorizontal
+     * @param colors          colors[0] is positiveColor, colors[1] is negativeColor
+     * @param dataPaddingX
      * @param candleLineWidth
      */
     public PureKIndicator(AuxiliaryLines auxiliaryLines,
-                          int[] colors, float dataPaddingHorizontal, float candleLineWidth) {
+                          int[] colors, float dataPaddingX, float candleLineWidth) {
         super(auxiliaryLines);
         this.colors = colors;
-        this.dataPaddingHorizontal = dataPaddingHorizontal;
+        this.dataPaddingX = dataPaddingX;
         this.candleLineWidth = candleLineWidth;
     }
 
@@ -62,7 +62,7 @@ public class PureKIndicator extends AbsIndicator {
             float secondY = drawArea.getDrawY(klineData.getClosePrice());
             float thirdY = drawArea.getDrawY(klineData.getOpenPrice());
             float fourthY = drawArea.getDrawY(klineData.getLowestPrice());
-            float candleWidth = drawArea.getOneDataWidth() - 2 * dataPaddingHorizontal;
+            float candleWidth = drawArea.getOneDataWidth() - 2 * dataPaddingX;
 
             int color = colors[0];
             if (klineData.getClosePrice() < klineData.getOpenPrice()) {
