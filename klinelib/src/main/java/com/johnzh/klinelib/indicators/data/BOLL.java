@@ -23,25 +23,37 @@
  */
 package com.johnzh.klinelib.indicators.data;
 
-import android.util.SparseArray;
-
 /**
- * Created by JohnZh on 2020/5/19
+ * Created by JohnZh on 2020/5/20
  *
- * <p>Data structure for MA indicator</p>
+ * <p>BOLL indicator data structure</p>
  */
-public class MA implements InData {
-    SparseArray<Float> map;
+public class BOLL implements InData {
+    private Float MA;
+    private Float UPPER;
+    private Float LOWER;
 
-    public MA() {
-        this.map = new SparseArray<>();
+    public Float getMA() {
+        return MA;
     }
 
-    public void put(int maKey, Float maValue) {
-        map.put(maKey, maValue);
+    public void setMA(Float MA) {
+        this.MA = MA;
     }
 
-    public Float get(int maKey) {
-        return map.get(maKey);
+    public Float getUPPER() {
+        return UPPER;
+    }
+
+    public void setUPPER(Float UPPER) {
+        this.UPPER = UPPER;
+    }
+
+    public Float getLOWER() {
+        return LOWER;
+    }
+
+    public void setLOWER(Float LOWER) {
+        this.LOWER = LOWER;
     }
 }

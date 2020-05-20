@@ -80,14 +80,9 @@ public class DATA implements KlineData  {
     }
 
     public IndicatorData getIndicator() {
+        if (indicatorData == null) {
+            indicatorData = new IndicatorData();
+        }
         return indicatorData;
-    }
-
-    public IndicatorData newIndicator() {
-        return new IndicatorData();
-    }
-
-    public void setIndicator(IndicatorData indicatorData) {
-        this.indicatorData = indicatorData;
     }
 }

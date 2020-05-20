@@ -1,3 +1,26 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2020 JohnZh
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.johnzh.klinelib;
 
 import android.content.Context;
@@ -14,10 +37,11 @@ import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.DateDrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorTextDrawArea;
+import com.johnzh.klinelib.indicators.BOLLIndicator;
 import com.johnzh.klinelib.indicators.Indicator;
 import com.johnzh.klinelib.indicators.MAIndicator;
 import com.johnzh.klinelib.indicators.PureKIndicator;
-import com.johnzh.klinelib.indicators.VolIndicator;
+import com.johnzh.klinelib.indicators.VOLIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +84,73 @@ public class KlineFactory implements Factory {
         return drawAreaList;
     }
 
+    @Override
+    public <T extends Indicator> T createDefaultIndex(Class<T> clazz) {
+        int[] posNegColor = {
+                Color.parseColor("#f62048"),
+                Color.parseColor("#39ae13")
+        };
+
+        int[] maColors = {
+                Color.parseColor("#1A7AD5"),
+                Color.parseColor("#FFB405"),
+                Color.parseColor("#7C3BB9")
+        };
+
+        float dataPaddingX = dp2Px(0.5f);
+        float textSize = sp2Px(10);
+        float textMargin = dp2Px(2);
+        int textColor = Color.parseColor("#999999");
+        float lineWidth = dp2Px(1);
+
+        if (clazz.isAssignableFrom(PureKIndicator.class)) {
+            float candleLineWidth = dp2Px(1);
+            AuxiliaryLines auxiliaryLines
+                    = createDefaultAuxiliaryLines(CandlesAuxiliaryLines.class);
+            return (T) new PureKIndicator(auxiliaryLines, posNegColor, dataPaddingX, candleLineWidth);
+        }
+
+        if (clazz.isAssignableFrom(MAIndicator.class)) {
+            PureKIndicator purKIndex = createDefaultIndex(PureKIndicator.class);
+            return (T) new MAIndicator(purKIndex, new int[]{5, 10}, maColors, lineWidth, textSize, textMargin);
+        }
+
+        if (clazz.isAssignableFrom(BOLLIndicator.class)) {
+            PureKIndicator purKIndex = createDefaultIndex(PureKIndicator.class);
+            return (T) new BOLLIndicator(purKIndex, new int[]{20, 2}, maColors, lineWidth, textSize, textMargin);
+        }
+
+        if (clazz.isAssignableFrom(VOLIndicator.class)) {
+            AuxiliaryLines volAuxiliaryLines = createDefaultAuxiliaryLines(VolAuxiliaryLines.class);
+            return (T) new VOLIndicator(volAuxiliaryLines, posNegColor, dataPaddingX,
+                    textSize, textColor, textMargin);
+        }
+
+        return null;
+    }
+
+    @Override
+    public <T extends AuxiliaryLines> T createDefaultAuxiliaryLines(Class<T> clazz) {
+        float textSize = sp2Px(10);
+        float lineWidth = dp2Px(0.5f);
+        float textMargin = dp2Px(2);
+        int color = Color.parseColor("#999999");
+
+        if (clazz.isAssignableFrom(CandlesAuxiliaryLines.class)) {
+            return (T) new CandlesAuxiliaryLines(5, textSize, lineWidth, textMargin, color);
+        }
+
+        if (clazz.isAssignableFrom(SimpleAuxiliaryLines.class)) {
+            return (T) new SimpleAuxiliaryLines(2, textSize, lineWidth, textMargin, color);
+        }
+
+        if (clazz.isAssignableFrom(VolAuxiliaryLines.class)) {
+            return (T) new VolAuxiliaryLines(2, textSize, lineWidth, textMargin, color);
+        }
+
+        return null;
+    }
+
     protected DrawDate getDefaultDrawDate() {
         float fontSize = sp2Px(10);
         float textMargin = dp2Px(2);
@@ -71,74 +162,16 @@ public class KlineFactory implements Factory {
         List<Indicator> list = new ArrayList<>();
         list.add(createDefaultIndex(PureKIndicator.class));
         list.add(createDefaultIndex(MAIndicator.class));
+        list.add(createDefaultIndex(BOLLIndicator.class));
         return list;
     }
 
     protected List<Indicator> getIndicators2() {
         List<Indicator> list = new ArrayList<>();
-        list.add(createDefaultIndex(VolIndicator.class));
+        list.add(createDefaultIndex(VOLIndicator.class));
         return list;
     }
 
-    @Override
-    public Indicator createDefaultIndex(Class clazz) {
-        int[] posNegColor = {
-                Color.parseColor("#f62048"),
-                Color.parseColor("#39ae13")
-        };
-
-        float dataPaddingX = dp2Px(0.5f);
-        float textSize = sp2Px(10);
-        float textMargin = dp2Px(2);
-        int textColor = Color.parseColor("#999999");
-
-        if (clazz.isAssignableFrom(PureKIndicator.class)) {
-            float candleLineWidth = dp2Px(1);
-            AuxiliaryLines auxiliaryLines
-                    = createDefaultAuxiliaryLines(CandlesAuxiliaryLines.class);
-            return new PureKIndicator(auxiliaryLines, posNegColor, dataPaddingX, candleLineWidth);
-        }
-
-        if (clazz.isAssignableFrom(MAIndicator.class)) {
-            int[] maColors = {
-                    Color.parseColor("#ffb405"),
-                    Color.parseColor("#890cff")
-            };
-            PureKIndicator purKIndex = (PureKIndicator) createDefaultIndex(PureKIndicator.class);
-            float lineWidth = dp2Px(1);
-            return new MAIndicator(purKIndex, lineWidth, textSize, textMargin, new int[]{5, 10}, maColors);
-        }
-
-        if (clazz.isAssignableFrom(VolIndicator.class)) {
-            AuxiliaryLines volAuxiliaryLines = createDefaultAuxiliaryLines(VolAuxiliaryLines.class);
-            return new VolIndicator(volAuxiliaryLines, posNegColor, dataPaddingX,
-                    textSize, textColor, textMargin);
-        }
-
-        return null;
-    }
-
-    @Override
-    public AuxiliaryLines createDefaultAuxiliaryLines(Class clazz) {
-        float textSize = sp2Px(10);
-        float lineWidth = dp2Px(0.5f);
-        float textMargin = dp2Px(2);
-        int color = Color.parseColor("#999999");
-
-        if (clazz.isAssignableFrom(CandlesAuxiliaryLines.class)) {
-            return new CandlesAuxiliaryLines(5, textSize, lineWidth, textMargin, color);
-        }
-
-        if (clazz.isAssignableFrom(SimpleAuxiliaryLines.class)) {
-            return new SimpleAuxiliaryLines(2, textSize, lineWidth, textMargin, color);
-        }
-
-        if (clazz.isAssignableFrom(VolAuxiliaryLines.class)) {
-            return new VolAuxiliaryLines(2, textSize, lineWidth, textMargin, color);
-        }
-
-        return null;
-    }
 
     public float sp2Px(float value) {
         return toPx(TypedValue.COMPLEX_UNIT_SP, value);
