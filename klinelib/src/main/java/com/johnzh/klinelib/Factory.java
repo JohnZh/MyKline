@@ -39,5 +39,5 @@ public interface Factory {
 
     <T extends Indicator> T createDefaultIndex(Class<T> clazz);
 
-    <T extends AuxiliaryLines> T createDefaultAuxiliaryLines(Class<T> clazz);
+    <T extends AuxiliaryLines> T createDefaultAuxiliaryLines(Class<T> clazz, int lines);
 }

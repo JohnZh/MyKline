@@ -54,9 +54,6 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
     private float textSize;
     private float textMargin;
 
-    private float maxPrice;
-    private float minPrice;
-
     /**
      * Constructor of BOLL indicator
      *
@@ -81,14 +78,10 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
         }
     }
 
-    private void resetMaxMinPrice() {
-        maxPrice = Float.MIN_VALUE;
-        minPrice = Float.MAX_VALUE;
-    }
-
-    private void updateMaxMinPrice(Float upper, Float lower) {
-        maxPrice = Math.max(maxPrice, upper);
-        minPrice = Math.min(minPrice, lower);
+    @Override
+    public void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
+        pureKIndicator.calcAuxiliaryLines(dataList, startIndex, endIndex);
+        super.calcAuxiliaryLines(dataList, startIndex, endIndex);
     }
 
     @Override
@@ -97,7 +90,9 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
 
     @Override
     public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
-        resetMaxMinPrice();
+        pureKIndicator.calcIndicator(dataList, startIndex, endIndex);
+
+        resetMaxMin();
 
         int n = boll[0];
         int p = boll[1];
@@ -107,7 +102,7 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
 
             BOLL boll = indicator.get(BOLL.class);
             if (boll.getMA() != null) {
-                updateMaxMinPrice(boll.getUPPER(), boll.getLOWER());
+                updateMaxMin(boll.getUPPER(), boll.getLOWER());
                 continue;
             }
 
@@ -118,7 +113,7 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
             float lower = maValue - p * md;
             boll.setUPPER(upper);
             boll.setLOWER(lower);
-            updateMaxMinPrice(upper, lower);
+            updateMaxMin(upper, lower);
         }
     }
 
@@ -203,18 +198,9 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
                 float textWidth = paint.measureText(text);
                 float textBottom = drawArea.getTop() + drawArea.getHeight() - textMargin;
                 DrawTextTool.drawTextFromLeftBottom(text, textLeft, textBottom, canvas, paint);
+                builder.setLength(0);
                 textLeft += textWidth;
             }
         }
-    }
-
-    @Override
-    public float getMaximum() {
-        return maxPrice;
-    }
-
-    @Override
-    public float getMinimum() {
-        return minPrice;
     }
 }

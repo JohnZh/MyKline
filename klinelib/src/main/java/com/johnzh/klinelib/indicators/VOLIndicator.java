@@ -66,6 +66,10 @@ public class VOLIndicator extends AbsIndicator {
 
     @Override
     public void calcIndicator(List<DATA> klineDataList, int startIndex, int endIndex) {
+        for (int i = startIndex; i < endIndex; i++) {
+            KlineData data = klineDataList.get(i);
+            updateMaxMin(data.getVolume());
+        }
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.SharedObjects;
-import com.johnzh.klinelib.ValueRange;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 import com.johnzh.klinelib.indicators.Indicator;
 
@@ -23,6 +22,8 @@ import java.util.List;
 public class SimpleAuxiliaryLines implements AuxiliaryLines {
 
     protected float[] horizontalLines;
+    protected float max;
+    protected float min;
 
     private float textSize;
     private float lineWidth;
@@ -46,6 +47,9 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
         this.lineWidth = lineWidth;
         this.textMargin = textMargin;
         this.color = color;
+
+        this.max = Float.MIN_VALUE;
+        this.min = Float.MAX_VALUE;
     }
 
     public void setTextSize(float textSize) {
@@ -65,16 +69,10 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
     }
 
     @Override
-    public void calcHorizontalLines(List<DATA> dataList, Indicator curIndicator, int startIndex, int endIndex) {
-        float max = Float.MIN_VALUE;
-        float min = Float.MAX_VALUE;
-
-        if (curIndicator instanceof ValueRange) {
-            max = Math.max(((ValueRange) curIndicator).getMaximum(), max);
-            min = Math.min(((ValueRange) curIndicator).getMinimum(), min);
-        }
-
-        if (max == Float.MIN_VALUE || min == Float.MAX_VALUE) return;
+    public void calcHorizontalLines(List<DATA> dataList, Indicator curIndicator,
+                                    int startIndex, int endIndex) {
+        max = Math.max(curIndicator.getMaximum(), max);
+        min = Math.min(curIndicator.getMinimum(), min);
 
         float interval = FloatCalc.get().subtraction(max, min);
         interval = FloatCalc.get().divide(interval, horizontalLines.length - 1);

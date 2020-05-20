@@ -40,12 +40,16 @@ public class PureKIndicator extends AbsIndicator {
 
     @Override
     public void calcIndicatorAsync(List<DATA> dataList) {
-
     }
 
     @Override
     public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
+        resetMaxMin();
 
+        for (int i = startIndex; i < endIndex; i++) {
+            DATA data = dataList.get(i);
+            updateMaxMin(data.getHighestPrice(), data.getLowestPrice());
+        }
     }
 
     @Override

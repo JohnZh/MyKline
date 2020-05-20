@@ -28,6 +28,7 @@ import android.graphics.Paint;
 
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
+import com.johnzh.klinelib.ValueRange;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
@@ -40,7 +41,7 @@ import java.util.List;
  * <p>Index for kline</p>
  *
  */
-public interface Indicator {
+public interface Indicator extends ValueRange {
 
     void calcIndicatorAsync(List<DATA> dataList);
 

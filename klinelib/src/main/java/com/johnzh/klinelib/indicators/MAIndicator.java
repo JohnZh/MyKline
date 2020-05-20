@@ -52,9 +52,6 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     private int[] ma;
     private int[] colors;
 
-    private float maxPrice;
-    private float minPrice;
-
     /**
      * Constructor of MA indicator
      *
@@ -80,13 +77,9 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     }
 
     @Override
-    public float getMaximum() {
-        return maxPrice;
-    }
-
-    @Override
-    public float getMinimum() {
-        return minPrice;
+    public void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
+        pureKIndicator.calcAuxiliaryLines(dataList, startIndex, endIndex);
+        super.calcAuxiliaryLines(dataList, startIndex, endIndex);
     }
 
     @Override
@@ -95,7 +88,9 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
 
     @Override
     public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
-        resetMaxMinPrice();
+        pureKIndicator.calcIndicator(dataList, startIndex, endIndex);
+
+        resetMaxMin();
 
         for (int i = startIndex; i < endIndex; i++) {
             IndicatorData indicatorData = dataList.get(i).getIndicator();
@@ -105,25 +100,15 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
 
                 Float maValue = indicatorData.get(MA.class).get(maKey);
                 if (maValue != null) {
-                    updateMaxMinPrice(maValue);
+                    updateMaxMin(maValue);
                     continue;
                 }
 
                 Float newMaValue = calcMaValue(dataList, i, maKey);
                 indicatorData.get(MA.class).put(maKey, newMaValue);
-                updateMaxMinPrice(newMaValue);
+                updateMaxMin(newMaValue);
             }
         }
-    }
-
-    private void resetMaxMinPrice() {
-        maxPrice = Float.MIN_VALUE;
-        minPrice = Float.MAX_VALUE;
-    }
-
-    private void updateMaxMinPrice(Float price) {
-        maxPrice = Math.max(maxPrice, price);
-        minPrice = Math.min(minPrice, price);
     }
 
     private Float calcMaValue(List<DATA> klineDataList, int curIndex, int maKey) {

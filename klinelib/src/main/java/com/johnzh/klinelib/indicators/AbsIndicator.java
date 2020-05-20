@@ -19,9 +19,16 @@ public abstract class AbsIndicator implements Indicator {
 
     private AuxiliaryLines auxiliaryLines;
 
+    private float max;
+    private float min;
+
     public AbsIndicator(AuxiliaryLines auxiliaryLines) {
         this.auxiliaryLines = auxiliaryLines;
+        this.max = Float.MIN_VALUE;
+        this.min = Float.MAX_VALUE;
     }
+
+
 
     @Override
     public void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
@@ -38,5 +45,30 @@ public abstract class AbsIndicator implements Indicator {
     @Override
     public AuxiliaryLines getAuxiliaryLines() {
         return auxiliaryLines;
+    }
+
+    @Override
+    public float getMaximum() {
+        return max;
+    }
+
+    @Override
+    public float getMinimum() {
+        return min;
+    }
+
+    protected void resetMaxMin() {
+        max = Float.MIN_VALUE;
+        min = Float.MAX_VALUE;
+    }
+
+    protected void updateMaxMin(float number) {
+        max = Math.max(max, number);
+        min = Math.min(min, number);
+    }
+
+    protected void updateMaxMin(float max, float min) {
+        this.max = Math.max(this.max, max);
+        this.min = Math.min(this.min, min);
     }
 }

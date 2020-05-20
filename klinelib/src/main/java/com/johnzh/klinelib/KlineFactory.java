@@ -1,18 +1,18 @@
 /**
  * MIT License
- *
+ * <p>
  * Copyright (c) 2020 JohnZh
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,9 +28,8 @@ import android.graphics.Color;
 import android.util.TypedValue;
 
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.auxiliarylines.CandlesAuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.SimpleAuxiliaryLines;
-import com.johnzh.klinelib.auxiliarylines.VolAuxiliaryLines;
+import com.johnzh.klinelib.auxiliarylines.VOLAuxiliaryLines;
 import com.johnzh.klinelib.date.DrawDate;
 import com.johnzh.klinelib.date.SimpleDrawDate;
 import com.johnzh.klinelib.drawarea.DrawArea;
@@ -42,6 +41,7 @@ import com.johnzh.klinelib.indicators.Indicator;
 import com.johnzh.klinelib.indicators.MAIndicator;
 import com.johnzh.klinelib.indicators.PureKIndicator;
 import com.johnzh.klinelib.indicators.VOLIndicator;
+import com.johnzh.klinelib.indicators.WRIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,47 +105,56 @@ public class KlineFactory implements Factory {
 
         if (clazz.isAssignableFrom(PureKIndicator.class)) {
             float candleLineWidth = dp2Px(1);
-            AuxiliaryLines auxiliaryLines
-                    = createDefaultAuxiliaryLines(CandlesAuxiliaryLines.class);
+            SimpleAuxiliaryLines auxiliaryLines
+                    = createDefaultAuxiliaryLines(SimpleAuxiliaryLines.class, 5);
             return (T) new PureKIndicator(auxiliaryLines, posNegColor, dataPaddingX, candleLineWidth);
         }
 
         if (clazz.isAssignableFrom(MAIndicator.class)) {
             PureKIndicator purKIndex = createDefaultIndex(PureKIndicator.class);
-            return (T) new MAIndicator(purKIndex, new int[]{5, 10}, maColors, lineWidth, textSize, textMargin);
+            return (T) new MAIndicator(purKIndex, new int[]{5, 10}, maColors,
+                    lineWidth, textSize, textMargin);
         }
 
         if (clazz.isAssignableFrom(BOLLIndicator.class)) {
             PureKIndicator purKIndex = createDefaultIndex(PureKIndicator.class);
-            return (T) new BOLLIndicator(purKIndex, new int[]{20, 2}, maColors, lineWidth, textSize, textMargin);
+            return (T) new BOLLIndicator(purKIndex, new int[]{20, 2}, maColors,
+                    lineWidth, textSize, textMargin);
         }
 
         if (clazz.isAssignableFrom(VOLIndicator.class)) {
-            AuxiliaryLines volAuxiliaryLines = createDefaultAuxiliaryLines(VolAuxiliaryLines.class);
+            AuxiliaryLines volAuxiliaryLines = createDefaultAuxiliaryLines(VOLAuxiliaryLines.class);
             return (T) new VOLIndicator(volAuxiliaryLines, posNegColor, dataPaddingX,
+                    textSize, textColor, textMargin);
+        }
+
+        if (clazz.isAssignableFrom(WRIndicator.class)) {
+            SimpleAuxiliaryLines simpleAuxiliaryLines
+                    = createDefaultAuxiliaryLines(SimpleAuxiliaryLines.class);
+            return (T) new WRIndicator(simpleAuxiliaryLines, new int[]{6, 10},
                     textSize, textColor, textMargin);
         }
 
         return null;
     }
 
-    @Override
     public <T extends AuxiliaryLines> T createDefaultAuxiliaryLines(Class<T> clazz) {
+        return createDefaultAuxiliaryLines(clazz, 2);
+    }
+
+    @Override
+    public <T extends AuxiliaryLines> T createDefaultAuxiliaryLines(Class<T> clazz, int lines) {
         float textSize = sp2Px(10);
         float lineWidth = dp2Px(0.5f);
         float textMargin = dp2Px(2);
         int color = Color.parseColor("#999999");
 
-        if (clazz.isAssignableFrom(CandlesAuxiliaryLines.class)) {
-            return (T) new CandlesAuxiliaryLines(5, textSize, lineWidth, textMargin, color);
-        }
-
         if (clazz.isAssignableFrom(SimpleAuxiliaryLines.class)) {
-            return (T) new SimpleAuxiliaryLines(2, textSize, lineWidth, textMargin, color);
+            return (T) new SimpleAuxiliaryLines(lines, textSize, lineWidth, textMargin, color);
         }
 
-        if (clazz.isAssignableFrom(VolAuxiliaryLines.class)) {
-            return (T) new VolAuxiliaryLines(2, textSize, lineWidth, textMargin, color);
+        if (clazz.isAssignableFrom(VOLAuxiliaryLines.class)) {
+            return (T) new VOLAuxiliaryLines(lines, textSize, lineWidth, textMargin, color);
         }
 
         return null;
