@@ -10,7 +10,6 @@ import com.johnzh.klinelib.IndicatorData;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.ValueRange;
-import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 import com.johnzh.klinelib.indicators.data.MA;
@@ -33,11 +32,10 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     private float maxPrice;
     private float minPrice;
 
-    public MAIndicator(AuxiliaryLines auxiliaryLines,
-                       PureKIndicator pureKIndex,
+    public MAIndicator(PureKIndicator pureKIndex,
                        float lineWidth, float textSize,
                        int[] ma, int[] colors) {
-        super(auxiliaryLines);
+        super(pureKIndex.getAuxiliaryLines());
         this.pureKIndex = pureKIndex;
         this.lineWidth = lineWidth;
         this.textSize = textSize;
