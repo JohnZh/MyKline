@@ -90,6 +90,7 @@ public class KlineFactory implements Factory {
         float dataPaddingX = dp2Px(0.5f);
         float textSize = sp2Px(10);
         float textMargin = dp2Px(2);
+        int textColor = Color.parseColor("#999999");
 
         if (clazz.isAssignableFrom(PureKIndicator.class)) {
             float candleLineWidth = dp2Px(1);
@@ -110,7 +111,8 @@ public class KlineFactory implements Factory {
 
         if (clazz.isAssignableFrom(VolIndicator.class)) {
             AuxiliaryLines volAuxiliaryLines = createDefaultAuxiliaryLines(VolAuxiliaryLines.class);
-            return new VolIndicator(volAuxiliaryLines, posNegColor, dataPaddingX);
+            return new VolIndicator(volAuxiliaryLines, posNegColor, dataPaddingX,
+                    textSize, textColor, textMargin);
         }
 
         return null;

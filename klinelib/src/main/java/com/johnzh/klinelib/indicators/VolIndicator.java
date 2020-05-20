@@ -5,6 +5,8 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 
 import com.johnzh.klinelib.DATA;
+import com.johnzh.klinelib.DrawTextTool;
+import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
@@ -20,12 +22,19 @@ import java.util.List;
  */
 public class VolIndicator extends AbsIndicator {
     private int[] colors;
-    private float dataPaddingHorizontal;
+    private float dataPaddingX;
+    private float textSize;
+    private int textColor;
+    private float textMargin;
 
-    public VolIndicator(AuxiliaryLines auxiliaryLines, int[] colors, float dataPaddingHorizontal) {
+    public VolIndicator(AuxiliaryLines auxiliaryLines, int[] colors, float dataPaddingX,
+                        float textSize, int textColor, float textMargin) {
         super(auxiliaryLines);
         this.colors = colors;
-        this.dataPaddingHorizontal = dataPaddingHorizontal;
+        this.dataPaddingX = dataPaddingX;
+        this.textSize = textSize;
+        this.textColor = textColor;
+        this.textMargin = textMargin;
     }
 
     @Override
@@ -38,7 +47,7 @@ public class VolIndicator extends AbsIndicator {
 
     @Override
     public void drawIndicator(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint) {
-        float candleWidth = drawArea.getOneDataWidth() - 2 * dataPaddingHorizontal;
+        float candleWidth = drawArea.getOneDataWidth() - 2 * dataPaddingX;
         List<DATA> dataList = klineView.getDataList();
         int startIndex = klineView.getStartIndex();
         int endIndex = klineView.getEndIndex();
@@ -52,7 +61,7 @@ public class VolIndicator extends AbsIndicator {
             }
             paint.setColor(color);
             paint.setStyle(Paint.Style.FILL);
-            RectF rectf = (RectF) klineView.getSharedObjects().getObject(RectF.class);
+            RectF rectf = klineView.getSharedObjects().getObject(RectF.class);
             rectf.left = dataX - candleWidth / 2;
             rectf.top = dataY;
             rectf.right = dataX + candleWidth / 2;
@@ -64,6 +73,17 @@ public class VolIndicator extends AbsIndicator {
     @Override
     public void drawIndicatorText(KlineView klineView, DrawArea drawArea, DATA data,
                                   Canvas canvas, Paint paint) {
+        StringBuilder builder = klineView.getSharedObjects().getObject(StringBuilder.class);
+        int scale = FloatCalc.get().getScale(getAuxiliaryLines().getMaximum());
+        String text = builder.append("VOL:")
+                .append(FloatCalc.get().format(data.getVolume(), scale)).toString();
+        float textLeft = drawArea.getLeft();
+        float textTop = drawArea.getTop() + textMargin;
 
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(textSize);
+        paint.setColor(textColor);
+
+        DrawTextTool.drawTextFromLeftTop(text, textLeft, textTop, canvas, paint);
     }
 }
