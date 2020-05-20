@@ -26,6 +26,7 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     private PureKIndicator pureKIndex;
     private float lineWidth;
     private float textSize;
+    private float textMargin;
     private int[] ma;
     private int[] colors;
 
@@ -33,12 +34,13 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     private float minPrice;
 
     public MAIndicator(PureKIndicator pureKIndex,
-                       float lineWidth, float textSize,
+                       float lineWidth, float textSize, float textMargin,
                        int[] ma, int[] colors) {
         super(pureKIndex.getAuxiliaryLines());
         this.pureKIndex = pureKIndex;
         this.lineWidth = lineWidth;
         this.textSize = textSize;
+        this.textMargin = textMargin;
         this.ma = ma;
         this.colors = colors;
         if (ma.length != colors.length) {
@@ -160,7 +162,7 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
             paint.setColor(maColor);
             paint.setStyle(Paint.Style.FILL);
             float textWidth = paint.measureText(text);
-            float textBottom = drawArea.getTop() + drawArea.getHeight();
+            float textBottom = drawArea.getTop() + drawArea.getHeight() - textMargin;
             DrawTextTool.drawTextFromLeftBottom(text, textLeft, textBottom, canvas, paint);
             textLeft += textWidth;
         }

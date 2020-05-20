@@ -105,8 +105,7 @@ public class KlineFactory implements Factory {
             };
             PureKIndicator purKIndex = (PureKIndicator) createDefaultIndex(PureKIndicator.class);
             float lineWidth = dp2Px(1);
-            return new MAIndicator(purKIndex, lineWidth, textSize,
-                    new int[]{5, 10}, maColors);
+            return new MAIndicator(purKIndex, lineWidth, textSize, textMargin, new int[]{5, 10}, maColors);
         }
 
         if (clazz.isAssignableFrom(VolIndicator.class)) {
