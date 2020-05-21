@@ -131,8 +131,8 @@ public class KlineFactory implements Factory {
         if (clazz.isAssignableFrom(WRIndicator.class)) {
             SimpleAuxiliaryLines simpleAuxiliaryLines
                     = createDefaultAuxiliaryLines(SimpleAuxiliaryLines.class);
-            return (T) new WRIndicator(simpleAuxiliaryLines, new int[]{6, 10},
-                    textSize, textColor, textMargin);
+            return (T) new WRIndicator(simpleAuxiliaryLines, new int[]{6, 10}, maColors,
+                    lineWidth, textSize, textMargin);
         }
 
         return null;

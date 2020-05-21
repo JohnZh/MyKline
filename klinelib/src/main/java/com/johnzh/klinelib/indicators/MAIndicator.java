@@ -93,29 +93,30 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
         resetMaxMin();
 
         for (int i = startIndex; i < endIndex; i++) {
-            IndicatorData indicatorData = dataList.get(i).getIndicator();
+            IndicatorData indicator = dataList.get(i).getIndicator();
 
             for (int maKey : this.ma) {
                 if (i - maKey < -1) continue; // data is not enough
 
-                Float maValue = indicatorData.get(MA.class).get(maKey);
+                MA ma = indicator.get(MA.class);
+                Float maValue = ma.get(maKey);
                 if (maValue != null) {
                     updateMaxMin(maValue);
                     continue;
                 }
 
                 Float newMaValue = calcMaValue(dataList, i, maKey);
-                indicatorData.get(MA.class).put(maKey, newMaValue);
+                ma.put(maKey, newMaValue);
                 updateMaxMin(newMaValue);
             }
         }
     }
 
-    private Float calcMaValue(List<DATA> klineDataList, int curIndex, int maKey) {
+    private Float calcMaValue(List<DATA> dataList, int curIndex, int maKey) {
         int start = curIndex - maKey + 1;
         float result = 0;
         for (int i = start; i <= curIndex; i++) {
-            float closePrice = klineDataList.get(i).getClosePrice();
+            float closePrice = dataList.get(i).getClosePrice();
             result += closePrice;
         }
         return result / maKey;
@@ -126,6 +127,8 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
         pureKIndicator.drawIndicator(klineView, drawArea, canvas, paint);
 
         List<DATA> dataList = klineView.getDataList();
+        int startIndex = klineView.getStartIndex();
+        int endIndex = klineView.getEndIndex();
 
         for (int i = 0; i < ma.length; i++) {
             int maKey = ma[i];
@@ -136,8 +139,6 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
 
             float startX = -1;
             float startY = -1;
-            int startIndex = klineView.getStartIndex();
-            int endIndex = klineView.getEndIndex();
             for (int j = startIndex; j < endIndex; j++) {
                 Float maValue = dataList.get(j).getIndicator().get(MA.class).get(maKey);
                 if (maValue == null) continue;
@@ -160,13 +161,14 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
                                   Canvas canvas, Paint paint) {
         int scale = FloatCalc.get().getScale(data.getClosePrice());
         scale = Math.max(2, scale);
+        StringBuilder builder = klineView.getSharedObjects().getObject(StringBuilder.class);
+
         float textLeft = drawArea.getLeft();
         for (int i = 0; i < ma.length; i++) {
             int maKey = ma[i];
             int maColor = colors[i];
             Float maValue = data.getIndicator().get(MA.class).get(maKey);
             if (maValue == null) continue;
-            StringBuilder builder = klineView.getSharedObjects().getObject(StringBuilder.class);
             String text = builder.append("MA").append(maKey).append(":")
                     .append(FloatCalc.get().format(maValue, scale))
                     .append("  ")
@@ -178,6 +180,7 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
             float textBottom = drawArea.getTop() + drawArea.getHeight() - textMargin;
             DrawTextTool.drawTextFromLeftBottom(text, textLeft, textBottom, canvas, paint);
             textLeft += textWidth;
+            builder.setLength(0);
         }
     }
 }
