@@ -17,27 +17,27 @@ import java.util.List;
  * <p>WR indicator</p>
  */
 public class WRIndicator extends AbsIndicator {
+
+    private final int[] wr;
     private final float textSize;
     private final int color;
     private final float textMargin;
 
     public WRIndicator(AuxiliaryLines auxiliaryLines, int[] wr, float textSize, int color, float textMargin) {
         super(auxiliaryLines);
+        this.wr = wr;
         this.textSize = textSize;
         this.color = color;
         this.textMargin = textMargin;
     }
 
     @Override
-    public void calcIndicatorAsync(List<DATA> dataList) {
-
+    protected void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
     }
 
     @Override
     public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
-        for (int i = startIndex; i < endIndex; i++) {
-
-        }
+        
     }
 
     @Override

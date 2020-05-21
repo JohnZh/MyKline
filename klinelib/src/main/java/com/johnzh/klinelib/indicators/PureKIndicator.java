@@ -39,13 +39,11 @@ public class PureKIndicator extends AbsIndicator {
     }
 
     @Override
-    public void calcIndicatorAsync(List<DATA> dataList) {
+    public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
     }
 
     @Override
-    public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
-        resetMaxMin();
-
+    protected void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
         for (int i = startIndex; i < endIndex; i++) {
             DATA data = dataList.get(i);
             updateMaxMin(data.getHighestPrice(), data.getLowestPrice());
@@ -113,5 +111,4 @@ public class PureKIndicator extends AbsIndicator {
             canvas.drawRect(rectF, paint);
         }
     }
-
 }

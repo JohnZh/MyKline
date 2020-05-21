@@ -83,7 +83,7 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     }
 
     @Override
-    public void calcIndicatorAsync(List<DATA> dataList) {
+    protected void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
     }
 
     @Override

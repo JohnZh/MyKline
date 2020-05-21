@@ -28,10 +28,25 @@ public abstract class AbsIndicator implements Indicator {
         this.min = Float.MAX_VALUE;
     }
 
+    @Override
+    public void calcIndicatorAsync(List<DATA> dataList) {
 
+    }
+
+    /**
+     * Method to calculate indicator value range.<br/>
+     *
+     * Use #{@link this#updateMaxMin(float)} or #{@link this#updateMaxMin(float, float)} to update value range
+     * @param dataList
+     * @param startIndex
+     * @param endIndex
+     */
+    protected abstract void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex);
 
     @Override
     public void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
+        resetMaxMin();
+        calcMaxMinPreCalcAuxiliaryLines(dataList, startIndex, endIndex);
         this.auxiliaryLines.calcHorizontalLines(dataList, this, startIndex, endIndex);
         this.auxiliaryLines.calcVerticalLines(dataList, startIndex, endIndex);
     }

@@ -24,7 +24,7 @@ public class KDJIndicator extends AbsIndicator {
     }
 
     @Override
-    public void calcIndicatorAsync(List<DATA> dataList) {
+    protected void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
 
     }
 
