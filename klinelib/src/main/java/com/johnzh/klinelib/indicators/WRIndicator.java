@@ -118,15 +118,15 @@ public class WRIndicator extends AbsIndicator {
 
     @Override
     public void drawIndicatorText(KlineView klineView, DrawArea drawArea, DATA data, Canvas canvas, Paint paint) {
-        int scale = FloatCalc.get().getScale(data.getClosePrice());
-        scale = Math.max(2, scale);
         StringBuilder builder = klineView.getSharedObjects().getObject(StringBuilder.class);
+        WR wrData = data.getIndicator().get(WR.class);
+        int scale = FloatCalc.get().getFormatScale().getMaxScale();
 
         float textLeft = drawArea.getLeft();
-        for (int i = 0; i < wr.length; i++) {
-            int wrKey = wr[i];
+        for (int i = 0; i < this.wr.length; i++) {
+            int wrKey = this.wr[i];
             int color = colors[i];
-            Float wrValue = data.getIndicator().get(WR.class).get(wrKey);
+            Float wrValue = wrData.get(wrKey);
             if (wrValue == null) continue;
 
             String text = builder.append("WR").append(wrKey).append(":")

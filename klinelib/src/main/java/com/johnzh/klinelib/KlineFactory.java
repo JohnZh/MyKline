@@ -178,6 +178,7 @@ public class KlineFactory implements Factory {
     protected List<Indicator> getIndicators2() {
         List<Indicator> list = new ArrayList<>();
         list.add(createDefaultIndex(VOLIndicator.class));
+        list.add(createDefaultIndex(WRIndicator.class));
         return list;
     }
 

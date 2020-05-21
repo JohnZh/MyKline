@@ -44,6 +44,7 @@ public class PureKIndicator extends AbsIndicator {
 
     @Override
     protected void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
+        resetMaxMin();
         for (int i = startIndex; i < endIndex; i++) {
             DATA data = dataList.get(i);
             updateMaxMin(data.getHighestPrice(), data.getLowestPrice());

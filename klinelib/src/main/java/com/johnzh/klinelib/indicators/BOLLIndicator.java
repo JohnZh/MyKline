@@ -101,16 +101,16 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
             if (i - n < -1) continue; // data is not enough
 
             BOLL boll = indicator.get(BOLL.class);
-            if (boll.getMA() != null) {
+            if (boll.getMID() != null) {
                 updateMaxMin(boll.getUPPER(), boll.getLOWER());
                 continue;
             }
 
-            Float maValue = calcMAValue(dataList, i, n);
-            boll.setMA(maValue);
-            float md = calcMDValue(dataList, i, maValue, n);
-            float upper = maValue + p * md;
-            float lower = maValue - p * md;
+            Float midValue = calcMIDValue(dataList, i, n);
+            boll.setMID(midValue);
+            float md = calcMDValue(dataList, i, midValue, n);
+            float upper = midValue + p * md;
+            float lower = midValue - p * md;
             boll.setUPPER(upper);
             boll.setLOWER(lower);
             updateMaxMin(upper, lower);
@@ -126,7 +126,7 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
         return (float) Math.sqrt(sum / n);
     }
 
-    private Float calcMAValue(List<DATA> dataList, int curIndex, int n) {
+    private Float calcMIDValue(List<DATA> dataList, int curIndex, int n) {
         int start = curIndex - n + 1;
         float result = 0;
         for (int i = start; i <= curIndex; i++) {
@@ -153,7 +153,7 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
             int endIndex = klineView.getEndIndex();
             for (int j = startIndex; j < endIndex; j++) {
                 BOLL boll = dataList.get(j).getIndicator().get(BOLL.class);
-                Float maValue = boll.getMA();
+                Float maValue = boll.getMID();
                 if (maValue == null) continue;
 
                 float number = maValue.floatValue();
@@ -181,13 +181,12 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
     public void drawIndicatorText(KlineView klineView, DrawArea drawArea, DATA data,
                                   Canvas canvas, Paint paint) {
         BOLL boll = data.getIndicator().get(BOLL.class);
-        int scale = FloatCalc.get().getScale(data.getClosePrice());
-        scale = Math.max(2, scale);
-        if (boll.getMA() != null) {
+        int scale = FloatCalc.get().getFormatScale().getMaxScale();
+        if (boll.getMID() != null) {
             paint.setTextSize(textSize);
             paint.setStyle(Paint.Style.FILL);
             StringBuilder builder = klineView.getSharedObjects().getObject(StringBuilder.class);
-            float[] values = {boll.getUPPER(), boll.getMA(), boll.getLOWER()};
+            float[] values = {boll.getUPPER(), boll.getMID(), boll.getLOWER()};
             float textLeft = drawArea.getLeft();
             for (int i = 0; i < 3; i++) {
                 paint.setColor(colors[i]);

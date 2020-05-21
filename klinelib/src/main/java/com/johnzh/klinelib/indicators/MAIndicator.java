@@ -159,16 +159,17 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     @Override
     public void drawIndicatorText(KlineView klineView, DrawArea drawArea, DATA data,
                                   Canvas canvas, Paint paint) {
-        int scale = FloatCalc.get().getScale(data.getClosePrice());
-        scale = Math.max(2, scale);
+        MA maData = data.getIndicator().get(MA.class);
         StringBuilder builder = klineView.getSharedObjects().getObject(StringBuilder.class);
+        int scale = FloatCalc.get().getFormatScale().getMaxScale();
 
         float textLeft = drawArea.getLeft();
         for (int i = 0; i < ma.length; i++) {
             int maKey = ma[i];
             int maColor = colors[i];
-            Float maValue = data.getIndicator().get(MA.class).get(maKey);
+            Float maValue = maData.get(maKey);
             if (maValue == null) continue;
+
             String text = builder.append("MA").append(maKey).append(":")
                     .append(FloatCalc.get().format(maValue, scale))
                     .append("  ")

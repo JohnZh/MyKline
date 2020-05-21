@@ -35,16 +35,35 @@ import java.text.NumberFormat;
 public class FloatCalc {
 
     private DecimalFormat decimalFormat;
-    private int formatScale;
+    private FormatScale formatScale;
+
+    public interface FormatScale {
+        int getMaxScale();
+
+        int getScale();
+    }
+
+    private static class DefaultFormatScale implements FormatScale {
+
+        @Override
+        public int getMaxScale() {
+            return 2;
+        }
+
+        @Override
+        public int getScale() {
+            return 2;
+        }
+    }
 
     private static final FloatCalc sCalc = new FloatCalc();
 
     private FloatCalc() {
         decimalFormat = (DecimalFormat) NumberFormat.getInstance();
-        formatScale = -1;
+        formatScale = new DefaultFormatScale();
     }
 
-    public void setFormatScale(int formatScale) {
+    public void setFormatScale(DefaultFormatScale formatScale) {
         this.formatScale = formatScale;
     }
 
@@ -93,7 +112,7 @@ public class FloatCalc {
                 .replaceAll("[.]$", "");
     }
 
-    public String format(float value) {
-        return formatScale >= 0 ? format(value, formatScale) : stripTrailingZeros(value);
+    public FormatScale getFormatScale() {
+        return formatScale;
     }
 }

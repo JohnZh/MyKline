@@ -42,7 +42,7 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
     }
 
     public SimpleAuxiliaryLines(int lines, float textSize, float lineWidth, float textMargin, int color) {
-        this.horizontalLines = new float[lines];
+        this.horizontalLines = new float[lines < 2 ? 2 : lines];
         this.textSize = textSize;
         this.lineWidth = lineWidth;
         this.textMargin = textMargin;
@@ -94,6 +94,8 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
         SharedObjects sharedObjects = klineView.getSharedObjects();
         float width = drawArea.getWidth();
         float left = drawArea.getLeft();
+        int scale = FloatCalc.get().getScale(horizontalLines[0]);
+        scale = scale != 0 ? FloatCalc.get().getFormatScale().getMaxScale() : 0;
         for (int i = 0; i < horizontalLines.length; i++) {
             float number = horizontalLines[i];
             float top = drawArea.getDrawY(number);
@@ -105,7 +107,7 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
             canvas.drawPath(path, paint);
 
             setTextPaint(paint);
-            String priceText = FloatCalc.get().format(number);
+            String priceText = FloatCalc.get().format(number, scale);
             if (i == 0) {
                 float textRight = right - textMargin;
                 float textTop = top + textMargin;

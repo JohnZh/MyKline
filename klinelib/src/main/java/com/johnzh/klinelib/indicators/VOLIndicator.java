@@ -70,6 +70,7 @@ public class VOLIndicator extends AbsIndicator {
 
     @Override
     protected void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
+        resetMaxMin();
         for (int i = startIndex; i < endIndex; i++) {
             KlineData data = dataList.get(i);
             updateMaxMin(data.getVolume());

@@ -326,8 +326,9 @@ public class SimpleDetailView extends View implements DetailView {
         // number
         if (mDrawArea instanceof IndicatorDrawArea) {
             float number = ((IndicatorDrawArea) mDrawArea).getNumber(cy);
-            float minimum = ((IndicatorDrawArea) mDrawArea).getCurIndicator().getAuxiliaryLines().getMinimum();
-            int numberScale = FloatCalc.get().getScale(minimum);
+            float max = ((IndicatorDrawArea) mDrawArea).getCurIndicator().getAuxiliaryLines().getMaximum();
+            int numberScale = FloatCalc.get().getScale(max);
+            numberScale = numberScale != 0 ? FloatCalc.get().getFormatScale().getMaxScale() : 0;
             String numStr = FloatCalc.get().format(number, numberScale);
             float textWidth = mPaint.measureText(numStr);
             float textLeft = mDrawArea.getLeft() + padding;

@@ -12,7 +12,7 @@ public class WR implements InData {
     SparseArray<Float> map;
 
     public WR() {
-        this.map = map;
+        this.map = new SparseArray<>();
     }
     public void put(int wrKey, Float wrValue) {
         map.put(wrKey, wrValue);

@@ -55,6 +55,14 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <Button
+        android:id="@+id/wr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WR"
+        app:layout_constraintBottom_toTopOf="@id/vol"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
         android:id="@+id/combination"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

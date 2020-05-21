@@ -45,7 +45,6 @@ public abstract class AbsIndicator implements Indicator {
 
     @Override
     public void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
-        resetMaxMin();
         calcMaxMinPreCalcAuxiliaryLines(dataList, startIndex, endIndex);
         this.auxiliaryLines.calcHorizontalLines(dataList, this, startIndex, endIndex);
         this.auxiliaryLines.calcVerticalLines(dataList, startIndex, endIndex);

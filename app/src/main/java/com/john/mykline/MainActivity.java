@@ -14,6 +14,7 @@ import com.johnzh.klinelib.gesture.DragInfo;
 import com.johnzh.klinelib.indicators.BOLLIndicator;
 import com.johnzh.klinelib.indicators.MAIndicator;
 import com.johnzh.klinelib.indicators.VOLIndicator;
+import com.johnzh.klinelib.indicators.WRIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
 
         binding.vol.setOnClickListener(v -> {
             binding.klineView.selectIndicator(VOLIndicator.class);
+        });
+        binding.wr.setOnClickListener(v -> {
+            binding.klineView.selectIndicator(WRIndicator.class);
         });
 
         binding.combination.setOnClickListener(v -> {

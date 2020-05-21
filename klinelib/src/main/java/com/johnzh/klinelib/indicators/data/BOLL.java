@@ -29,16 +29,16 @@ package com.johnzh.klinelib.indicators.data;
  * <p>BOLL indicator data structure</p>
  */
 public class BOLL implements InData {
-    private Float MA;
+    private Float MID;
     private Float UPPER;
     private Float LOWER;
 
-    public Float getMA() {
-        return MA;
+    public Float getMID() {
+        return MID;
     }
 
-    public void setMA(Float MA) {
-        this.MA = MA;
+    public void setMID(Float MID) {
+        this.MID = MID;
     }
 
     public Float getUPPER() {
