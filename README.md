@@ -142,6 +142,7 @@ public interface Factory {
 #### 实现自己的工厂
 
 
+
 # 内置指标算法
 
 ## MA（Moving Average）移动平均

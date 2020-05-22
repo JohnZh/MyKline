@@ -68,6 +68,10 @@ public class IndicatorDrawArea extends ConvertDrawArea implements YAxisConverter
         }
     }
 
+    public void setIndicatorList(List<Indicator> indicatorList) {
+        mIndicatorList = indicatorList;
+    }
+
     public Indicator getCurIndicator() {
         return mIndicatorList.get(mCurIndex);
     }

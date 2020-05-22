@@ -70,4 +70,8 @@ public class DateDrawArea extends ConvertDrawArea {
     public DrawDate getDrawDate() {
         return mDrawDate;
     }
+
+    public void setDrawDate(DrawDate drawDate) {
+        mDrawDate = drawDate;
+    }
 }
