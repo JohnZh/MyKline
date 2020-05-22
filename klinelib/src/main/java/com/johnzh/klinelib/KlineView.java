@@ -196,14 +196,16 @@ public class KlineView extends View {
         @Override
         public void onLongPress(MotionEvent e) {
             super.onLongPress(e);
-            if (mConfig.getActiveDetailAction() == DetailView.TRIGGERED_BY_LONG_PRESS) {
+            if (mDetailView != null
+                    && mConfig.getActiveDetailAction() == DetailView.TRIGGERED_BY_LONG_PRESS) {
                 mHandler.obtainMessage(InnerHandler.MSG_ACTIVE_DETAIL, e).sendToTarget();
             }
         }
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            if (mConfig.getActiveDetailAction() == DetailView.TRIGGERED_BY_DOUBLE_TAP) {
+            if (mDetailView != null
+                    && mConfig.getActiveDetailAction() == DetailView.TRIGGERED_BY_DOUBLE_TAP) {
                 mHandler.obtainMessage(InnerHandler.MSG_ACTIVE_DETAIL, e).sendToTarget();
             }
             return super.onDoubleTap(e);
