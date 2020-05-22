@@ -1,5 +1,6 @@
 package com.johnzh.klinelib;
 
+import com.johnzh.klinelib.detail.DetailView;
 import com.johnzh.klinelib.gesture.Scale;
 
 /**
@@ -50,6 +51,7 @@ public class KlineConfig {
 
         public Builder() {
             initialCandles = DEFAULT_CANDLES;
+            activeDetailAction = DetailView.TRIGGERED_BY_LONG_PRESS;
         }
 
         public static Builder builder() {

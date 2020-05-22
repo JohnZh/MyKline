@@ -15,6 +15,18 @@
 ## 演示
 ![MyKline.gif](https://github.com/JohnZh/MyKline/raw/master/images/MyKline.gif)
 
+## 例子
+
+项目里面分别提供了如下例子：
+
+- 全部使用默认的配置进行的控件展示
+- 两个以上的指标绘制区
+- 修改 k 线指标样式，例如蜡烛图粗细，实心空心的修改，线颜色的修改，辅助线样式的修改等
+- 修改指标文字的样式位置
+- 追加历史数据，最后一个数据的跳动
+- 时间绘制区时间格式的修改
+- 指标内小数位数的修改
+
 ## 先导知识
 
 ### 坐标系
@@ -141,7 +153,73 @@ public interface Factory {
 
 #### 实现自己的工厂
 
+```
+@Override
+public List<DrawArea> createDrawAreas() {
+    int textHeight = (int) dp2Px(TEXT_HEIGHT);
+    int dataHeight = (int) dp2Px(DATA_HEIGHT);
+    int dateHeight = (int) dp2Px(DATE_HEIGHT);
+    int indexHeight = (int) dp2Px(INDICATOR_HEIGHT);
 
+    IndicatorDrawArea indicatorArea1 = new IndicatorDrawArea(dataHeight, getIndicators1());
+    IndicatorDrawArea indicatorArea2 = new IndicatorDrawArea(indexHeight, getIndicators2());
+
+    List<DrawArea> drawAreaList = new ArrayList<>();
+    drawAreaList.add(new IndicatorTextDrawArea(textHeight, indicatorArea1));
+    drawAreaList.add(indicatorArea1);
+    drawAreaList.add(new DateDrawArea(dateHeight, getDefaultDrawDate()));
+    drawAreaList.add(indicatorArea2);
+    drawAreaList.add(new IndicatorTextDrawArea(textHeight, indicatorArea2));
+    return drawAreaList;
+}
+```
+- 代码解释：
+    - 确定每个区域的高度
+	- 添加指标文字绘制区
+	- 添加指标绘制区
+	- 添加时间绘制区
+	- 添加指标绘制区
+	- 添加指标文字绘制区
+
+详细可参考 `DefaultFactory` 代码
+
+#### 添加指标绘制区和指标文字绘制区
+
+```
+IndicatorDrawArea indicatorArea1 = 
+		new IndicatorDrawArea(dataHeight, getIndicators1());
+
+protected List<Indicator> getIndicators1() {
+    List<Indicator> list = new ArrayList<>();
+    list.add(createDefaultIndex(PureKIndicator.class));
+    list.add(createDefaultIndex(MAIndicator.class));
+    list.add(createDefaultIndex(BOLLIndicator.class));
+    return list;
+}
+```
+
+```
+// “指标文字绘制区” 需要关联一个“指标绘制区”
+new IndicatorTextDrawArea(textHeight, indicatorArea1); 
+```
+
+### 实现自己的 k 线数据并添加进控件
+
+```
+public class MyKlineData implements KlineData {
+	......
+}
+
+List<MyKlineData> klineDataList = getListFromServer();
+
+List<DATA> dataList = DATA.makeList(klineDataList); 
+// 或者逐个添加 dataList.add(new DATA(klineData))
+
+binding.klineView.setDataList(dataList);
+
+```
+
+## 更多的实现参考给出的例子
 
 # 内置指标算法
 

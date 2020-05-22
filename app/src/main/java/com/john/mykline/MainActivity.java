@@ -9,7 +9,6 @@ import com.john.mykline.bean.MyKlineData;
 import com.john.mykline.databinding.ActivityMainBinding;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineConfig;
-import com.johnzh.klinelib.detail.DetailView;
 import com.johnzh.klinelib.gesture.DragInfo;
 import com.johnzh.klinelib.indicators.BOLLIndicator;
 import com.johnzh.klinelib.indicators.MAIndicator;
@@ -38,11 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding.klineView.setConfig(
                 new KlineConfig.Builder()
-                        .initialCandles(40)
-                        .activeDetailAction(DetailView.TRIGGERED_BY_DOUBLE_TAP)
                         .build());
-//        Factory factory = new DefaultFactory(this);
-//        binding.klineView.setDrawAreaList(factory);
         binding.klineView.setDetailView(binding.detailView);
         binding.klineView.setOnDataDragListener(new DragInfo.Listener() {
             @Override
