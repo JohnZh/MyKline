@@ -268,6 +268,23 @@ public class KlineView extends View {
         return mDrawAreaList;
     }
 
+    public DrawArea getDrawArea(int drawAreaIndex) {
+        if (drawAreaIndex >= 0 && drawAreaIndex < mDrawAreaList.size()) {
+            return mDrawAreaList.get(drawAreaIndex);
+        }
+        return null;
+    }
+
+    public <T extends DrawArea> List<T> getDrawAreaList(Class<T> clazz) {
+        List<DrawArea> list = new ArrayList<>();
+        for (DrawArea drawArea : mDrawAreaList) {
+            if (drawArea.getClass() == clazz) {
+                list.add(drawArea);
+            }
+        }
+        return (List<T>) list;
+    }
+
     public void setDrawAreaList(Factory factory) {
         mDrawAreaList = factory.createDrawAreas();
         redraw();

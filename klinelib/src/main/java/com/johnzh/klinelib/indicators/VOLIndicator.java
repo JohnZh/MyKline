@@ -48,16 +48,14 @@ public class VOLIndicator extends AbsIndicator {
     private float dataPaddingX;
     private float textSize;
     private int textColor;
-    private float textMargin;
 
     public VOLIndicator(AuxiliaryLines auxiliaryLines, int[] colors, float dataPaddingX,
-                        float textSize, int textColor, float textMargin) {
+                        float textSize, int textColor) {
         super(auxiliaryLines);
         this.colors = colors;
         this.dataPaddingX = dataPaddingX;
         this.textSize = textSize;
         this.textColor = textColor;
-        this.textMargin = textMargin;
     }
 
     @Override
@@ -110,12 +108,12 @@ public class VOLIndicator extends AbsIndicator {
         String text = builder.append("VOL:")
                 .append(FloatCalc.get().format(data.getVolume(), scale)).toString();
         float textLeft = drawArea.getLeft();
-        float textTop = drawArea.getTop() + textMargin;
+        float textCenterX = drawArea.getTop() + drawArea.getHeight() / 2;
 
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(textSize);
         paint.setColor(textColor);
 
-        DrawTextTool.drawTextFromLeftTop(text, textLeft, textTop, canvas, paint);
+        DrawTextTool.drawTextFromLeftCenterX(text, textLeft, textCenterX, canvas, paint);
     }
 }

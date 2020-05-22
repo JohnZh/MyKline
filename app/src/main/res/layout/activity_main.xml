@@ -10,7 +10,6 @@
         android:id="@+id/klineView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.johnzh.klinelib.detail.SimpleDetailView
@@ -27,47 +26,54 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="pure K"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/klineView" />
 
     <Button
         android:id="@+id/ma"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="MA"
-        app:layout_constraintBottom_toTopOf="@id/pureK"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pureK" />
 
     <Button
         android:id="@+id/boll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="BOLL"
-        app:layout_constraintBottom_toTopOf="@id/ma"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ma" />
 
     <Button
         android:id="@+id/vol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="VOL"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/boll" />
 
     <Button
         android:id="@+id/wr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="WR"
-        app:layout_constraintBottom_toTopOf="@id/vol"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/vol" />
 
     <Button
-        android:id="@+id/combination"
+        android:id="@+id/samples"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="combination"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:text="All samples"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/klineView" />
+
+    <Button
+        android:id="@+id/changeData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="改变时间格式"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/samples" />
 </androidx.constraintlayout.widget.ConstraintLayout>

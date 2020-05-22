@@ -76,7 +76,7 @@ public class PureKIndicator extends AbsIndicator {
             }
 
             drawLongLowerShadow(drawX, firstY, secondY, thirdY, fourthY, color, canvas, paint);
-            RectF rectF = (RectF) klineView.getSharedObjects().getObject(RectF.class);
+            RectF rectF = klineView.getSharedObjects().getObject(RectF.class);
             drawCandleBody(drawX, secondY, thirdY, color, candleWidth, rectF, canvas, paint);
         }
     }

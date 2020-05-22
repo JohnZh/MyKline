@@ -48,7 +48,6 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
     private PureKIndicator pureKIndicator;
     private float lineWidth;
     private float textSize;
-    private float textMargin;
     private int[] ma;
     private int[] colors;
 
@@ -60,15 +59,13 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
      * @param colors colors for ma[i]
      * @param lineWidth
      * @param textSize
-     * @param textMargin
      */
     public MAIndicator(PureKIndicator pureKIndicator,
-                       int[] ma, int[] colors, float lineWidth, float textSize, float textMargin) {
+                       int[] ma, int[] colors, float lineWidth, float textSize) {
         super(pureKIndicator.getAuxiliaryLines());
         this.pureKIndicator = pureKIndicator;
         this.lineWidth = lineWidth;
         this.textSize = textSize;
-        this.textMargin = textMargin;
         this.ma = ma;
         this.colors = colors;
         if (ma.length > colors.length) {
@@ -178,8 +175,8 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
             paint.setColor(maColor);
             paint.setStyle(Paint.Style.FILL);
             float textWidth = paint.measureText(text);
-            float textBottom = drawArea.getTop() + drawArea.getHeight() - textMargin;
-            DrawTextTool.drawTextFromLeftBottom(text, textLeft, textBottom, canvas, paint);
+            float textCenterX = drawArea.getTop() + drawArea.getHeight() / 2;
+            DrawTextTool.drawTextFromLeftCenterX(text, textLeft, textCenterX, canvas, paint);
             textLeft += textWidth;
             builder.setLength(0);
         }

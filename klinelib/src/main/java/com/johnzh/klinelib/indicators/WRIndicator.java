@@ -26,15 +26,13 @@ public class WRIndicator extends AbsIndicator {
     private final int[] colors;
     private final float lineWidth;
     private final float textSize;
-    private final float textMargin;
 
     public WRIndicator(AuxiliaryLines auxiliaryLines, int[] wr, int[] colors,
-                       float lineWidth, float textSize, float textMargin) {
+                       float lineWidth, float textSize) {
         super(auxiliaryLines);
         this.wr = wr;
         this.textSize = textSize;
         this.colors = colors;
-        this.textMargin = textMargin;
         this.lineWidth = lineWidth;
 
         if (wr.length > colors.length) {
@@ -137,8 +135,8 @@ public class WRIndicator extends AbsIndicator {
             paint.setColor(color);
             paint.setStyle(Paint.Style.FILL);
             float textWidth = paint.measureText(text);
-            float textBottom = drawArea.getTop() + textMargin;
-            DrawTextTool.drawTextFromLeftTop(text, textLeft, textBottom, canvas, paint);
+            float textCenterX = drawArea.getTop() + drawArea.getHeight() / 2;
+            DrawTextTool.drawTextFromLeftCenterX(text, textLeft, textCenterX, canvas, paint);
             textLeft += textWidth;
             builder.setLength(0);
         }

@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import com.john.mykline.bean.MyKlineData;
 import com.john.mykline.databinding.ActivityMainBinding;
 import com.johnzh.klinelib.DATA;
-import com.johnzh.klinelib.KlineConfig;
 import com.johnzh.klinelib.gesture.DragInfo;
 import com.johnzh.klinelib.indicators.BOLLIndicator;
 import com.johnzh.klinelib.indicators.MAIndicator;
@@ -35,9 +35,6 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this));
         setContentView(binding.getRoot());
 
-        binding.klineView.setConfig(
-                new KlineConfig.Builder()
-                        .build());
         binding.klineView.setDetailView(binding.detailView);
         binding.klineView.setOnDataDragListener(new DragInfo.Listener() {
             @Override
@@ -65,9 +62,15 @@ public class MainActivity extends AppCompatActivity {
             binding.klineView.selectIndicator(WRIndicator.class);
         });
 
-        binding.combination.setOnClickListener(v -> {
-            getTestData(true);
+        binding.samples.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, SamplesActivity.class));
             //startCombinationActivity();
+        });
+        binding.changeData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
         });
 
         getTestData(false);
@@ -114,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startCombinationActivity() {
-        startActivity(new Intent(this, CombinationActivity.class));
+        startActivity(new Intent(this, SamplesActivity.class));
     }
 
     private void convertData(List<List<String>> body, List<DATA> kDataList) {

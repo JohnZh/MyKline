@@ -258,6 +258,24 @@ public class DrawTextTool {
     }
 
     /**
+     * drawText from the left-CenterX point of the text
+     *
+     * @param text
+     * @param left
+     * @param centerX
+     * @param canvas
+     * @param paint
+     */
+    public static void drawTextFromLeftCenterX(String text, float left, float centerX,
+                                               Canvas canvas, Paint paint) {
+        Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+        float fontHeight = fontMetrics.bottom - fontMetrics.top;
+        float offset = fontHeight / 2 - fontMetrics.bottom;
+        float y = centerX + offset;
+        canvas.drawText(text, left, y, paint);
+    }
+
+    /**
      * drawText from the left-bottom point of the text
      *
      * @param text
@@ -292,6 +310,26 @@ public class DrawTextTool {
         float textWidth = paint.measureText(text);
         float left = right - textWidth;
         float y = top + fontHeight / 2 + offset;
+        canvas.drawText(text, left, y, paint);
+    }
+
+    /**
+     * drawText from the right-CenterX point of the text
+     *
+     * @param text
+     * @param right
+     * @param centerX
+     * @param canvas
+     * @param paint
+     */
+    public static void drawTextFromRightCenterX(String text, float right, float centerX,
+                                                Canvas canvas, Paint paint) {
+        Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+        float fontHeight = fontMetrics.bottom - fontMetrics.top;
+        float offset = fontHeight / 2 - fontMetrics.bottom;
+        float textWidth = paint.measureText(text);
+        float left = right - textWidth;
+        float y = centerX + offset;
         canvas.drawText(text, left, y, paint);
     }
 

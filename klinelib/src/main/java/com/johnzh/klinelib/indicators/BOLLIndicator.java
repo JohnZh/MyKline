@@ -52,7 +52,6 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
     private int[] colors;
     private float lineWidth;
     private float textSize;
-    private float textMargin;
 
     /**
      * Constructor of BOLL indicator
@@ -62,17 +61,15 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
      * @param colors colors for UPPER, MID, LOWER
      * @param lineWidth
      * @param textSize
-     * @param textMargin
      */
     public BOLLIndicator(PureKIndicator pureKIndicator, int[] boll, int[] colors,
-                         float lineWidth, float textSize, float textMargin) {
+                         float lineWidth, float textSize) {
         super(pureKIndicator.getAuxiliaryLines());
         this.pureKIndicator = pureKIndicator;
         this.boll = boll;
         this.colors = colors;
         this.lineWidth = lineWidth;
         this.textSize = textSize;
-        this.textMargin = textMargin;
         if (this.boll.length < 2) {
             throw new IllegalArgumentException("boll.length must be larger than 2");
         }
@@ -195,8 +192,8 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
                         .append("  ")
                         .toString();
                 float textWidth = paint.measureText(text);
-                float textBottom = drawArea.getTop() + drawArea.getHeight() - textMargin;
-                DrawTextTool.drawTextFromLeftBottom(text, textLeft, textBottom, canvas, paint);
+                float textCenterX = drawArea.getTop() + drawArea.getHeight() / 2;
+                DrawTextTool.drawTextFromLeftCenterX(text, textLeft, textCenterX, canvas, paint);
                 builder.setLength(0);
                 textLeft += textWidth;
             }

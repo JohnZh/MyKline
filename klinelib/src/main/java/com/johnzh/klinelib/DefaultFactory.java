@@ -55,7 +55,7 @@ public class DefaultFactory implements Factory {
 
     // all units are dp
     public static final int TEXT_HEIGHT = 18;
-    public static final int DATA_HEIGHT = 240;
+    public static final int DATA_HEIGHT = 200;
     public static final int DATE_HEIGHT = 24;
     public static final int INDICATOR_HEIGHT = 120;
 
@@ -99,7 +99,6 @@ public class DefaultFactory implements Factory {
 
         float dataPaddingX = dp2Px(0.5f);
         float textSize = sp2Px(10);
-        float textMargin = dp2Px(2);
         int textColor = Color.parseColor("#999999");
         float lineWidth = dp2Px(1);
 
@@ -112,27 +111,26 @@ public class DefaultFactory implements Factory {
 
         if (clazz.isAssignableFrom(MAIndicator.class)) {
             PureKIndicator purKIndex = createDefaultIndex(PureKIndicator.class);
-            return (T) new MAIndicator(purKIndex, new int[]{5, 10}, maColors,
-                    lineWidth, textSize, textMargin);
+            return (T) new MAIndicator(purKIndex, new int[]{5, 10}, maColors, lineWidth, textSize);
         }
 
         if (clazz.isAssignableFrom(BOLLIndicator.class)) {
             PureKIndicator purKIndex = createDefaultIndex(PureKIndicator.class);
             return (T) new BOLLIndicator(purKIndex, new int[]{20, 2}, maColors,
-                    lineWidth, textSize, textMargin);
+                    lineWidth, textSize);
         }
 
         if (clazz.isAssignableFrom(VOLIndicator.class)) {
             AuxiliaryLines volAuxiliaryLines = createDefaultAuxiliaryLines(VOLAuxiliaryLines.class);
             return (T) new VOLIndicator(volAuxiliaryLines, posNegColor, dataPaddingX,
-                    textSize, textColor, textMargin);
+                    textSize, textColor);
         }
 
         if (clazz.isAssignableFrom(WRIndicator.class)) {
             SimpleAuxiliaryLines simpleAuxiliaryLines
                     = createDefaultAuxiliaryLines(SimpleAuxiliaryLines.class);
             return (T) new WRIndicator(simpleAuxiliaryLines, new int[]{6, 10}, maColors,
-                    lineWidth, textSize, textMargin);
+                    lineWidth, textSize);
         }
 
         return null;
