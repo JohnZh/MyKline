@@ -51,7 +51,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class KlineFactory implements Factory {
+public class DefaultFactory implements Factory {
 
     // all units are dp
     public static final int TEXT_HEIGHT = 18;
@@ -61,7 +61,7 @@ public class KlineFactory implements Factory {
 
     private Context mContext;
 
-    public KlineFactory(Context context) {
+    public DefaultFactory(Context context) {
         mContext = context;
     }
 

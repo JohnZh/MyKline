@@ -38,8 +38,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding.klineView.setConfig(
                 new KlineConfig.Builder()
+                        .initialCandles(40)
                         .activeDetailAction(DetailView.TRIGGERED_BY_DOUBLE_TAP)
                         .build());
+//        Factory factory = new DefaultFactory(this);
+//        binding.klineView.setDrawAreaList(factory);
         binding.klineView.setDetailView(binding.detailView);
         binding.klineView.setOnDataDragListener(new DragInfo.Listener() {
             @Override
