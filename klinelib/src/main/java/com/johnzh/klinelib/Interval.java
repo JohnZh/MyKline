@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 John Zhang
+ * Copyright (c) 2020 JohnZh
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,38 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.johnzh.klinelib.indicators;
-
-import android.graphics.Canvas;
-import android.graphics.Paint;
-
-import com.johnzh.klinelib.DATA;
-import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
-import com.johnzh.klinelib.drawarea.DrawArea;
-import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
-
-import java.util.List;
+package com.johnzh.klinelib;
 
 /**
- * Modified by john on 2020/5/18
+ * Created by JohnZh on 2020/5/24
  *
- * <p>Index for kline</p>
- *
+ * <p>Base class of auxiliary lines and indicator</p>
  */
-public interface Indicator {
+public interface Interval {
+    float getMax();
 
-    void calcIndicatorAsync(List<DATA> dataList);
-
-    void calcIndicator(List<DATA> dataList, int startIndex, int endIndex);
-
-    void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex);
-
-    void drawAuxiliaryLines(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint);
-
-    void drawIndicator(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint);
-
-    void drawIndicatorText(KlineView klineView, DrawArea drawArea, DATA data, Canvas canvas, Paint paint);
-
-    AuxiliaryLines getAuxiliaryLines();
+    float getMin();
 }

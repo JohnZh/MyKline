@@ -30,8 +30,10 @@ import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.IndicatorData;
+import com.johnzh.klinelib.Interval;
+import com.johnzh.klinelib.IntervalAccess;
+import com.johnzh.klinelib.IntervalImpl;
 import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.ValueRange;
 import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 import com.johnzh.klinelib.indicators.data.BOLL;
@@ -43,7 +45,7 @@ import java.util.List;
  *
  * <p>BOLL indicator</p>
  */
-public class BOLLIndicator extends AbsIndicator implements ValueRange {
+public class BOLLIndicator extends AbsIndicator implements IntervalAccess {
 
     private static final String[] TITLES = {"BOLL:", "UPPER:", "LOWER:"};
 
@@ -52,6 +54,7 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
     private int[] colors;
     private float lineWidth;
     private float textSize;
+    private IntervalImpl interval;
 
     /**
      * Constructor of BOLL indicator
@@ -70,26 +73,15 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
         this.colors = colors;
         this.lineWidth = lineWidth;
         this.textSize = textSize;
+        this.interval = new IntervalImpl();
         if (this.boll.length < 2) {
             throw new IllegalArgumentException("boll.length must be larger than 2");
         }
     }
 
     @Override
-    public void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
-        pureKIndicator.calcAuxiliaryLines(dataList, startIndex, endIndex);
-        super.calcAuxiliaryLines(dataList, startIndex, endIndex);
-    }
-
-    @Override
-    protected void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
-    }
-
-    @Override
     public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
-        pureKIndicator.calcIndicator(dataList, startIndex, endIndex);
-
-        resetMaxMin();
+        interval.reset();
 
         int n = boll[0];
         int p = boll[1];
@@ -99,7 +91,7 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
 
             BOLL boll = indicator.get(BOLL.class);
             if (boll.getMID() != null) {
-                updateMaxMin(boll.getUPPER(), boll.getLOWER());
+                interval.updateMaxMin(boll.getUPPER(), boll.getLOWER());
                 continue;
             }
 
@@ -110,7 +102,7 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
             float lower = midValue - p * md;
             boll.setUPPER(upper);
             boll.setLOWER(lower);
-            updateMaxMin(upper, lower);
+            interval.updateMaxMin(upper, lower);
         }
     }
 
@@ -198,5 +190,10 @@ public class BOLLIndicator extends AbsIndicator implements ValueRange {
                 textLeft += textWidth;
             }
         }
+    }
+
+    @Override
+    public Interval getInterval() {
+        return interval;
     }
 }

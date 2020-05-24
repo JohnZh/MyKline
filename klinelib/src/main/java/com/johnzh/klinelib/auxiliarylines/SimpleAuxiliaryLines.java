@@ -7,6 +7,8 @@ import android.graphics.Path;
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
+import com.johnzh.klinelib.Interval;
+import com.johnzh.klinelib.IntervalAccess;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.SharedObjects;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
@@ -22,8 +24,6 @@ import java.util.List;
 public class SimpleAuxiliaryLines implements AuxiliaryLines {
 
     protected float[] horizontalLines;
-    protected float max;
-    protected float min;
 
     private float textSize;
     private float lineWidth;
@@ -47,9 +47,6 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
         this.lineWidth = lineWidth;
         this.textMargin = textMargin;
         this.color = color;
-
-        this.max = Float.MIN_VALUE;
-        this.min = Float.MAX_VALUE;
     }
 
     public void setTextSize(float textSize) {
@@ -69,10 +66,15 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
     }
 
     @Override
-    public void calcHorizontalLines(List<DATA> dataList, Indicator curIndicator,
-                                    int startIndex, int endIndex) {
-        max = Math.max(curIndicator.getMaximum(), max);
-        min = Math.min(curIndicator.getMinimum(), min);
+    public void calcHorizontalLines(List<DATA> dataList, Indicator indicator, int startIndex, int endIndex) {
+        float max = Float.MIN_VALUE;
+        float min = Float.MAX_VALUE;
+
+        if (indicator instanceof IntervalAccess) {
+            Interval interval = ((IntervalAccess) indicator).getInterval();
+            max = Math.max(max, interval.getMax());
+            min = Math.min(min, interval.getMin());
+        }
 
         float interval = FloatCalc.get().subtraction(max, min);
         interval = FloatCalc.get().divide(interval, horizontalLines.length - 1);
@@ -85,7 +87,7 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
     }
 
     @Override
-    public void calcVerticalLines(List<DATA> dataList, int startIndex, int endIndex) {
+    public void calcVerticalLines(List<DATA> dataList, Indicator indicator, int startIndex, int endIndex) {
 
     }
 
@@ -126,12 +128,12 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
     }
 
     @Override
-    public float getMaximum() {
+    public float getMax() {
         return horizontalLines[0];
     }
 
     @Override
-    public float getMinimum() {
+    public float getMin() {
         return horizontalLines[horizontalLines.length - 1];
     }
 }

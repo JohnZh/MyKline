@@ -30,8 +30,10 @@ import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.IndicatorData;
+import com.johnzh.klinelib.Interval;
+import com.johnzh.klinelib.IntervalAccess;
+import com.johnzh.klinelib.IntervalImpl;
 import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.ValueRange;
 import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 import com.johnzh.klinelib.indicators.data.MA;
@@ -43,13 +45,14 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class MAIndicator extends AbsIndicator implements ValueRange {
+public class MAIndicator extends AbsIndicator implements IntervalAccess {
 
     private PureKIndicator pureKIndicator;
     private float lineWidth;
     private float textSize;
     private int[] ma;
     private int[] colors;
+    private IntervalImpl interval;
 
     /**
      * Constructor of MA indicator
@@ -68,26 +71,15 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
         this.textSize = textSize;
         this.ma = ma;
         this.colors = colors;
+        this.interval = new IntervalImpl();
         if (ma.length > colors.length) {
             throw new IllegalArgumentException("ma.length is larger than maColors.length");
         }
     }
 
     @Override
-    public void calcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
-        pureKIndicator.calcAuxiliaryLines(dataList, startIndex, endIndex);
-        super.calcAuxiliaryLines(dataList, startIndex, endIndex);
-    }
-
-    @Override
-    protected void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
-    }
-
-    @Override
     public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
-        pureKIndicator.calcIndicator(dataList, startIndex, endIndex);
-
-        resetMaxMin();
+        interval.reset();
 
         for (int i = startIndex; i < endIndex; i++) {
             IndicatorData indicator = dataList.get(i).getIndicator();
@@ -98,13 +90,13 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
                 MA ma = indicator.get(MA.class);
                 Float maValue = ma.get(maKey);
                 if (maValue != null) {
-                    updateMaxMin(maValue);
+                    interval.updateMaxMin(maValue);
                     continue;
                 }
 
                 Float newMaValue = calcMaValue(dataList, i, maKey);
                 ma.put(maKey, newMaValue);
-                updateMaxMin(newMaValue);
+                interval.updateMaxMin(newMaValue);
             }
         }
     }
@@ -180,5 +172,10 @@ public class MAIndicator extends AbsIndicator implements ValueRange {
             textLeft += textWidth;
             builder.setLength(0);
         }
+    }
+
+    @Override
+    public Interval getInterval() {
+        return interval;
     }
 }

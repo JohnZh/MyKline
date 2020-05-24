@@ -91,16 +91,16 @@ public class IndicatorDrawArea extends ConvertDrawArea implements YAxisConverter
     @Override
     public float getNumber(float drawY) {
         AuxiliaryLines auxiliaryLines = getCurIndicator().getAuxiliaryLines();
-        float max = auxiliaryLines.getMaximum();
-        float min = auxiliaryLines.getMinimum();
+        float max = auxiliaryLines.getMax();
+        float min = auxiliaryLines.getMin();
         return max - (drawY - top) / height * (max - min);
     }
 
     @Override
     public float getDrawY(float number) {
         AuxiliaryLines auxiliaryLines = getCurIndicator().getAuxiliaryLines();
-        float max = auxiliaryLines.getMaximum();
-        float min = auxiliaryLines.getMinimum();
+        float max = auxiliaryLines.getMax();
+        float min = auxiliaryLines.getMin();
         if (number < min || number > max) {
             return -1;
         }

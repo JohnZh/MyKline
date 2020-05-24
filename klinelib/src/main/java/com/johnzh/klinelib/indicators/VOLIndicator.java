@@ -59,20 +59,7 @@ public class VOLIndicator extends AbsIndicator {
     }
 
     @Override
-    public void calcIndicatorAsync(List<DATA> klineDataList) {
-    }
-
-    @Override
     public void calcIndicator(List<DATA> klineDataList, int startIndex, int endIndex) {
-    }
-
-    @Override
-    protected void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
-        resetMaxMin();
-        for (int i = startIndex; i < endIndex; i++) {
-            KlineData data = dataList.get(i);
-            updateMaxMin(data.getVolume());
-        }
     }
 
     @Override
@@ -104,7 +91,7 @@ public class VOLIndicator extends AbsIndicator {
     public void drawIndicatorText(KlineView klineView, DrawArea drawArea, DATA data,
                                   Canvas canvas, Paint paint) {
         StringBuilder builder = klineView.getSharedObjects().getObject(StringBuilder.class);
-        int scale = FloatCalc.get().getScale(getAuxiliaryLines().getMaximum());
+        int scale = FloatCalc.get().getScale(getAuxiliaryLines().getMax());
         String text = builder.append("VOL:")
                 .append(FloatCalc.get().format(data.getVolume(), scale)).toString();
         float textLeft = drawArea.getLeft();

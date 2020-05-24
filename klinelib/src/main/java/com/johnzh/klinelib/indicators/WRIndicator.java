@@ -7,6 +7,9 @@ import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.IndicatorData;
+import com.johnzh.klinelib.Interval;
+import com.johnzh.klinelib.IntervalAccess;
+import com.johnzh.klinelib.IntervalImpl;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.drawarea.DrawArea;
@@ -20,12 +23,13 @@ import java.util.List;
  *
  * <p>WR indicator</p>
  */
-public class WRIndicator extends AbsIndicator {
+public class WRIndicator extends AbsIndicator implements IntervalAccess {
 
     private final int[] wr;
     private final int[] colors;
     private final float lineWidth;
     private final float textSize;
+    private final IntervalImpl interval;
 
     public WRIndicator(AuxiliaryLines auxiliaryLines, int[] wr, int[] colors,
                        float lineWidth, float textSize) {
@@ -34,6 +38,7 @@ public class WRIndicator extends AbsIndicator {
         this.textSize = textSize;
         this.colors = colors;
         this.lineWidth = lineWidth;
+        this.interval = new IntervalImpl();
 
         if (wr.length > colors.length) {
             throw new IllegalArgumentException("wr.length is larger than colors.length");
@@ -41,12 +46,8 @@ public class WRIndicator extends AbsIndicator {
     }
 
     @Override
-    protected void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
-    }
-
-    @Override
     public void calcIndicator(List<DATA> dataList, int startIndex, int endIndex) {
-        resetMaxMin();
+        interval.reset();
 
         for (int i = startIndex; i < endIndex; i++) {
             IndicatorData indicator = dataList.get(i).getIndicator();
@@ -56,13 +57,13 @@ public class WRIndicator extends AbsIndicator {
                 WR wrData = indicator.get(WR.class);
                 Float wrValue = wrData.get(wr);
                 if (wrValue != null) {
-                    updateMaxMin(wrValue);
+                    interval.updateMaxMin(wrValue);
                     continue;
                 }
 
                 wrValue = calcWrValue(dataList, i, wr);
                 wrData.put(wr, wrValue);
-                updateMaxMin(wrValue);
+                interval.updateMaxMin(wrValue);
             }
         }
     }
@@ -140,5 +141,10 @@ public class WRIndicator extends AbsIndicator {
             textLeft += textWidth;
             builder.setLength(0);
         }
+    }
+
+    @Override
+    public Interval getInterval() {
+        return interval;
     }
 }

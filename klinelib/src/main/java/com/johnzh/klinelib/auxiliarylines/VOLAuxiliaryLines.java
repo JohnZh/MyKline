@@ -2,6 +2,7 @@ package com.johnzh.klinelib.auxiliarylines;
 
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.FloatCalc;
+import com.johnzh.klinelib.KlineData;
 import com.johnzh.klinelib.indicators.Indicator;
 
 import java.util.List;
@@ -18,17 +19,22 @@ public class VOLAuxiliaryLines extends SimpleAuxiliaryLines {
     }
 
     @Override
-    public void calcHorizontalLines(List<DATA> klineDataList, Indicator curIndicator, int startIndex, int endIndex) {
-        max = Math.max(curIndicator.getMaximum(), max);
-        min = 0;
+    public void calcHorizontalLines(List<DATA> dataList, Indicator indicator, int startIndex, int endIndex) {
+        float max = Float.MIN_VALUE;
+        float min = 0;
 
-        float interval = FloatCalc.get().subtraction(max, min);
-        interval = FloatCalc.get().divide(interval, horizontalLines.length - 1);
+        for (int i = startIndex; i < endIndex; i++) {
+            KlineData data = dataList.get(i);
+            max = Math.max(max, data.getVolume());
+        }
+
+        float lineSpace = FloatCalc.get().subtraction(max, min);
+        lineSpace = FloatCalc.get().divide(lineSpace, horizontalLines.length - 1);
 
         horizontalLines[0] = max;
         horizontalLines[horizontalLines.length - 1] = min;
         for (int i = horizontalLines.length - 2; i > 0; i--) {
-            horizontalLines[i] = FloatCalc.get().add(horizontalLines[i + 1], interval);
+            horizontalLines[i] = FloatCalc.get().add(horizontalLines[i + 1], lineSpace);
         }
     }
 }

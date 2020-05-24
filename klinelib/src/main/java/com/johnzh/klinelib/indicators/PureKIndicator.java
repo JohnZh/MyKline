@@ -43,15 +43,6 @@ public class PureKIndicator extends AbsIndicator {
     }
 
     @Override
-    protected void calcMaxMinPreCalcAuxiliaryLines(List<DATA> dataList, int startIndex, int endIndex) {
-        resetMaxMin();
-        for (int i = startIndex; i < endIndex; i++) {
-            DATA data = dataList.get(i);
-            updateMaxMin(data.getHighestPrice(), data.getLowestPrice());
-        }
-    }
-
-    @Override
     public void drawIndicator(KlineView klineView, IndicatorDrawArea drawArea, Canvas canvas, Paint paint) {
         List<DATA> dataList = klineView.getDataList();
         int startIndex = klineView.getStartIndex();

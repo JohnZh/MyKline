@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.util.TypedValue;
 
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
+import com.johnzh.klinelib.auxiliarylines.CandlesAuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.SimpleAuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.VOLAuxiliaryLines;
 import com.johnzh.klinelib.date.DrawDate;
@@ -104,8 +105,8 @@ public class DefaultFactory implements Factory {
 
         if (clazz.isAssignableFrom(PureKIndicator.class)) {
             float candleLineWidth = dp2Px(1);
-            SimpleAuxiliaryLines auxiliaryLines
-                    = createDefaultAuxiliaryLines(SimpleAuxiliaryLines.class, 5);
+            CandlesAuxiliaryLines auxiliaryLines
+                    = createDefaultAuxiliaryLines(CandlesAuxiliaryLines.class, 5);
             return (T) new PureKIndicator(auxiliaryLines, posNegColor, dataPaddingX, candleLineWidth);
         }
 
@@ -116,8 +117,7 @@ public class DefaultFactory implements Factory {
 
         if (clazz.isAssignableFrom(BOLLIndicator.class)) {
             PureKIndicator purKIndex = createDefaultIndex(PureKIndicator.class);
-            return (T) new BOLLIndicator(purKIndex, new int[]{20, 2}, maColors,
-                    lineWidth, textSize);
+            return (T) new BOLLIndicator(purKIndex, new int[]{20, 2}, maColors, lineWidth, textSize);
         }
 
         if (clazz.isAssignableFrom(VOLIndicator.class)) {
@@ -153,6 +153,10 @@ public class DefaultFactory implements Factory {
 
         if (clazz.isAssignableFrom(VOLAuxiliaryLines.class)) {
             return (T) new VOLAuxiliaryLines(lines, textSize, lineWidth, textMargin, color);
+        }
+
+        if (clazz.isAssignableFrom(CandlesAuxiliaryLines.class)) {
+            return (T) new CandlesAuxiliaryLines(lines, textSize, lineWidth, textMargin, color);
         }
 
         return null;
