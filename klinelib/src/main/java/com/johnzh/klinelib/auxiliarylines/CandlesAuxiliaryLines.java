@@ -35,7 +35,7 @@ public class CandlesAuxiliaryLines extends SimpleAuxiliaryLines {
             max = Math.max(max, interval.getMax());
             min = Math.min(min, interval.getMin());
         }
-        
+
         float lineSpace = FloatCalc.get().subtraction(max, min);
         lineSpace = FloatCalc.get().divide(lineSpace, horizontalLines.length - 1);
 

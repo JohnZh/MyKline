@@ -2,6 +2,7 @@ package com.john.mykline;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.widget.Toast;
 
 import com.john.mykline.bean.MyKlineData;
 import com.john.mykline.databinding.ActivityHistoryBinding;
@@ -29,8 +30,29 @@ public class HistoryActivity extends AppCompatActivity {
         Factory factory = new MyFactory(this);
         mBinding.klineView.setDrawAreaList(factory);
         mBinding.klineView.setDetailView(mBinding.detailView);
+        mBinding.klineView.setOnDataDragListener((remainingData, draggedData, visibleData) -> {
+            if (remainingData == 0) {
+                Toast.makeText(this, "获取假的历史数据", Toast.LENGTH_SHORT).show();
+                getFakeHistoricalData();
+            }
+        });
 
         getTestData();
+    }
+
+    private void getFakeHistoricalData() {
+        HttpAgent.getApi().getDailyKline("M2009")
+                .enqueue(new Callback<List<List<String>>>() {
+                    @Override
+                    public void onResponse(Call<List<List<String>>> call, Response<List<List<String>>> response) {
+                        List<DATA> data = convertData(response.body());
+                        mBinding.klineView.addHistoricalData(data);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<List<String>>> call, Throwable t) {
+                    }
+                });
     }
 
     private void getTestData() {
