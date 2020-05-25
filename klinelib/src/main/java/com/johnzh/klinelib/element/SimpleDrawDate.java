@@ -39,7 +39,7 @@ import java.util.List;
  * <p>
  * Description:
  */
-public class SimpleDrawDate implements DrawDate {
+public class SimpleDrawDate extends DrawDate {
 
     private float fontSize;
     private float textMargin;
@@ -72,10 +72,6 @@ public class SimpleDrawDate implements DrawDate {
 
     public void setTextColor(int textColor) {
         this.textColor = textColor;
-    }
-
-    public void setDateFormat(String dateFormat) {
-        DATE_FORMAT.applyPattern(dateFormat);
     }
 
     @Override

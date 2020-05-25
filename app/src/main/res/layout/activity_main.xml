@@ -62,12 +62,20 @@
         app:layout_constraintTop_toBottomOf="@id/vol" />
 
     <Button
-        android:id="@+id/samples"
+        android:id="@+id/areasAndAppendData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="All samples"
+        android:text="多个指标绘制区 + 追加历史"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/klineView" />
+
+    <Button
+        android:id="@+id/modifyStyles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="修改样式 + 指标文字 + 小数点位数"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/areasAndAppendData" />
 
     <Button
         android:id="@+id/changeData"
@@ -75,5 +83,5 @@
         android:layout_height="wrap_content"
         android:text="改变时间格式"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/samples" />
+        app:layout_constraintTop_toBottomOf="@id/modifyStyles" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,8 @@ import android.view.View;
 import com.john.mykline.bean.MyKlineData;
 import com.john.mykline.databinding.ActivityMainBinding;
 import com.johnzh.klinelib.DATA;
+import com.johnzh.klinelib.drawarea.impl.DateDrawArea;
+import com.johnzh.klinelib.element.DrawDate;
 import com.johnzh.klinelib.indicators.BOLLIndicator;
 import com.johnzh.klinelib.indicators.MAIndicator;
 import com.johnzh.klinelib.indicators.VOLIndicator;
@@ -50,13 +52,24 @@ public class MainActivity extends AppCompatActivity {
             mBinding.klineView.selectIndicator(WRIndicator.class);
         });
 
-        mBinding.samples.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, SamplesActivity.class));
+        mBinding.areasAndAppendData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+            }
+        });
+        mBinding.modifyStyles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ChangeStyleActivity.class));
+            }
         });
         mBinding.changeData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                List<DateDrawArea> drawAreaList = mBinding.klineView.getDrawAreaList(DateDrawArea.class);
+                DrawDate drawDate = drawAreaList.get(0).getDrawDate();
+                
             }
         });
 

@@ -29,12 +29,22 @@ import android.graphics.Paint;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.drawarea.impl.DateDrawArea;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Modified by john on 2020/5/13
  * <p>
  * Description:
  */
-public interface DrawDate {
-    void drawDate(KlineView klineView, DateDrawArea drawArea,
-                  int startIndex, int endIndex, Canvas canvas, Paint paint);
+public abstract class DrawDate {
+
+    public static final SimpleDateFormat DATE_FORMAT
+            = new SimpleDateFormat();
+
+    public void setDateFormat(String dateFormat) {
+        DATE_FORMAT.applyPattern(dateFormat);
+    }
+
+    abstract void drawDate(KlineView klineView, DateDrawArea drawArea,
+                           int startIndex, int endIndex, Canvas canvas, Paint paint);
 }
