@@ -90,6 +90,24 @@ void drawIndicator(KlineView klineView, IndicatorDrawArea drawArea, Canvas canva
 
 ```
 
+## 添加到项目
+项目 build.gradle:
+
+```
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+依赖：
+
+```
+implementation 'com.github.JohnZh:myKline:1.0.0'
+```
+
 ## 创建自己的 K 线控件
 
 ### 布局
@@ -146,11 +164,13 @@ binding.klineView.setDrawAreaList(factory);
 
 ```
 public interface Factory {
-    List<DrawArea> createDrawAreas();
+    List<List<Indicator>> getIndicatorsList();
+    
+    <T extends DrawDate> T getDrawDate(Class<T> clazz);
 
-    <T extends Indicator> T createDefaultIndex(Class<T> clazz);
+    <T extends AuxiliaryLines> T getAuxiliaryLines(Class<T> clazz, int lines);
 
-    <T extends AuxiliaryLines> T createDefaultAuxiliaryLines(Class<T> clazz, int lines);
+    List<DrawArea> createDrawAreaList();
 }
 ```
 
