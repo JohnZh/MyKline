@@ -16,7 +16,7 @@ import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.date.SimpleDrawDate;
+import com.johnzh.klinelib.element.SimpleDrawDate;
 import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.DateDrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
@@ -328,7 +328,9 @@ public class SimpleDetailView extends View implements DetailView {
             float number = ((IndicatorDrawArea) mDrawArea).getNumber(cy);
             float max = ((IndicatorDrawArea) mDrawArea).getCurIndicator().getAuxiliaryLines().getMax();
             int numberScale = FloatCalc.get().getScale(max);
-            numberScale = numberScale != 0 ? FloatCalc.get().getFormatScale().getMaxScale() : 0;
+            numberScale = numberScale != FloatCalc.get().getFormatScale().getMinScale()
+                    ? FloatCalc.get().getFormatScale().getMaxScale()
+                    : FloatCalc.get().getFormatScale().getMinScale();
             String numStr = FloatCalc.get().format(number, numberScale);
             float textWidth = mPaint.measureText(numStr);
             float textLeft = mDrawArea.getLeft() + padding;

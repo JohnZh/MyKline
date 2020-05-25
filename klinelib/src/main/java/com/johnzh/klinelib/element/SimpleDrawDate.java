@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.johnzh.klinelib.date;
+package com.johnzh.klinelib.element;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -46,12 +46,20 @@ public class SimpleDrawDate implements DrawDate {
     private int textColor;
 
     public static final SimpleDateFormat DATE_FORMAT
-            = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            = new SimpleDateFormat();
 
     public SimpleDrawDate(int textColor, float fontSize, float textMargin) {
         this.fontSize = fontSize;
         this.textMargin = textMargin;
         this.textColor = textColor;
+        DATE_FORMAT.applyPattern("yyyy-MM-dd HH:mm");
+    }
+
+    public SimpleDrawDate(float fontSize, float textMargin, int textColor, String dataFormat) {
+        this.fontSize = fontSize;
+        this.textMargin = textMargin;
+        this.textColor = textColor;
+        DATE_FORMAT.applyPattern(dataFormat);
     }
 
     public void setFontSize(float fontSize) {
@@ -64,6 +72,10 @@ public class SimpleDrawDate implements DrawDate {
 
     public void setTextColor(int textColor) {
         this.textColor = textColor;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        DATE_FORMAT.applyPattern(dateFormat);
     }
 
     @Override

@@ -49,6 +49,26 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
         this.textMargin = textMargin;
     }
 
+    public int getLines() {
+        return horizontalLines.length;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public float getTextSize() {
+        return textSize;
+    }
+
+    public float getLineWidth() {
+        return lineWidth;
+    }
+
+    public float getTextMargin() {
+        return textMargin;
+    }
+
     public void setTextSize(float textSize) {
         this.textSize = textSize;
     }
@@ -63,6 +83,10 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public void setLines(int lines) {
+        this.horizontalLines = new float[lines < 2 ? 2 : lines];
     }
 
     @Override
@@ -97,7 +121,9 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
         float width = drawArea.getWidth();
         float left = drawArea.getLeft();
         int scale = FloatCalc.get().getScale(horizontalLines[0]);
-        scale = scale != 0 ? FloatCalc.get().getFormatScale().getMaxScale() : 0;
+        scale = scale != FloatCalc.get().getFormatScale().getMinScale()
+                ? FloatCalc.get().getFormatScale().getMaxScale()
+                : FloatCalc.get().getFormatScale().getMinScale();
         for (int i = 0; i < horizontalLines.length; i++) {
             float number = horizontalLines[i];
             float top = drawArea.getDrawY(number);

@@ -40,7 +40,7 @@ public class FloatCalc {
     public interface FormatScale {
         int getMaxScale();
 
-        int getScale();
+        int getMinScale();
     }
 
     private static class DefaultFormatScale implements FormatScale {
@@ -51,8 +51,8 @@ public class FloatCalc {
         }
 
         @Override
-        public int getScale() {
-            return 2;
+        public int getMinScale() {
+            return 0;
         }
     }
 

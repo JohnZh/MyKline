@@ -33,7 +33,15 @@
         android:id="@+id/changeMALinesColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="修改 MA 线颜色"
+        android:text="修改 MA 线文字颜色"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/changeAuxiliaryLinesColor" />
+
+    <Button
+        android:id="@+id/changeDecimalScale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="修改最小小数位数"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/changeMALinesColor" />
 </androidx.constraintlayout.widget.ConstraintLayout>

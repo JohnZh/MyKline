@@ -48,7 +48,8 @@ public class VOLIndicator extends AbsIndicator {
     private float dataPaddingX;
     private float textSize;
     private int textColor;
-    private boolean solidCandles;
+    private boolean solidPosCandles;
+    private boolean solidNegCandles;
 
     /**
      *
@@ -65,17 +66,43 @@ public class VOLIndicator extends AbsIndicator {
         this.dataPaddingX = dataPaddingX;
         this.textSize = textSize;
         this.textColor = textColor;
-        this.solidCandles = true;
+        this.solidPosCandles = true;
+        this.solidNegCandles = true;
     }
 
     public VOLIndicator(AuxiliaryLines auxiliaryLines, int[] posNegColors, float dataPaddingX,
-                        float textSize, int textColor, boolean solidCandles) {
+                        float textSize, int textColor, boolean solidPosCandles, boolean solidNegCandles) {
         super(auxiliaryLines);
         this.posNegColors = posNegColors;
         this.dataPaddingX = dataPaddingX;
         this.textSize = textSize;
         this.textColor = textColor;
-        this.solidCandles = solidCandles;
+        this.solidPosCandles = solidPosCandles;
+        this.solidNegCandles = solidNegCandles;
+    }
+
+    public int[] getPosNegColors() {
+        return posNegColors;
+    }
+
+    public float getDataPaddingX() {
+        return dataPaddingX;
+    }
+
+    public float getTextSize() {
+        return textSize;
+    }
+
+    public int getTextColor() {
+        return textColor;
+    }
+
+    public boolean isSolidPosCandles() {
+        return solidPosCandles;
+    }
+
+    public boolean isSolidNegCandles() {
+        return solidNegCandles;
     }
 
     public void setPosNegColors(int[] posNegColors) {
@@ -94,8 +121,12 @@ public class VOLIndicator extends AbsIndicator {
         this.textColor = textColor;
     }
 
-    public void setSolidCandles(boolean solidCandles) {
-        this.solidCandles = solidCandles;
+    public void setSolidPosCandles(boolean solidPosCandles) {
+        this.solidPosCandles = solidPosCandles;
+    }
+
+    public void setSolidNegCandles(boolean solidNegCandles) {
+        this.solidNegCandles = solidNegCandles;
     }
 
     @Override
@@ -113,11 +144,17 @@ public class VOLIndicator extends AbsIndicator {
             float dataX = drawArea.getDrawX(drawArea.getVisibleIndex(i));
             float dataY = drawArea.getDrawY(klineData.getVolume());
             int color = posNegColors[0];
+            boolean positive = true;
             if (klineData.getClosePrice() < klineData.getOpenPrice()) {
                 color = posNegColors[1];
+                positive = false;
             }
+
             paint.setColor(color);
-            paint.setStyle(solidCandles ? Paint.Style.FILL : Paint.Style.STROKE);
+            paint.setStyle(Paint.Style.FILL);
+            if ((!solidPosCandles && positive) || (!solidNegCandles && !positive)) {
+                paint.setStyle(Paint.Style.STROKE);
+            }
             RectF rectf = klineView.getSharedObjects().getObject(RectF.class);
             rectf.left = dataX - candleWidth / 2;
             rectf.top = dataY;

@@ -64,8 +64,43 @@ public class WRIndicator extends AbsIndicator implements IntervalAccess {
         this.interval = new IntervalImpl();
 
         if (wr.length > wrColors.length) {
-            throw new IllegalArgumentException("wr.length is larger than colors.length");
+            throw new IllegalArgumentException("wr.length is greater than colors.length");
         }
+    }
+
+    public int[] getWr() {
+        return wr;
+    }
+
+    public void setWr(int[] wr) {
+        this.wr = wr;
+    }
+
+    public int[] getWrColors() {
+        return wrColors;
+    }
+
+    public void setWrColors(int[] wrColors) {
+        if (wr.length > wrColors.length) {
+            throw new IllegalArgumentException("wr.length is greater than colors.length");
+        }
+        this.wrColors = wrColors;
+    }
+
+    public float getLineWidth() {
+        return lineWidth;
+    }
+
+    public void setLineWidth(float lineWidth) {
+        this.lineWidth = lineWidth;
+    }
+
+    public float getTextSize() {
+        return textSize;
+    }
+
+    public void setTextSize(float textSize) {
+        this.textSize = textSize;
     }
 
     @Override

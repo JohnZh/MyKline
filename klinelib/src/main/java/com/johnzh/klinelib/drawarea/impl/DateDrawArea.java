@@ -28,7 +28,7 @@ import android.graphics.Paint;
 
 import com.johnzh.klinelib.DATA;
 import com.johnzh.klinelib.KlineView;
-import com.johnzh.klinelib.date.DrawDate;
+import com.johnzh.klinelib.element.DrawDate;
 import com.johnzh.klinelib.drawarea.DrawArea;
 
 import java.util.List;

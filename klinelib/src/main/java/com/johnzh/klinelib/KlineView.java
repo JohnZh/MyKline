@@ -264,6 +264,17 @@ public class KlineView extends View {
         if (redraw) redraw();
     }
 
+    public void setConfig(@NonNull KlineConfig config) {
+        if (config != null) {
+            mConfig = config;
+            mScale = mConfig.getScale();
+            if (mScale == null) {
+                mScale = new Scale();
+            }
+            redraw();
+        }
+    }
+
     public List<DrawArea> getDrawAreaList() {
         return mDrawAreaList;
     }
@@ -290,15 +301,19 @@ public class KlineView extends View {
         redraw();
     }
 
-    public void setConfig(@NonNull KlineConfig config) {
-        if (config != null) {
-            mConfig = config;
-            mScale = mConfig.getScale();
-            if (mScale == null) {
-                mScale = new Scale();
+    public <T extends Indicator> List<T> getIndicator(Class<T> clazz) {
+        List<Indicator> list = new ArrayList<>();
+        for (DrawArea drawArea : mDrawAreaList) {
+            if (drawArea instanceof IndicatorDrawArea) {
+                IndicatorDrawArea area = (IndicatorDrawArea) drawArea;
+                for (Indicator indicator : area.getIndicatorList()) {
+                    if (clazz == indicator.getClass()) {
+                        list.add(indicator);
+                    }
+                }
             }
-            redraw();
         }
+        return (List<T>) list;
     }
 
     public KlineConfig getConfig() {

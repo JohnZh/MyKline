@@ -75,8 +75,31 @@ public class BOLLIndicator extends AbsIndicator implements IntervalAccess {
         this.textSize = textSize;
         this.interval = new IntervalImpl();
         if (this.boll.length < 2) {
-            throw new IllegalArgumentException("boll.length must be larger than 2");
+            throw new IllegalArgumentException("boll.length must be be equal or greater than 2");
         }
+        if (this.bollColors.length < 3) {
+            throw new IllegalArgumentException("bollColors.length must be equal or greater than 3");
+        }
+    }
+
+    public PureKIndicator getPureKIndicator() {
+        return pureKIndicator;
+    }
+
+    public int[] getBoll() {
+        return boll;
+    }
+
+    public int[] getBollColors() {
+        return bollColors;
+    }
+
+    public float getLineWidth() {
+        return lineWidth;
+    }
+
+    public float getTextSize() {
+        return textSize;
     }
 
     public void setPureKIndicator(PureKIndicator pureKIndicator) {
@@ -84,10 +107,16 @@ public class BOLLIndicator extends AbsIndicator implements IntervalAccess {
     }
 
     public void setBoll(int[] boll) {
+        if (boll.length < 2) {
+            throw new IllegalArgumentException("boll.length must be be equal or greater than 2");
+        }
         this.boll = boll;
     }
 
     public void setBollColors(int[] bollColors) {
+        if (bollColors.length < 3) {
+            throw new IllegalArgumentException("bollColors.length must be equal or greater than 3");
+        }
         this.bollColors = bollColors;
     }
 

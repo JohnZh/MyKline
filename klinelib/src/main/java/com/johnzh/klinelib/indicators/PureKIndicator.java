@@ -23,7 +23,8 @@ public class PureKIndicator extends AbsIndicator {
     private int[] posNegColors;
     private float dataPaddingX;
     private float candleLineWidth;
-    private boolean solidCandles;
+    private boolean solidPosCandles;
+    private boolean solidNegCandles;
 
     /**
      * @param auxiliaryLines
@@ -37,7 +38,8 @@ public class PureKIndicator extends AbsIndicator {
         this.posNegColors = posNegColors;
         this.dataPaddingX = dataPaddingX;
         this.candleLineWidth = candleLineWidth;
-        this.solidCandles = true;
+        this.solidPosCandles = true;
+        this.solidNegCandles = true;
     }
 
     /**
@@ -45,15 +47,36 @@ public class PureKIndicator extends AbsIndicator {
      * @param posNegColors colors[0] is positiveColor, colors[1] is negativeColor
      * @param dataPaddingX as marginLeft and marginRight of candle
      * @param candleLineWidth
-     * @param solidCandles true is solid candle
+     * @param solidPosCandles true is solid candle
      */
     public PureKIndicator(AuxiliaryLines auxiliaryLines, int[] posNegColors, float dataPaddingX,
-                          float candleLineWidth, boolean solidCandles) {
+                          float candleLineWidth, boolean solidPosCandles, boolean solidNegCandles) {
         super(auxiliaryLines);
         this.posNegColors = posNegColors;
         this.dataPaddingX = dataPaddingX;
         this.candleLineWidth = candleLineWidth;
-        this.solidCandles = solidCandles;
+        this.solidPosCandles = solidPosCandles;
+        this.solidNegCandles = solidNegCandles;
+    }
+
+    public int[] getPosNegColors() {
+        return posNegColors;
+    }
+
+    public float getDataPaddingX() {
+        return dataPaddingX;
+    }
+
+    public float getCandleLineWidth() {
+        return candleLineWidth;
+    }
+
+    public boolean isSolidPosCandles() {
+        return solidPosCandles;
+    }
+
+    public boolean isSolidNegCandles() {
+        return solidNegCandles;
     }
 
     public void setPosNegColors(int[] posNegColors) {
@@ -68,8 +91,12 @@ public class PureKIndicator extends AbsIndicator {
         this.candleLineWidth = candleLineWidth;
     }
 
-    public void setSolidCandles(boolean solidCandles) {
-        this.solidCandles = solidCandles;
+    public void setSolidPosCandles(boolean solidPosCandles) {
+        this.solidPosCandles = solidPosCandles;
+    }
+
+    public void setSolidNegCandles(boolean solidNegCandles) {
+        this.solidNegCandles = solidNegCandles;
     }
 
     @Override
@@ -93,7 +120,9 @@ public class PureKIndicator extends AbsIndicator {
             float candleWidth = drawArea.getOneDataWidth() - 2 * dataPaddingX;
 
             int color = posNegColors[0];
+            boolean positive = true;
             if (klineData.getClosePrice() < klineData.getOpenPrice()) {
+                positive = false;
                 color = posNegColors[1];
                 float tmp = thirdY;
                 thirdY = secondY;
@@ -102,7 +131,7 @@ public class PureKIndicator extends AbsIndicator {
 
             drawLongLowerShadow(drawX, firstY, secondY, thirdY, fourthY, color, canvas, paint);
             RectF rectF = klineView.getSharedObjects().getObject(RectF.class);
-            drawCandleBody(drawX, secondY, thirdY, color, candleWidth, rectF, canvas, paint);
+            drawCandleBody(drawX, secondY, thirdY, color, candleWidth, positive, rectF, canvas, paint);
         }
     }
 
@@ -122,14 +151,18 @@ public class PureKIndicator extends AbsIndicator {
         canvas.drawLine(drawX, thirdY, drawX, fourthY, paint);
     }
 
-    protected void drawCandleBody(float drawX, float secondY, float thirdY, int color, float candleWidth, RectF rectF, Canvas canvas, Paint paint) {
+    protected void drawCandleBody(float drawX, float secondY, float thirdY, int color, float candleWidth,
+                                  boolean positive, RectF rectF, Canvas canvas, Paint paint) {
         if (secondY == thirdY) {
             canvas.drawLine(drawX - candleWidth / 2, secondY,
                     drawX + candleWidth / 2, thirdY,
                     paint);
         } else {
             paint.setColor(color);
-            paint.setStyle(solidCandles ? Paint.Style.FILL : Paint.Style.STROKE);
+            paint.setStyle(Paint.Style.FILL);
+            if ((!solidPosCandles && positive) || (!solidNegCandles && !positive)) {
+                paint.setStyle(Paint.Style.STROKE);
+            }
             rectF.left = drawX - candleWidth / 2;
             rectF.top = secondY;
             rectF.right = drawX + candleWidth / 2;

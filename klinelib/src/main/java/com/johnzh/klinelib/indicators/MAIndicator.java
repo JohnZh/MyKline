@@ -73,8 +73,24 @@ public class MAIndicator extends AbsIndicator implements IntervalAccess {
         this.maColors = maColors;
         this.interval = new IntervalImpl();
         if (ma.length > maColors.length) {
-            throw new IllegalArgumentException("ma.length is larger than maColors.length");
+            throw new IllegalArgumentException("ma.length is greater than maColors.length");
         }
+    }
+
+    public PureKIndicator getPureKIndicator() {
+        return pureKIndicator;
+    }
+
+    public float getLineWidth() {
+        return lineWidth;
+    }
+
+    public float getTextSize() {
+        return textSize;
+    }
+
+    public int[] getMa() {
+        return ma;
     }
 
     public void setPureKIndicator(PureKIndicator pureKIndicator) {
@@ -94,6 +110,9 @@ public class MAIndicator extends AbsIndicator implements IntervalAccess {
     }
 
     public void setMaColors(int[] maColors) {
+        if (this.ma.length > maColors.length) {
+            throw new IllegalArgumentException("ma.length is greater than maColors.length");
+        }
         this.maColors = maColors;
     }
 
