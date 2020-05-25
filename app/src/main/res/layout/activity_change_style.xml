@@ -41,7 +41,7 @@
         android:id="@+id/changeDecimalScale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="修改最小小数位数"
+        android:text="修改最大小数位数支持"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/changeMALinesColor" />
 </androidx.constraintlayout.widget.ConstraintLayout>

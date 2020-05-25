@@ -8,6 +8,7 @@ import android.view.View;
 import com.john.mykline.bean.MyKlineData;
 import com.john.mykline.databinding.ActivityChangeStyleBinding;
 import com.johnzh.klinelib.DATA;
+import com.johnzh.klinelib.FloatCalc;
 import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.SimpleAuxiliaryLines;
 import com.johnzh.klinelib.indicators.MAIndicator;
@@ -70,7 +71,18 @@ public class ChangeStyleActivity extends AppCompatActivity {
         mBinding.changeDecimalScale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FloatCalc.get().setFormatScale(new FloatCalc.FormatScale() {
+                    @Override
+                    public int getMaxScale() {
+                        return 4;
+                    }
 
+                    @Override
+                    public int getMinScale() {
+                        return 0;
+                    }
+                });
+                mBinding.klineView.redraw();
             }
         });
 

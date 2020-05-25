@@ -43,7 +43,7 @@ public class FloatCalc {
         int getMinScale();
     }
 
-    private static class DefaultFormatScale implements FormatScale {
+    public static class DefaultFormatScale implements FormatScale {
 
         @Override
         public int getMaxScale() {
@@ -63,7 +63,7 @@ public class FloatCalc {
         formatScale = new DefaultFormatScale();
     }
 
-    public void setFormatScale(DefaultFormatScale formatScale) {
+    public void setFormatScale(FormatScale formatScale) {
         this.formatScale = formatScale;
     }
 
