@@ -156,25 +156,65 @@ public interface Factory {
 
 ```
 @Override
-public List<DrawArea> createDrawAreas() {
+public List<List<Indicator>> getIndicatorsList() {
+    List<List<Indicator>> list = new ArrayList<>();
+
+    float dataPaddingX = dp2Px(0.5f);
+    float textSize = sp2Px(10);
+    int textColor = Color.parseColor("#999999");
+    float lineWidth = dp2Px(1);
+
+    // indicators 1
+    PureKIndicator pureKIndicator =
+            new PureKIndicator(
+                    getAuxiliaryLines(CandlesAuxiliaryLines.class, 5),
+                    posNegColor, dataPaddingX, lineWidth);
+    MAIndicator maIndicator = new MAIndicator(pureKIndicator, new int[]{5, 10}, maColors, lineWidth, textSize);
+    BOLLIndicator bollIndicator = new BOLLIndicator(pureKIndicator, new int[]{20, 2}, bollColors, lineWidth, textSize);
+
+    List<Indicator> indicators1 = new ArrayList<>();
+    indicators1.add(pureKIndicator);
+    indicators1.add(maIndicator);
+    indicators1.add(bollIndicator);
+
+    // indicators 2
+    VOLIndicator volIndicator = new VOLIndicator(
+            getAuxiliaryLines(VOLAuxiliaryLines.class, 2),
+            posNegColor, dataPaddingX, textSize, textColor);
+    WRIndicator wrIndicator = new WRIndicator(
+            getAuxiliaryLines(SimpleAuxiliaryLines.class, 2),
+            new int[]{6, 10}, wrColors, lineWidth, textSize);
+
+    List<Indicator> indicators2 = new ArrayList<>();
+    indicators2.add(volIndicator);
+    indicators2.add(wrIndicator);
+
+    list.add(indicators1);
+    list.add(indicators2);
+    return list;
+}
+
+@Override
+public List<DrawArea> createDrawAreaList() {
     int textHeight = (int) dp2Px(TEXT_HEIGHT);
     int dataHeight = (int) dp2Px(DATA_HEIGHT);
     int dateHeight = (int) dp2Px(DATE_HEIGHT);
     int indexHeight = (int) dp2Px(INDICATOR_HEIGHT);
 
-    IndicatorDrawArea indicatorArea1 = new IndicatorDrawArea(dataHeight, getIndicators1());
-    IndicatorDrawArea indicatorArea2 = new IndicatorDrawArea(indexHeight, getIndicators2());
+    List<List<Indicator>> indicatorsList = getIndicatorsList();
+    IndicatorDrawArea indicatorArea1 = new IndicatorDrawArea(dataHeight, indicatorsList.get(0));
+    IndicatorDrawArea indicatorArea2 = new IndicatorDrawArea(indexHeight, indicatorsList.get(1));
 
     List<DrawArea> drawAreaList = new ArrayList<>();
     drawAreaList.add(new IndicatorTextDrawArea(textHeight, indicatorArea1));
     drawAreaList.add(indicatorArea1);
-    drawAreaList.add(new DateDrawArea(dateHeight, getDefaultDrawDate()));
+    drawAreaList.add(new DateDrawArea(dateHeight, getDrawDate(SimpleDrawDate.class)));
     drawAreaList.add(indicatorArea2);
     drawAreaList.add(new IndicatorTextDrawArea(textHeight, indicatorArea2));
     return drawAreaList;
 }
 ```
-- 代码解释：
+- `createDrawAreaList()` 代码解释：
     - 确定每个区域的高度
 	- 添加指标文字绘制区
 	- 添加指标绘制区
