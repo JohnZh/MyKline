@@ -18,7 +18,7 @@
         android:id="@+id/modifyStyles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="修改样式"
+        android:text="修改样式 + 指标文字 + 小数点位数"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/areasAndAppendData" />
 
@@ -26,7 +26,7 @@
         android:id="@+id/modifyIndicatorText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="修改指标文字和小数点"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/modifyStyles" />
 </androidx.constraintlayout.widget.ConstraintLayout>

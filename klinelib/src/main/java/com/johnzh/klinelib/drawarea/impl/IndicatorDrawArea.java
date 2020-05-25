@@ -32,6 +32,7 @@ import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.drawarea.YAxisConverter;
 import com.johnzh.klinelib.indicators.Indicator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -58,14 +59,21 @@ public class IndicatorDrawArea extends ConvertDrawArea implements YAxisConverter
         getCurIndicator().drawIndicator(klineView, this, canvas, paint);
     }
 
+    public IndicatorDrawArea(int height) {
+        super(height);
+        mIndicatorList = new ArrayList<>();
+        mCurIndex = 0;
+    }
+
     public IndicatorDrawArea(int height, @NonNull List<Indicator> indicatorList) {
         super(height);
         mIndicatorList = indicatorList;
         mCurIndex = 0;
+    }
 
-        if (mIndicatorList.isEmpty()) {
-            throw new IllegalArgumentException("indexList cannot be empty");
-        }
+    public IndicatorDrawArea addIndicator(Indicator indicator) {
+        mIndicatorList.add(indicator);
+        return this;
     }
 
     public void setIndicatorList(List<Indicator> indicatorList) {
@@ -73,6 +81,10 @@ public class IndicatorDrawArea extends ConvertDrawArea implements YAxisConverter
     }
 
     public Indicator getCurIndicator() {
+        if (mIndicatorList.isEmpty()) {
+            throw new IllegalArgumentException("indexList cannot be empty");
+        }
+
         return mIndicatorList.get(mCurIndex);
     }
 

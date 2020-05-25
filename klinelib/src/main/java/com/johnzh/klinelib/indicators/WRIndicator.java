@@ -1,3 +1,26 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2020 JohnZh
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.johnzh.klinelib.indicators;
 
 import android.graphics.Canvas;
@@ -25,22 +48,22 @@ import java.util.List;
  */
 public class WRIndicator extends AbsIndicator implements IntervalAccess {
 
-    private final int[] wr;
-    private final int[] colors;
-    private final float lineWidth;
-    private final float textSize;
+    private int[] wr;
+    private int[] wrColors;
+    private float lineWidth;
+    private float textSize;
     private final IntervalImpl interval;
 
-    public WRIndicator(AuxiliaryLines auxiliaryLines, int[] wr, int[] colors,
+    public WRIndicator(AuxiliaryLines auxiliaryLines, int[] wr, int[] wrColors,
                        float lineWidth, float textSize) {
         super(auxiliaryLines);
         this.wr = wr;
+        this.wrColors = wrColors;
         this.textSize = textSize;
-        this.colors = colors;
         this.lineWidth = lineWidth;
         this.interval = new IntervalImpl();
 
-        if (wr.length > colors.length) {
+        if (wr.length > wrColors.length) {
             throw new IllegalArgumentException("wr.length is larger than colors.length");
         }
     }
@@ -90,7 +113,7 @@ public class WRIndicator extends AbsIndicator implements IntervalAccess {
 
         for (int i = 0; i < wr.length; i++) {
             int wrKey = wr[i];
-            int color = colors[i];
+            int color = wrColors[i];
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(lineWidth);
             paint.setColor(color);
@@ -124,7 +147,7 @@ public class WRIndicator extends AbsIndicator implements IntervalAccess {
         float textLeft = drawArea.getLeft();
         for (int i = 0; i < this.wr.length; i++) {
             int wrKey = this.wr[i];
-            int color = colors[i];
+            int color = wrColors[i];
             Float wrValue = wrData.get(wrKey);
             if (wrValue == null) continue;
 

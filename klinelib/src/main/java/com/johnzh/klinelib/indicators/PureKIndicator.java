@@ -20,22 +20,56 @@ import java.util.List;
  */
 public class PureKIndicator extends AbsIndicator {
 
-    private int[] colors;
+    private int[] posNegColors;
     private float dataPaddingX;
     private float candleLineWidth;
+    private boolean solidCandles;
 
     /**
      * @param auxiliaryLines
-     * @param colors          colors[0] is positiveColor, colors[1] is negativeColor
-     * @param dataPaddingX
+     * @param posNegColors colors[0] is positiveColor, colors[1] is negativeColor
+     * @param dataPaddingX as marginLeft and marginRight of candle
      * @param candleLineWidth
      */
     public PureKIndicator(AuxiliaryLines auxiliaryLines,
-                          int[] colors, float dataPaddingX, float candleLineWidth) {
+                          int[] posNegColors, float dataPaddingX, float candleLineWidth) {
         super(auxiliaryLines);
-        this.colors = colors;
+        this.posNegColors = posNegColors;
         this.dataPaddingX = dataPaddingX;
         this.candleLineWidth = candleLineWidth;
+        this.solidCandles = true;
+    }
+
+    /**
+     * @param auxiliaryLines
+     * @param posNegColors colors[0] is positiveColor, colors[1] is negativeColor
+     * @param dataPaddingX as marginLeft and marginRight of candle
+     * @param candleLineWidth
+     * @param solidCandles true is solid candle
+     */
+    public PureKIndicator(AuxiliaryLines auxiliaryLines, int[] posNegColors, float dataPaddingX,
+                          float candleLineWidth, boolean solidCandles) {
+        super(auxiliaryLines);
+        this.posNegColors = posNegColors;
+        this.dataPaddingX = dataPaddingX;
+        this.candleLineWidth = candleLineWidth;
+        this.solidCandles = solidCandles;
+    }
+
+    public void setPosNegColors(int[] posNegColors) {
+        this.posNegColors = posNegColors;
+    }
+
+    public void setDataPaddingX(float dataPaddingX) {
+        this.dataPaddingX = dataPaddingX;
+    }
+
+    public void setCandleLineWidth(float candleLineWidth) {
+        this.candleLineWidth = candleLineWidth;
+    }
+
+    public void setSolidCandles(boolean solidCandles) {
+        this.solidCandles = solidCandles;
     }
 
     @Override
@@ -58,9 +92,9 @@ public class PureKIndicator extends AbsIndicator {
             float fourthY = drawArea.getDrawY(klineData.getLowestPrice());
             float candleWidth = drawArea.getOneDataWidth() - 2 * dataPaddingX;
 
-            int color = colors[0];
+            int color = posNegColors[0];
             if (klineData.getClosePrice() < klineData.getOpenPrice()) {
-                color = colors[1];
+                color = posNegColors[1];
                 float tmp = thirdY;
                 thirdY = secondY;
                 secondY = tmp;
@@ -95,7 +129,7 @@ public class PureKIndicator extends AbsIndicator {
                     paint);
         } else {
             paint.setColor(color);
-            paint.setStyle(Paint.Style.FILL);
+            paint.setStyle(solidCandles ? Paint.Style.FILL : Paint.Style.STROKE);
             rectF.left = drawX - candleWidth / 2;
             rectF.top = secondY;
             rectF.right = drawX + candleWidth / 2;

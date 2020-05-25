@@ -15,8 +15,8 @@ import java.util.List;
  */
 public class CandlesAuxiliaryLines extends SimpleAuxiliaryLines {
 
-    public CandlesAuxiliaryLines(int lines, float textSize, float lineWidth, float textMargin, int color) {
-        super(lines, textSize, lineWidth, textMargin, color);
+    public CandlesAuxiliaryLines(int lines, int color, float textSize, float lineWidth, float textMargin) {
+        super(lines, color, textSize, lineWidth, textMargin);
     }
 
     @Override

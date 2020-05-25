@@ -51,7 +51,7 @@ public class BOLLIndicator extends AbsIndicator implements IntervalAccess {
 
     private PureKIndicator pureKIndicator;
     private int[] boll;
-    private int[] colors;
+    private int[] bollColors;
     private float lineWidth;
     private float textSize;
     private IntervalImpl interval;
@@ -61,22 +61,42 @@ public class BOLLIndicator extends AbsIndicator implements IntervalAccess {
      *
      * @param pureKIndicator
      * @param boll {20, 2} means N:20, P:2 of BOLL
-     * @param colors colors for UPPER, MID, LOWER
+     * @param bollColors colors for UPPER, MID, LOWER
      * @param lineWidth
      * @param textSize
      */
-    public BOLLIndicator(PureKIndicator pureKIndicator, int[] boll, int[] colors,
+    public BOLLIndicator(PureKIndicator pureKIndicator, int[] boll, int[] bollColors,
                          float lineWidth, float textSize) {
         super(pureKIndicator.getAuxiliaryLines());
         this.pureKIndicator = pureKIndicator;
         this.boll = boll;
-        this.colors = colors;
+        this.bollColors = bollColors;
         this.lineWidth = lineWidth;
         this.textSize = textSize;
         this.interval = new IntervalImpl();
         if (this.boll.length < 2) {
             throw new IllegalArgumentException("boll.length must be larger than 2");
         }
+    }
+
+    public void setPureKIndicator(PureKIndicator pureKIndicator) {
+        this.pureKIndicator = pureKIndicator;
+    }
+
+    public void setBoll(int[] boll) {
+        this.boll = boll;
+    }
+
+    public void setBollColors(int[] bollColors) {
+        this.bollColors = bollColors;
+    }
+
+    public void setLineWidth(float lineWidth) {
+        this.lineWidth = lineWidth;
+    }
+
+    public void setTextSize(float textSize) {
+        this.textSize = textSize;
     }
 
     @Override
@@ -135,7 +155,7 @@ public class BOLLIndicator extends AbsIndicator implements IntervalAccess {
         paint.setStrokeWidth(lineWidth);
 
         for (int i = 0; i < 3; i++) {
-            paint.setColor(colors[i]);
+            paint.setColor(bollColors[i]);
             float startX = -1;
             float startY = -1;
             int startIndex = klineView.getStartIndex();
@@ -178,7 +198,7 @@ public class BOLLIndicator extends AbsIndicator implements IntervalAccess {
             float[] values = {boll.getUPPER(), boll.getMID(), boll.getLOWER()};
             float textLeft = drawArea.getLeft();
             for (int i = 0; i < 3; i++) {
-                paint.setColor(colors[i]);
+                paint.setColor(bollColors[i]);
                 String text = builder.append(TITLES[i])
                         .append(FloatCalc.get().format(values[i], scale))
                         .append("  ")

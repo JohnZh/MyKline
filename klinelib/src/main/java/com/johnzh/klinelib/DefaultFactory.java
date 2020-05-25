@@ -60,6 +60,28 @@ public class DefaultFactory implements Factory {
     public static final int DATE_HEIGHT = 24;
     public static final int INDICATOR_HEIGHT = 120;
 
+    public static final int[] posNegColor = {
+            Color.parseColor("#f62048"),
+            Color.parseColor("#39ae13")
+    };
+
+    public static final int[] maColors = {
+            Color.parseColor("#1A7AD5"),
+            Color.parseColor("#FFB405"),
+            Color.parseColor("#7C3BB9")
+    };
+
+    public static final int[] bollColors = {
+            Color.parseColor("#1A7AD5"),
+            Color.parseColor("#FFB405"),
+            Color.parseColor("#7C3BB9")
+    };
+
+    public static final int[] wrColors = {
+            Color.parseColor("#1A7AD5"),
+            Color.parseColor("#FFB405")
+    };
+
     private Context mContext;
 
     public DefaultFactory(Context context) {
@@ -67,123 +89,94 @@ public class DefaultFactory implements Factory {
     }
 
     @Override
-    public List<DrawArea> createDrawAreas() {
-        int textHeight = (int) dp2Px(TEXT_HEIGHT);
-        int dataHeight = (int) dp2Px(DATA_HEIGHT);
-        int dateHeight = (int) dp2Px(DATE_HEIGHT);
-        int indexHeight = (int) dp2Px(INDICATOR_HEIGHT);
-
-        IndicatorDrawArea indicatorArea1 = new IndicatorDrawArea(dataHeight, getIndicators1());
-        IndicatorDrawArea indicatorArea2 = new IndicatorDrawArea(indexHeight, getIndicators2());
-
-        List<DrawArea> drawAreaList = new ArrayList<>();
-        drawAreaList.add(new IndicatorTextDrawArea(textHeight, indicatorArea1));
-        drawAreaList.add(indicatorArea1);
-        drawAreaList.add(new DateDrawArea(dateHeight, getDefaultDrawDate()));
-        drawAreaList.add(indicatorArea2);
-        drawAreaList.add(new IndicatorTextDrawArea(textHeight, indicatorArea2));
-        return drawAreaList;
-    }
-
-    @Override
-    public <T extends Indicator> T createDefaultIndex(Class<T> clazz) {
-        int[] posNegColor = {
-                Color.parseColor("#f62048"),
-                Color.parseColor("#39ae13")
-        };
-
-        int[] maColors = {
-                Color.parseColor("#1A7AD5"),
-                Color.parseColor("#FFB405"),
-                Color.parseColor("#7C3BB9")
-        };
+    public List<List<Indicator>> getIndicatorsList() {
+        List<List<Indicator>> list = new ArrayList<>();
 
         float dataPaddingX = dp2Px(0.5f);
         float textSize = sp2Px(10);
         int textColor = Color.parseColor("#999999");
         float lineWidth = dp2Px(1);
 
-        if (clazz.isAssignableFrom(PureKIndicator.class)) {
-            float candleLineWidth = dp2Px(1);
-            CandlesAuxiliaryLines auxiliaryLines
-                    = createDefaultAuxiliaryLines(CandlesAuxiliaryLines.class, 5);
-            return (T) new PureKIndicator(auxiliaryLines, posNegColor, dataPaddingX, candleLineWidth);
-        }
+        // indicators 1
+        PureKIndicator pureKIndicator =
+                new PureKIndicator(
+                        getAuxiliaryLines(CandlesAuxiliaryLines.class, 5),
+                        posNegColor, dataPaddingX, lineWidth);
+        MAIndicator maIndicator = new MAIndicator(pureKIndicator, new int[]{5, 10}, maColors, lineWidth, textSize);
+        BOLLIndicator bollIndicator = new BOLLIndicator(pureKIndicator, new int[]{20, 2}, bollColors, lineWidth, textSize);
 
-        if (clazz.isAssignableFrom(MAIndicator.class)) {
-            PureKIndicator purKIndex = createDefaultIndex(PureKIndicator.class);
-            return (T) new MAIndicator(purKIndex, new int[]{5, 10}, maColors, lineWidth, textSize);
-        }
+        List<Indicator> indicators1 = new ArrayList<>();
+        indicators1.add(pureKIndicator);
+        indicators1.add(maIndicator);
+        indicators1.add(bollIndicator);
 
-        if (clazz.isAssignableFrom(BOLLIndicator.class)) {
-            PureKIndicator purKIndex = createDefaultIndex(PureKIndicator.class);
-            return (T) new BOLLIndicator(purKIndex, new int[]{20, 2}, maColors, lineWidth, textSize);
-        }
+        // indicators 2
+        VOLIndicator volIndicator = new VOLIndicator(
+                getAuxiliaryLines(VOLAuxiliaryLines.class, 2),
+                posNegColor, dataPaddingX, textSize, textColor);
+        WRIndicator wrIndicator = new WRIndicator(
+                getAuxiliaryLines(SimpleAuxiliaryLines.class, 2),
+                new int[]{6, 10}, wrColors, lineWidth, textSize);
 
-        if (clazz.isAssignableFrom(VOLIndicator.class)) {
-            AuxiliaryLines volAuxiliaryLines = createDefaultAuxiliaryLines(VOLAuxiliaryLines.class);
-            return (T) new VOLIndicator(volAuxiliaryLines, posNegColor, dataPaddingX,
-                    textSize, textColor);
-        }
+        List<Indicator> indicators2 = new ArrayList<>();
+        indicators2.add(volIndicator);
+        indicators2.add(wrIndicator);
 
-        if (clazz.isAssignableFrom(WRIndicator.class)) {
-            SimpleAuxiliaryLines simpleAuxiliaryLines
-                    = createDefaultAuxiliaryLines(SimpleAuxiliaryLines.class);
-            return (T) new WRIndicator(simpleAuxiliaryLines, new int[]{6, 10}, maColors,
-                    lineWidth, textSize);
-        }
-
-        return null;
+        list.add(indicators1);
+        list.add(indicators2);
+        return list;
     }
 
-    public <T extends AuxiliaryLines> T createDefaultAuxiliaryLines(Class<T> clazz) {
-        return createDefaultAuxiliaryLines(clazz, 2);
-    }
 
     @Override
-    public <T extends AuxiliaryLines> T createDefaultAuxiliaryLines(Class<T> clazz, int lines) {
+    public <T extends AuxiliaryLines> T getAuxiliaryLines(Class<T> clazz, int lines) {
         float textSize = sp2Px(10);
         float lineWidth = dp2Px(0.5f);
         float textMargin = dp2Px(2);
         int color = Color.parseColor("#999999");
 
         if (clazz.isAssignableFrom(SimpleAuxiliaryLines.class)) {
-            return (T) new SimpleAuxiliaryLines(lines, textSize, lineWidth, textMargin, color);
+            return (T) new SimpleAuxiliaryLines(lines, color, textSize, lineWidth, textMargin);
         }
-
         if (clazz.isAssignableFrom(VOLAuxiliaryLines.class)) {
-            return (T) new VOLAuxiliaryLines(lines, textSize, lineWidth, textMargin, color);
+            return (T) new VOLAuxiliaryLines(lines, color, textSize, lineWidth, textMargin);
         }
-
         if (clazz.isAssignableFrom(CandlesAuxiliaryLines.class)) {
-            return (T) new CandlesAuxiliaryLines(lines, textSize, lineWidth, textMargin, color);
+            return (T) new CandlesAuxiliaryLines(lines, color, textSize, lineWidth, textMargin);
         }
-
         return null;
     }
 
-    protected DrawDate getDefaultDrawDate() {
-        float fontSize = sp2Px(10);
-        float textMargin = dp2Px(2);
-        int color = Color.parseColor("#999999");
-        return new SimpleDrawDate(fontSize, textMargin, color);
+    @Override
+    public <T extends DrawDate> T getDrawDate(Class<T> clazz) {
+        if (clazz.isAssignableFrom(SimpleDrawDate.class)) {
+            float fontSize = sp2Px(10);
+            float textMargin = dp2Px(2);
+            int color = Color.parseColor("#999999");
+            return (T) new SimpleDrawDate(color, fontSize, textMargin);
+        }
+        return null;
     }
 
-    protected List<Indicator> getIndicators1() {
-        List<Indicator> list = new ArrayList<>();
-        list.add(createDefaultIndex(PureKIndicator.class));
-        list.add(createDefaultIndex(MAIndicator.class));
-        list.add(createDefaultIndex(BOLLIndicator.class));
-        return list;
-    }
+    @Override
+    public List<DrawArea> createDrawAreaList() {
+        int textHeight = (int) dp2Px(TEXT_HEIGHT);
+        int dataHeight = (int) dp2Px(DATA_HEIGHT);
+        int dateHeight = (int) dp2Px(DATE_HEIGHT);
+        int indexHeight = (int) dp2Px(INDICATOR_HEIGHT);
 
-    protected List<Indicator> getIndicators2() {
-        List<Indicator> list = new ArrayList<>();
-        list.add(createDefaultIndex(VOLIndicator.class));
-        list.add(createDefaultIndex(WRIndicator.class));
-        return list;
-    }
+        List<List<Indicator>> indicatorsList = getIndicatorsList();
+        IndicatorDrawArea indicatorArea1 = new IndicatorDrawArea(dataHeight, indicatorsList.get(0));
+        IndicatorDrawArea indicatorArea2 = new IndicatorDrawArea(indexHeight, indicatorsList.get(1));
 
+        List<DrawArea> drawAreaList = new ArrayList<>();
+        drawAreaList.add(new IndicatorTextDrawArea(textHeight, indicatorArea1));
+        drawAreaList.add(indicatorArea1);
+        drawAreaList.add(new DateDrawArea(dateHeight, getDrawDate(SimpleDrawDate.class)));
+        drawAreaList.add(indicatorArea2);
+        drawAreaList.add(new IndicatorTextDrawArea(textHeight, indicatorArea2));
+        return drawAreaList;
+    }
 
     public float sp2Px(float value) {
         return toPx(TypedValue.COMPLEX_UNIT_SP, value);

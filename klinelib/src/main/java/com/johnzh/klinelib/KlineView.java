@@ -123,7 +123,7 @@ public class KlineView extends View {
     private void init() {
         mBufferedList = new ArrayList<>();
         mDataList = new ArrayList<>();
-        mDrawAreaList = new DefaultFactory(getContext()).createDrawAreas();
+        mDrawAreaList = new DefaultFactory(getContext()).createDrawAreaList();
         mSharedObjects = new SharedObjects();
         mConfig = new KlineConfig.Builder().build();
         setConfig(mConfig);
@@ -286,7 +286,7 @@ public class KlineView extends View {
     }
 
     public void setDrawAreaList(Factory factory) {
-        mDrawAreaList = factory.createDrawAreas();
+        mDrawAreaList = factory.createDrawAreaList();
         redraw();
     }
 

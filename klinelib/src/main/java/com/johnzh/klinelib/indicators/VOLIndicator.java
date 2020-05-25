@@ -44,18 +44,58 @@ import java.util.List;
  * Description:
  */
 public class VOLIndicator extends AbsIndicator {
-    private int[] colors;
+    private int[] posNegColors;
     private float dataPaddingX;
     private float textSize;
     private int textColor;
+    private boolean solidCandles;
 
-    public VOLIndicator(AuxiliaryLines auxiliaryLines, int[] colors, float dataPaddingX,
+    /**
+     *
+     * @param auxiliaryLines
+     * @param posNegColors colors[0] is positiveColor, colors[1] is negativeColor
+     * @param dataPaddingX as marginLeft and marginRight of candle
+     * @param textSize
+     * @param textColor
+     */
+    public VOLIndicator(AuxiliaryLines auxiliaryLines, int[] posNegColors, float dataPaddingX,
                         float textSize, int textColor) {
         super(auxiliaryLines);
-        this.colors = colors;
+        this.posNegColors = posNegColors;
         this.dataPaddingX = dataPaddingX;
         this.textSize = textSize;
         this.textColor = textColor;
+        this.solidCandles = true;
+    }
+
+    public VOLIndicator(AuxiliaryLines auxiliaryLines, int[] posNegColors, float dataPaddingX,
+                        float textSize, int textColor, boolean solidCandles) {
+        super(auxiliaryLines);
+        this.posNegColors = posNegColors;
+        this.dataPaddingX = dataPaddingX;
+        this.textSize = textSize;
+        this.textColor = textColor;
+        this.solidCandles = solidCandles;
+    }
+
+    public void setPosNegColors(int[] posNegColors) {
+        this.posNegColors = posNegColors;
+    }
+
+    public void setDataPaddingX(float dataPaddingX) {
+        this.dataPaddingX = dataPaddingX;
+    }
+
+    public void setTextSize(float textSize) {
+        this.textSize = textSize;
+    }
+
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
+    }
+
+    public void setSolidCandles(boolean solidCandles) {
+        this.solidCandles = solidCandles;
     }
 
     @Override
@@ -72,12 +112,12 @@ public class VOLIndicator extends AbsIndicator {
             KlineData klineData = dataList.get(i);
             float dataX = drawArea.getDrawX(drawArea.getVisibleIndex(i));
             float dataY = drawArea.getDrawY(klineData.getVolume());
-            int color = colors[0];
+            int color = posNegColors[0];
             if (klineData.getClosePrice() < klineData.getOpenPrice()) {
-                color = colors[1];
+                color = posNegColors[1];
             }
             paint.setColor(color);
-            paint.setStyle(Paint.Style.FILL);
+            paint.setStyle(solidCandles ? Paint.Style.FILL : Paint.Style.STROKE);
             RectF rectf = klineView.getSharedObjects().getObject(RectF.class);
             rectf.left = dataX - candleWidth / 2;
             rectf.top = dataY;

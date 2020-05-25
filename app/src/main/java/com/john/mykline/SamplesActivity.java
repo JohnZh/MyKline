@@ -28,7 +28,7 @@ public class SamplesActivity extends AppCompatActivity {
         binding.modifyStyles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(SamplesActivity.this, ChangeStyleActivity.class));
             }
         });
         binding.modifyIndicatorText.setOnClickListener(new View.OnClickListener() {

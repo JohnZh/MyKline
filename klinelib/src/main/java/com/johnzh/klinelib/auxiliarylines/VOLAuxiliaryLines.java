@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class VOLAuxiliaryLines extends SimpleAuxiliaryLines {
 
-    public VOLAuxiliaryLines(int lines, float fontSize, float lineWidth, float textMargin, int color) {
-        super(lines, fontSize, lineWidth, textMargin, color);
+    public VOLAuxiliaryLines(int lines, int color, float fontSize, float lineWidth, float textMargin) {
+        super(lines, color, fontSize, lineWidth, textMargin);
     }
 
     @Override

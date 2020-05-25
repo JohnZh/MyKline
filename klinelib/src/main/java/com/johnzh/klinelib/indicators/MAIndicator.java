@@ -51,30 +51,50 @@ public class MAIndicator extends AbsIndicator implements IntervalAccess {
     private float lineWidth;
     private float textSize;
     private int[] ma;
-    private int[] colors;
-    private IntervalImpl interval;
+    private int[] maColors;
+    private final IntervalImpl interval;
 
     /**
      * Constructor of MA indicator
      *
      * @param pureKIndicator
      * @param ma {5, 10, 20} means MA5, MA10, MA20
-     * @param colors colors for ma[i]
+     * @param maColors maColors for ma[i]
      * @param lineWidth
      * @param textSize
      */
     public MAIndicator(PureKIndicator pureKIndicator,
-                       int[] ma, int[] colors, float lineWidth, float textSize) {
+                       int[] ma, int[] maColors, float lineWidth, float textSize) {
         super(pureKIndicator.getAuxiliaryLines());
         this.pureKIndicator = pureKIndicator;
         this.lineWidth = lineWidth;
         this.textSize = textSize;
         this.ma = ma;
-        this.colors = colors;
+        this.maColors = maColors;
         this.interval = new IntervalImpl();
-        if (ma.length > colors.length) {
+        if (ma.length > maColors.length) {
             throw new IllegalArgumentException("ma.length is larger than maColors.length");
         }
+    }
+
+    public void setPureKIndicator(PureKIndicator pureKIndicator) {
+        this.pureKIndicator = pureKIndicator;
+    }
+
+    public void setLineWidth(float lineWidth) {
+        this.lineWidth = lineWidth;
+    }
+
+    public void setTextSize(float textSize) {
+        this.textSize = textSize;
+    }
+
+    public void setMa(int[] ma) {
+        this.ma = ma;
+    }
+
+    public void setMaColors(int[] maColors) {
+        this.maColors = maColors;
     }
 
     @Override
@@ -101,7 +121,7 @@ public class MAIndicator extends AbsIndicator implements IntervalAccess {
         }
     }
 
-    private Float calcMaValue(List<DATA> dataList, int curIndex, int maKey) {
+    protected Float calcMaValue(List<DATA> dataList, int curIndex, int maKey) {
         int start = curIndex - maKey + 1;
         float result = 0;
         for (int i = start; i <= curIndex; i++) {
@@ -121,7 +141,7 @@ public class MAIndicator extends AbsIndicator implements IntervalAccess {
 
         for (int i = 0; i < ma.length; i++) {
             int maKey = ma[i];
-            int maColor = colors[i];
+            int maColor = maColors[i];
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(lineWidth);
             paint.setColor(maColor);
@@ -155,7 +175,7 @@ public class MAIndicator extends AbsIndicator implements IntervalAccess {
         float textLeft = drawArea.getLeft();
         for (int i = 0; i < ma.length; i++) {
             int maKey = ma[i];
-            int maColor = colors[i];
+            int maColor = maColors[i];
             Float maValue = maData.get(maKey);
             if (maValue == null) continue;
 

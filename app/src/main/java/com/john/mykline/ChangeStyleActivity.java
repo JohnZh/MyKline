@@ -1,17 +1,12 @@
 package com.john.mykline;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.john.mykline.bean.MyKlineData;
-import com.john.mykline.databinding.ActivityMainBinding;
+import com.john.mykline.databinding.ActivityChangeStyleBinding;
 import com.johnzh.klinelib.DATA;
-import com.johnzh.klinelib.indicators.BOLLIndicator;
-import com.johnzh.klinelib.indicators.MAIndicator;
-import com.johnzh.klinelib.indicators.VOLIndicator;
-import com.johnzh.klinelib.indicators.WRIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,39 +16,19 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class ChangeStyleActivity extends AppCompatActivity {
 
-    private ActivityMainBinding mBinding;
+    ActivityChangeStyleBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = ActivityMainBinding.inflate(LayoutInflater.from(this));
+        mBinding = ActivityChangeStyleBinding.inflate(LayoutInflater.from(this));
         setContentView(mBinding.getRoot());
 
-        mBinding.klineView.setDetailView(mBinding.detailView);
-
-        mBinding.pureK.setOnClickListener(v -> {
-            mBinding.klineView.selectIndicator(1, 0);
-        });
-        mBinding.ma.setOnClickListener(v -> {
-            mBinding.klineView.selectIndicator(MAIndicator.class);
-        });
-        mBinding.boll.setOnClickListener(v -> {
-            mBinding.klineView.selectIndicator(BOLLIndicator.class);
-        });
-
-        mBinding.vol.setOnClickListener(v -> {
-            mBinding.klineView.selectIndicator(VOLIndicator.class);
-        });
-        mBinding.wr.setOnClickListener(v -> {
-            mBinding.klineView.selectIndicator(WRIndicator.class);
-        });
-
-        mBinding.samples.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, SamplesActivity.class));
-        });
-        mBinding.changeData.setOnClickListener(new View.OnClickListener() {
+        MyFactory2 factory2 = new MyFactory2(this);
+        mBinding.klineView.setDrawAreaList(factory2);
+        mBinding.changeCandleStyle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -61,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         getTestData();
-
     }
 
     private void getTestData() {
@@ -79,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void convertData(List<List<String>> body, List<DATA> kDataList) {
         for (List<String> stringList : body) {

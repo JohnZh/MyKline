@@ -25,10 +25,10 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
 
     protected float[] horizontalLines;
 
+    private int color;
     private float textSize;
     private float lineWidth;
     private float textMargin;
-    private int color;
 
     private void setHorizontalLinePaint(Paint paint) {
         paint.setColor(color);
@@ -41,12 +41,12 @@ public class SimpleAuxiliaryLines implements AuxiliaryLines {
         paint.setStyle(Paint.Style.FILL);
     }
 
-    public SimpleAuxiliaryLines(int lines, float textSize, float lineWidth, float textMargin, int color) {
+    public SimpleAuxiliaryLines(int lines, int color, float textSize, float lineWidth, float textMargin) {
         this.horizontalLines = new float[lines < 2 ? 2 : lines];
+        this.color = color;
         this.textSize = textSize;
         this.lineWidth = lineWidth;
         this.textMargin = textMargin;
-        this.color = color;
     }
 
     public void setTextSize(float textSize) {
