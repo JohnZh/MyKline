@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 List<DateDrawArea> drawAreaList = mBinding.klineView.getDrawAreaList(DateDrawArea.class);
                 DrawDate drawDate = drawAreaList.get(0).getDrawDate();
-                
+                drawDate.setDateFormat("yyyy-MM-dd");
+                mBinding.klineView.redraw();
             }
         });
 

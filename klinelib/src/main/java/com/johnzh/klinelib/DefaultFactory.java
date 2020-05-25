@@ -31,12 +31,12 @@ import com.johnzh.klinelib.auxiliarylines.AuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.CandlesAuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.SimpleAuxiliaryLines;
 import com.johnzh.klinelib.auxiliarylines.VOLAuxiliaryLines;
-import com.johnzh.klinelib.element.DrawDate;
-import com.johnzh.klinelib.element.SimpleDrawDate;
 import com.johnzh.klinelib.drawarea.DrawArea;
 import com.johnzh.klinelib.drawarea.impl.DateDrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorDrawArea;
 import com.johnzh.klinelib.drawarea.impl.IndicatorTextDrawArea;
+import com.johnzh.klinelib.element.DrawDate;
+import com.johnzh.klinelib.element.SimpleDrawDate;
 import com.johnzh.klinelib.indicators.BOLLIndicator;
 import com.johnzh.klinelib.indicators.Indicator;
 import com.johnzh.klinelib.indicators.MAIndicator;
@@ -59,6 +59,8 @@ public class DefaultFactory implements Factory {
     public static final int DATA_HEIGHT = 200;
     public static final int DATE_HEIGHT = 24;
     public static final int INDICATOR_HEIGHT = 120;
+
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
     public static final int[] posNegColor = {
             Color.parseColor("#f62048"),
@@ -153,7 +155,7 @@ public class DefaultFactory implements Factory {
             float fontSize = sp2Px(10);
             float textMargin = dp2Px(2);
             int color = Color.parseColor("#999999");
-            return (T) new SimpleDrawDate(color, fontSize, textMargin);
+            return (T) new SimpleDrawDate(DATE_FORMAT, color, fontSize, textMargin);
         }
         return null;
     }

@@ -31,7 +31,6 @@ import com.johnzh.klinelib.DrawTextTool;
 import com.johnzh.klinelib.KlineView;
 import com.johnzh.klinelib.drawarea.impl.DateDrawArea;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -41,29 +40,19 @@ import java.util.List;
  */
 public class SimpleDrawDate extends DrawDate {
 
-    private float fontSize;
-    private float textMargin;
     private int textColor;
+    private float textSize;
+    private float textMargin;
 
-    public static final SimpleDateFormat DATE_FORMAT
-            = new SimpleDateFormat();
-
-    public SimpleDrawDate(int textColor, float fontSize, float textMargin) {
-        this.fontSize = fontSize;
-        this.textMargin = textMargin;
+    public SimpleDrawDate(String dateFormat, int textColor, float textSize, float textMargin) {
+        super(dateFormat);
         this.textColor = textColor;
-        DATE_FORMAT.applyPattern("yyyy-MM-dd HH:mm");
+        this.textSize = textSize;
+        this.textMargin = textMargin;
     }
 
-    public SimpleDrawDate(float fontSize, float textMargin, int textColor, String dataFormat) {
-        this.fontSize = fontSize;
-        this.textMargin = textMargin;
-        this.textColor = textColor;
-        DATE_FORMAT.applyPattern(dataFormat);
-    }
-
-    public void setFontSize(float fontSize) {
-        this.fontSize = fontSize;
+    public void setTextSize(float textSize) {
+        this.textSize = textSize;
     }
 
     public void setTextMargin(float textMargin) {
@@ -81,7 +70,7 @@ public class SimpleDrawDate extends DrawDate {
         DATA data = klineDataList.get(startIndex);
 
         paint.setColor(textColor);
-        paint.setTextSize(fontSize);
+        paint.setTextSize(textSize);
         paint.setStyle(Paint.Style.FILL);
 
         String dateText = data.getDate() != null ?

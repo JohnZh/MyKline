@@ -41,10 +41,14 @@ public abstract class DrawDate {
     public static final SimpleDateFormat DATE_FORMAT
             = new SimpleDateFormat();
 
+    public DrawDate(String dateFormat) {
+        DATE_FORMAT.applyPattern(dateFormat);
+    }
+
     public void setDateFormat(String dateFormat) {
         DATE_FORMAT.applyPattern(dateFormat);
     }
 
-    abstract void drawDate(KlineView klineView, DateDrawArea drawArea,
+    public abstract void drawDate(KlineView klineView, DateDrawArea drawArea,
                            int startIndex, int endIndex, Canvas canvas, Paint paint);
 }
