@@ -105,7 +105,7 @@ allprojects {
 依赖：
 
 ```
-implementation 'com.github.JohnZh:myKline:1.0.0'
+implementation 'com.github.JohnZh:myKline:1.0.2'
 ```
 
 ## 创建自己的 K 线控件

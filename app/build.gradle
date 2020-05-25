@@ -43,7 +43,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.8.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+    implementation 'com.github.JohnZh:myKline:1.0.2'
 
-
-    implementation project(path: ':klinelib')
+    //implementation project(path: ':klinelib')
 }
